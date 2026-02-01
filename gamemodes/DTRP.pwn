@@ -18,6 +18,13 @@
 //===[ENUM & VARIABEL]===//
 new MySQL:g_SQL;
 
+//Anti-Spam System:
+new SpamCount[MAX_PLAYERS];
+new ChatSpamTime[MAX_PLAYERS][3];
+new muted[MAX_PLAYERS];
+
+#define AutoUnmuteTime 2
+
 enum PlayerData
 {
     pName[MAX_PLAYER_NAME],
@@ -65,6 +72,7 @@ forward LoadPlayerData(playerid);
 forward PlayerSpawnLogin(playerid);
 forward SpawnPlayerLogin(playerid);
 forward SavePlayerData(playerid);
+forward AutoUnMute(playerid);
 
 //===[DATA]===//
 #include "CORE\DEFINES.pwn"
@@ -101,6 +109,9 @@ public OnPlayerConnect(playerid)
 {
     SetPlayerColor(playerid, 0xFFFFFFFF);
     GetPlayerName(playerid, Player[playerid][pName], MAX_PLAYER_NAME);
+
+    SpamCount[playerid] = 0;
+    muted[playerid] = 0;
 
     new query[256];
     mysql_format(g_SQL, query, sizeof(query),
@@ -352,15 +363,22 @@ public SavePlayerData(playerid)
 
     mysql_tquery(g_SQL, query);
     return 1;
-
 }
 
 public OnPlayerText(playerid, text[])
 {
+    if(muted[playerid] == 1)
+    {
+        SendClientMessage(playerid, 0xFF0000FF, "You have been muted!");
+        return 0;
+    }
+    
+    AntiSpam(playerid);
+    
     new Float:x, Float:y, Float:z;
     GetPlayerPos(playerid, x, y, z);
     
-    new msg[256]
+    new msg[256];
     format(msg, sizeof(msg), "%s says: %s", Player[playerid][pName], text);
     
     foreach(new i : Player)
@@ -368,8 +386,63 @@ public OnPlayerText(playerid, text[])
         if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))
         {
             SendClientMessage(i, 0xFFFFFFFF, msg);
-            return 1;
         }
     }
-    return 0;
+    return 1;
+}
+
+stock AntiSpam(playerid)
+{
+    SpamCount[playerid]++;
+    
+    switch (SpamCount[playerid])
+    {
+        case 1:
+        {
+            ChatSpamTime[playerid][0] = gettime();
+        }
+        case 2:
+        {
+            if((gettime() - ChatSpamTime[playerid][0]) < 4)
+            {
+                SendClientMessage(playerid, 0xFF0000FF, "You have received a warning (1/3)! (Reason: Spam)");
+                ChatSpamTime[playerid][1] = gettime();
+            }
+            else SpamCount[playerid] = 0;
+        }
+        case 3:
+        {
+            if((gettime() - ChatSpamTime[playerid][1]) < 4)
+            {
+                SendClientMessage(playerid, 0xFF0000FF, "You have received a warning (2/3)! (Reason: Spam)");
+                ChatSpamTime[playerid][2] = gettime();
+            }
+            else SpamCount[playerid] = 0;
+        }
+        case 4..50:
+        {
+            new string[128], name[24];
+            GetPlayerName(playerid, name, 24);
+            
+            if((gettime() - ChatSpamTime[playerid][2]) < 4)
+            {
+                format(string, sizeof(string), "Player %s has been muted for %d minutes! (Reason: Spam!)", name, AutoUnmuteTime);
+                SendClientMessageToAll(0xFF0000FF, string);
+                
+                SendClientMessage(playerid, 0xFF0000FF, "You have received your final warning (3/3)! (Reason: Spam)");
+                
+                muted[playerid] = 1;
+                SetTimerEx("AutoUnMute", AutoUnmuteTime * 60000, false, "i", playerid);
+            }
+        }
+    }
+    return 1;
+}
+
+public AutoUnMute(playerid)
+{
+    muted[playerid] = 0;
+    SpamCount[playerid] = 0;
+    SendClientMessage(playerid, 0xFF0000FF, "You have been unmuted automatically!");
+    return 1;
 }
