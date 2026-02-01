@@ -224,6 +224,8 @@ public OnPlayerLogin(playerid)
 
 public OnPasswordSet(playerid)
 {
+    SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay);
+    
     TogglePlayerSpectating(playerid, false);
 
     SetSpawnInfo(playerid, 0, 147, 1496.65, -1716.51, 14.04, 90.0, 0, 0, 0, 0, 0, 0);
@@ -269,6 +271,8 @@ public SpawnPlayerLogin(playerid)
         Player[playerid][pName]
     );
     SendClientMessageToAll(0xFFFFFFFF, msg);
+    
+    SendMessageServer(playerid, "Selamat datang kembali di server Detroit Roleplay);
 
     TogglePlayerSpectating(playerid, false);
 
