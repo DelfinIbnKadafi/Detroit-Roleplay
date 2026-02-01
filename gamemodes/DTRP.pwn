@@ -67,15 +67,14 @@ forward SpawnPlayerLogin(playerid);
 forward SavePlayerData(playerid);
 
 //===[DATA]===//
-#include "DATA\CONFIG.pwn"
-#include "DATA\DIALOG_DEFINE.pwn"
-#include "DATA\SEND_MESSAGE.pwn"
+#include "CORE\DEFINES.pwn"
+#include "CORE\ENUMS.pwn"
 #include "DATA\DIALOG_RESPONSE.pwn"
 
 //===[FUNCTION]===//
 public OnGameModeInit()
 {
-    SetGameModeText("DTRP v0.0.2");
+    SetGameModeText(server_version);
 
     g_SQL = mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
     if(mysql_errno(g_SQL) != 0)
@@ -225,7 +224,7 @@ public OnPlayerLogin(playerid)
 
 public OnPasswordSet(playerid)
 {
-    SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay);
+    SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay");
     
     TogglePlayerSpectating(playerid, false);
 
@@ -273,7 +272,7 @@ public SpawnPlayerLogin(playerid)
     );
     SendClientMessageToAll(0xFFFFFFFF, msg);
     
-    SendMessageServer(playerid, "Selamat datang kembali di server Detroit Roleplay);
+    SendMessageServer(playerid, "Selamat datang kembali di server Detroit Roleplay");
 
     TogglePlayerSpectating(playerid, false);
 
