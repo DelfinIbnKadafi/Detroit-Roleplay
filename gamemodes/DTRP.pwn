@@ -13,6 +13,7 @@
 #include <sscanf2>
 #include <streamer>
 #include <a_mysql>
+#include <foreach>
 
 //===[ENUM & VARIABEL]===//
 new MySQL:g_SQL;
@@ -353,4 +354,21 @@ public SavePlayerData(playerid)
     mysql_tquery(g_SQL, query);
     return 1;
 
+}
+
+public OnPlayerText(playerid, text[])
+{
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+    
+    new msg[256]
+    format(msg, sizeof(msg), "%s says: %s", Player[playerid][pName], text);
+    
+    foreach(new i : Player) {
+        if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))
+        {
+            SendClientMessage(i, 0xFFFFFFFF, msg);
+            return 1;
+        }
+return 0;
 }
