@@ -348,4 +348,5 @@ public SavePlayerData(playerid)
 
     mysql_tquery(g_SQL, query);
     return 1;
+
 }
