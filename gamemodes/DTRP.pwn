@@ -370,5 +370,5 @@ public OnPlayerText(playerid, text[])
             SendClientMessage(i, 0xFFFFFFFF, msg);
             return 1;
         }
-return 0;
+    return 0;
 }
