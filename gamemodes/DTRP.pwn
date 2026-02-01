@@ -365,7 +365,7 @@ public OnPlayerText(playerid, text[])
     format(msg, sizeof(msg), "%s says: %s", Player[playerid][pName], text);
     
     foreach(new i : Player)
-    {
+    {#ffffff
         if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))
         {
             SendClientMessage(i, 0xFFFFFFFF, msg);
