@@ -364,11 +364,13 @@ public OnPlayerText(playerid, text[])
     new msg[256]
     format(msg, sizeof(msg), "%s says: %s", Player[playerid][pName], text);
     
-    foreach(new i : Player) {
+    foreach(new i : Player)
+    {
         if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))
         {
             SendClientMessage(i, 0xFFFFFFFF, msg);
             return 1;
         }
+    }
     return 0;
 }
