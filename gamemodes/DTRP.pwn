@@ -24,6 +24,7 @@
 #include "legacy\core\enumerations.pwn"
 #include "legacy\core\functions.pwn"
 #include "legacy\command\DISCORD.pwn"
+#include "legacy\mapping.pwn"
 
 // server modular //
 #include "legacy\server\OnPlayerDialogResponse.pwn"
@@ -45,6 +46,7 @@ public OnGameModeInit()
     mysql_set_charset("utf8mb4", g_SQL);
 
     DisableInteriorEnterExits();
+    LoadMapping();
     return 1;
 }
 
