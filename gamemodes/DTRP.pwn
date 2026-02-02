@@ -21,6 +21,7 @@
 #include "legacy\core\variables.pwn"
 #include "legacy\core\enumerations.pwn"
 #include "legacy\core\functions.pwn"
+#include "legacy\command\DISCORD.pwn"
 
 // server modular //
 #include "legacy\server\OnPlayerDialogResponse.pwn"
