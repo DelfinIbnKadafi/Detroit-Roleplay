@@ -10,6 +10,7 @@ forward PlayerSpawnLogin(playerid);
 forward SpawnPlayerLogin(playerid);
 forward SavePlayerData(playerid);
 forward AutoUnMute(playerid);
+forward PlayerIsDeath(playerid);
 
 //=====[ PUBLIC FUNCTION ]=====//
 public LoadPlayerData(playerid)
