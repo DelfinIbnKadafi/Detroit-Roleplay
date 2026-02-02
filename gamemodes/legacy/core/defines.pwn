@@ -1,13 +1,13 @@
 // server-side
 #define server_name "Detroit Project Roleplay"
-#define server_version "DTRP 0.0.2"
+#define server_version "DTRP 0.0.3"
 #define server_url "nothing"
 
 // mysql configuration
-#define MYSQL_HOST "15.235.173.7"
-#define MYSQL_USER "u47707_7SMom2uOhy"
-#define MYSQL_PASSWORD "Iy!acpGDhl8^0lk8K8390Tus"
-#define MYSQL_DATABASE "s47707_MYDETROIDRP"
+#define MYSQL_HOST "143.198.94.169"
+#define MYSQL_USER "u19_bIYA9rtZhB"
+#define MYSQL_PASSWORD "2A^S+x6KfGXy^UZ7@+QuYUA5"
+#define MYSQL_DATABASE "s19_DETROITROLEPLAY"
 
 // server message
 #define SendMessageError(%1,%2)  SendClientMessage(%1, 0xFFFFFF, "{FF0000}[ERROR]{FFFFFF} "%2)
