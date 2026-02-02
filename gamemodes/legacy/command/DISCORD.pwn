@@ -2,6 +2,8 @@
 #include <discord-connector>
 #include <discord-cmd>
 
+forward CheckDiscordRegister(discordid[], username_input[], DCC_Channel:channel);
+
 DCMD:register(user, channel, params[])
 {
     if(channel != CHANNEL_REGISTER)
@@ -31,5 +33,35 @@ DCMD:register(user, channel, params[])
     mysql_tquery(g_SQL, query, "CheckDiscordRegister", "sss",
         discordid, params, channel);
 
+    return 1;
+}
+
+public CheckDiscordRegister(discordid[], username_input[], DCC_Channel:channel)
+{
+    if(cache_num_rows() > 0)
+    {
+        new username[24];
+        cache_get_value_name(0, "username", username);
+
+        new msg[144];
+        format(msg, sizeof(msg),
+            "Kamu sudah mendaftarkan akun mu dengan nama **%s**",
+            username);
+
+        DCC_SendChannelMessage(channel, msg);
+    }
+    else
+    {
+        new code = random(900000) + 100000;
+
+        new query[256];
+        mysql_format(g_SQL, query, sizeof(query),
+            "INSERT INTO players (username, discord, verified, code) \
+            VALUES ('%e','%e',0,'%d')",
+            username_input, discordid, code);
+        mysql_tquery(g_SQL, query);
+
+        SendVerificationDM(discordid, username_input, code);
+    }
     return 1;
 }
