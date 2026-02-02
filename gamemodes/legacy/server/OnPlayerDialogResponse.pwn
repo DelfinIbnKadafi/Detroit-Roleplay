@@ -104,7 +104,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
     //=================[TANGGAL LAHIR]=================//
     if(dialogid == DIALOG_REGISTER_DATE)
     {
-        if(strlen(inputtext) > 10 && strlen(inputtext) < 10)
+        if(strlen(inputtext) != 10)
         {
             ShowPlayerDialog(playerid, DIALOG_REGISTER_DATE, DIALOG_STYLE_INPUT,
                 "{CD7000}Detroit {FFFFFF}Roleplay - Account Create",
@@ -132,12 +132,25 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
     //=================[TINGGI]=================//
     if(dialogid == DIALOG_REGISTER_TINGGI)
     {
-        Player[playerid][pTinggi] = strval(inputtext);
+        new tinggi = strval(inputtext);
+        if(tinggi < 120 || tinggi > 220)
+        {
+            ShowPlayerDialog(playerid, DIALOG_REGISTER_TINGGI, DIALOG_STYLE_INPUT,
+                "{CD7000}Detroit {FFFFFF}Roleplay - Account Create",
+                "Masukkan tinggi karakter anda.\n\
+                Contoh: 170\n\n\
+                {FF0000}[ERROR]{FFFFFF} Tinggi tidak valid!",
+                "Lanjut",
+                "Kembali"
+            );
+            return 1;
+        }
 
+        Player[playerid][pTinggi] = tinggi;
         ShowPlayerDialog(playerid, DIALOG_REGISTER_BERAT, DIALOG_STYLE_INPUT,
             "{CD7000}Detroit {FFFFFF}Roleplay - Account Create",
             "Masukkan berat karakter anda.\n\
-            Contoh : 60",
+            Contoh: 60",
             "Lanjut",
             "Kembali"
         );
@@ -147,7 +160,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
     //=================[BERAT]=================//
     if(dialogid == DIALOG_REGISTER_BERAT)
     {
-        Player[playerid][pBerat] = strval(inputtext);
+        new berat = strval(inputtext);
+        if(berat < 30 || berat > 200)
+        {
+            ShowPlayerDialog(playerid, DIALOG_REGISTER_BERAT, DIALOG_STYLE_INPUT,
+                "{CD7000}Detroit {FFFFFF}Roleplay - Account Create",
+                "Masukkan berat karakter anda.\n\
+                Contoh: 60\n\n\
+                {FF0000}[ERROR]{FFFFFF} Berat tidak valid!",
+                "Lanjut",
+                "Kembali"
+            );
+            return 1;
+        }
+
+        Player[playerid][pBerat] = berat;
 
         new query[512];
         mysql_format(g_SQL, query, sizeof(query),
