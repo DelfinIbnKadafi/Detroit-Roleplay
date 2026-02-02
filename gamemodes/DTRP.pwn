@@ -6,6 +6,8 @@
 //========[CONTRIBUTOR]========//
 /*
 • Delfin Ibn Kadafi - Founder and Scripter
+• Panntzyy - Scripter
+• Martin - Scripter
 */
 
 //===[INCLUDE]===//
