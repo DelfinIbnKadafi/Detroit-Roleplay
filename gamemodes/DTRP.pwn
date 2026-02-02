@@ -22,12 +22,15 @@
 #include "legacy\core\defines.pwn"
 #include "legacy\core\variables.pwn"
 #include "legacy\core\enumerations.pwn"
+#include "legacy\core\native.pwn"
 #include "legacy\core\functions.pwn"
-#include "legacy\command\DISCORD.pwn"
-#include "legacy\mapping.pwn"
 
-// server modular //
+// command modular
+// #include "legacy\command\discord.pwn"
+
+// server
 #include "legacy\server\OnPlayerDialogResponse.pwn"
+#include "legacy\mapping.pwn"
 
 // server core //
 public OnGameModeInit()
@@ -46,7 +49,7 @@ public OnGameModeInit()
     mysql_set_charset("utf8mb4", g_SQL);
 
     DisableInteriorEnterExits();
-    LoadMapping();
+    // LoadMapping();
     return 1;
 }
 
@@ -99,13 +102,7 @@ public OnPlayerText(playerid, text[])
     
     new msg[256];
     format(msg, sizeof(msg), "%s says: %s", Player[playerid][pName], text);
-    
-    foreach(new i : Player)
-    {
-        if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))
-        {
-            SendClientMessage(i, 0xFFFFFFFF, msg);
-        }
-    }
-    return 1;
+
+    ProxDetector(20.0, playerid, msg);
+    return 0;
 }
