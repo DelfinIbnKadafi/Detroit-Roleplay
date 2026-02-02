@@ -6,6 +6,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
     //=================[LOGIN]=================//
     if(dialogid == DIALOG_LOGIN)
     {
+        if(isnull(inputtext) || strlen(inputtext) == 0)
+        {
+            SendMessageError(playerid, "Password tidak boleh kosong!");
+
+            new str[512];
+            format(str, sizeof(str),
+                "Akun {FFF000}%s {FFFFFF}sudah terdaftar, silahkan masukkan\n\
+                password akun anda.\n\n\
+                {FF0000}[ERROR]{FFFFFF} Password tidak boleh kosong!",
+                Player[playerid][pName]
+            );
+
+            ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT,
+                "{CD7000}Detroit {FFFFFF}Roleplay - Account Login",
+                str,
+                "Lanjut",
+                "Kembali"
+            );
+            return 1;
+        }
+
         if(strcmp(inputtext, Player[playerid][pPassword], false) != 0)
         {
             SendMessageError(playerid, "Password salah!");
@@ -27,18 +48,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             return 1;
         }
 
+        // ===== PASSWORD BENAR (KODE ASLI) =====
         SendMessageInfo(playerid, "Password benar, silahkan bermain.");
 
         new query[512];
         mysql_format(g_SQL, query, sizeof(query),
             "SELECT money, level, skin, lahir, tinggi, berat, bank, phone, rek, interior, posx, posy, posz, angle, nyawa, armor \
-             FROM players WHERE id = %d",
+            FROM players WHERE id = %d",
             Player[playerid][pId]
         );
         mysql_tquery(g_SQL, query, "LoadPlayerData", "d", playerid);
         return 1;
     }
-
     //=================[VERIFIKASI]=================//
     if(dialogid == DIALOG_REGISTER_VERTIFIKASI)
     {

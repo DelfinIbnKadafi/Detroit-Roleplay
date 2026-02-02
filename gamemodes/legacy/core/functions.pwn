@@ -267,7 +267,7 @@ stock AntiSpam(playerid)
         {
             if((gettime() - ChatSpamTime[playerid][0]) < 4)
             {
-                SendClientMessage(playerid, 0xFF0000FF, "You have received a warning (1/3)! (Reason: Spam)");
+                SendMessageInfo(playerid, "You have received a warning (1/3)! (Reason: Spam)");
                 ChatSpamTime[playerid][1] = gettime();
             }
             else SpamCount[playerid] = 0;
@@ -276,7 +276,7 @@ stock AntiSpam(playerid)
         {
             if((gettime() - ChatSpamTime[playerid][1]) < 4)
             {
-                SendClientMessage(playerid, 0xFF0000FF, "You have received a warning (2/3)! (Reason: Spam)");
+                SendMessageInfo(playerid, "You have received a warning (2/3)! (Reason: Spam)");
                 ChatSpamTime[playerid][2] = gettime();
             }
             else SpamCount[playerid] = 0;
@@ -291,7 +291,7 @@ stock AntiSpam(playerid)
                 format(string, sizeof(string), "Player %s has been muted for %d minutes! (Reason: Spam!)", name, AutoUnmuteTime);
                 SendClientMessageToAll(0xFF0000FF, string);
                 
-                SendClientMessage(playerid, 0xFF0000FF, "You have received your final warning (3/3)! (Reason: Spam)");
+                SendMessageInfo(playerid, "You have received your final warning (3/3)! (Reason: Spam)");
                 
                 muted[playerid] = 1;
                 SetTimerEx("AutoUnMute", AutoUnmuteTime * 60000, false, "i", playerid);
@@ -305,6 +305,6 @@ public AutoUnMute(playerid)
 {
     muted[playerid] = 0;
     SpamCount[playerid] = 0;
-    SendClientMessage(playerid, 0xFF0000FF, "You have been unmuted automatically!");
+    SendMessageServer(playerid, "You have been unmuted automatically!");
     return 1;
 }
