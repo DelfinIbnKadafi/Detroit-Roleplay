@@ -30,7 +30,7 @@
 
 // server
 #include "legacy\server\OnPlayerDialogResponse.pwn"
-#include "legacy\mapping.pwn"
+#include "legacy\map.pwn"
 
 // server core //
 public OnGameModeInit()
@@ -49,7 +49,7 @@ public OnGameModeInit()
     mysql_set_charset("utf8mb4", g_SQL);
 
     DisableInteriorEnterExits();
-    // LoadMapping();
+    LoadMap();
     return 1;
 }
 
@@ -105,4 +105,40 @@ public OnPlayerText(playerid, text[])
 
     ProxDetector(20.0, playerid, msg);
     return 0;
+}
+
+public OnPlayerDeath(playerid, killerid, reason)
+{	
+	new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+	
+    if(killerid != INVALID_PLAYER_ID)
+    { 
+        new msgdeath[256];
+        format(msgdeath, sizeof(msgdeath)),
+            "Kamu telah pingsan karena dibunuh oleh %s", killerid);
+            
+        SendMessageInfo(playerid, msgdeath);
+        print(msgdeath);
+    
+        new query[256];
+        mysql_format(g_SQL, query, sizeof(query),
+            "UPDATE players SET death = 1 WHERE username='%e'",
+            Player[playerid][pName]
+        );
+        mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
+        
+        return 1;
+    }
+    
+    SendMessageInfo(playerid, "Kamu telah pingsan karena kehabisan darah");
+    SendMessageInfo(playerid, "Gunakan /death untuk bangun dari pingsan di rumah sakit");
+    
+    new query[256];
+    mysql_format(g_SQL, query, sizeof(query),
+        "UPDATE players SET death = 1 WHERE username='%e'",
+        Player[playerid][pName]
+    );
+    mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
+    return 1:
 }
