@@ -6,6 +6,29 @@
 
 forward CheckDiscordRegister(discordid[], username_input[], DCC_Channel:channel);
 
+stock SendVerificationDM(discordid[], username[], code)
+{
+    new DCC_User:user;
+    user = DCC_FindUserById(discordid);
+    if(user == DCC_INVALID_USER) return 1;
+
+    new message[512];
+    format(message, sizeof(message),
+        "```DETROIT ROLEPLAY - ACCOUNT```\n\n"
+        "Terima kasih telah mendaftarkan akun anda di server Detroit Roleplay.\n\n"
+        "Gunakan kode verifikasi di bawah ini untuk register.\n\n"
+        "```USERNAME : %s```\n\n"
+        "```CODE : %d```\n\n"
+        "Jangan berikan kode verifikasi ini kepada siapapun!\n\n"
+        "Terima kasih.",
+        username,
+        code
+    );
+
+    DCC_SendUserMessage(user, message);
+    return 1;
+}
+
 DCMD:register(user, channel, params[])
 {
     if(channel != CHANNEL_REGISTER)
