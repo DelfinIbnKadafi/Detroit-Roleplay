@@ -10,7 +10,7 @@ DCMD:register(user, channel, params[])
     if(isnull(params))
     {
         DCC_SendChannelMessage(channel, 
-            "Format salah! Gunakan: ~register Nama_Nama");
+            "Format salah! Gunakan: !register Nama_Nama");
         return 1;
     }
 
