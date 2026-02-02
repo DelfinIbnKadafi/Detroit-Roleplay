@@ -29,6 +29,33 @@ stock SendVerificationDM(discordid[], username[], code)
     return 1;
 }
 
+stock IsValidRoleplayName(name[])
+{
+    new len = strlen(name);
+    if(len < 3 || len > 24) return 0;
+
+    new underscore = 0;
+
+    for(new i = 0; i < len; i++)
+    {
+        if(name[i] == '_')
+        {
+            underscore++;
+            continue;
+        }
+
+        if(!((name[i] >= 'A' && name[i] <= 'Z') ||
+             (name[i] >= 'a' && name[i] <= 'z')))
+        {
+            return 0;
+        }
+    }
+
+    if(underscore != 1) return 0;
+
+    return 1;
+}
+
 DCMD:register(user, channel, params[])
 {
     if(channel != CHANNEL_REGISTER)
