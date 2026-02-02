@@ -2,6 +2,8 @@
 #include <discord-connector>
 #include <discord-cmd>
 
+#define CHANNEL_REGISTER 
+
 forward CheckDiscordRegister(discordid[], username_input[], DCC_Channel:channel);
 
 DCMD:register(user, channel, params[])
