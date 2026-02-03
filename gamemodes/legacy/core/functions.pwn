@@ -51,6 +51,14 @@ public SpawnPlayerLogin(playerid)
     SendMessageServer(playerid, "Selamat datang kembali di server Detroit Roleplay");
 
     TogglePlayerSpectating(playerid, false);
+    
+    if(SpawnPlayer(playerid) == 1)
+    {
+        PlayerIsDeath(playerid);
+        SetPlayerScore(playerid, Player[playerid][pLevel]);
+        GivePlayerMoney(playerid, Player[playerid][pMoney]);
+        return 1;
+    }
 
     SetSpawnInfo(playerid,
         0,
@@ -307,5 +315,24 @@ public AutoUnMute(playerid)
     muted[playerid] = 0;
     SpamCount[playerid] = 0;
     SendMessageServer(playerid, "You have been unmuted automatically!");
+    return 1;
+}
+
+public PlayerIsDeath(playerid)
+{
+    SetSpawnInfo(playerid,
+        0,
+        PlayerSpawn[playerid][pSkin],
+        PlayerSpawn[playerid][pPosx],
+        PlayerSpawn[playerid][pPosy],
+        PlayerSpawn[playerid][pPosz],
+        PlayerSpawn[playerid][pAngle],
+        0, 0, 0, 0, 0, 0
+    );
+    
+    SetPlayerVirtualWorld(playerid, 0);
+    SetPlayerInterior(playerid, PlayerInt[playerid]);
+    
+    SetPlayerHealth(playerid, 100);
     return 1;
 }
