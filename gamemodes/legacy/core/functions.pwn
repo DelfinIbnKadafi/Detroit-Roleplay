@@ -334,5 +334,9 @@ public PlayerIsDeath(playerid)
     SetPlayerInterior(playerid, PlayerInt[playerid]);
     
     SetPlayerHealth(playerid, 100);
+    
+    ApplyAnimation(playerid, "CRACK", "crckidle2", 4.1, 1, 0, 0, 1, 0);
+    TogglePlayerControllable(playerid, 0);
+
     return 1;
 }
