@@ -30,6 +30,7 @@ enum PlayerData
 };
 
 new Player[MAX_PLAYERS][PlayerData];
+new PlayerIsDeath[MAX_PLAYERS];
 
 enum PSpawn
 {
