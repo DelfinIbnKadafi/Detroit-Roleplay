@@ -53,7 +53,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
         new query[512];
         mysql_format(g_SQL, query, sizeof(query),
-            "SELECT money, level, skin, lahir, tinggi, berat, bank, phone, rek, interior, posx, posy, posz, angle, nyawa, armor \
+            "SELECT money, level, skin, lahir, tinggi, berat, bank, phone, rek, interior, posx, posy, posz, angle, nyawa, armor, job1, job2, death \
             FROM players WHERE id = %d",
             Player[playerid][pId]
         );
