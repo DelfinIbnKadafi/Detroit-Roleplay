@@ -33,6 +33,7 @@ public LoadPlayerData(playerid)
     cache_get_value_float(0, "armor", PlayerSpawn[playerid][pArmor]);
     cache_get_value_int(0, "job1", Player[playerid][pJob1]);
     cache_get_value_int(0, "job2", Player[playerid][pJob2]);
+    cache_get_value_int(0, "death", PlayerIsDeath[playerid]);
     
     SpawnPlayerLogin(playerid);
     return 1;
