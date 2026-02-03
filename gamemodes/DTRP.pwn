@@ -117,9 +117,13 @@ public OnPlayerDeath(playerid, killerid, reason)
         new msgdeath[256];
         format(msgdeath, sizeof(msgdeath)),
             "Kamu telah pingsan karena dibunuh oleh %s", killerid);
+        
+        PlayerIsDeath[playerid] = 1;
             
         SendMessageInfo(playerid, msgdeath);
         print(msgdeath);
+        
+        SendMessageInfo(playerid, "Gunakan /death untuk bangun dari pingsan di rumah sakit");
     
         new query[256];
         mysql_format(g_SQL, query, sizeof(query),
@@ -133,6 +137,8 @@ public OnPlayerDeath(playerid, killerid, reason)
     
     SendMessageInfo(playerid, "Kamu telah pingsan karena kehabisan darah");
     SendMessageInfo(playerid, "Gunakan /death untuk bangun dari pingsan di rumah sakit");
+    
+    PlayerIsDeath[playerid] = 1;
     
     new query[256];
     mysql_format(g_SQL, query, sizeof(query),
