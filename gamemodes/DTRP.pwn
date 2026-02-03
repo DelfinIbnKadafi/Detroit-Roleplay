@@ -111,6 +111,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 {	
 	new Float:x, Float:y, Float:z;
     GetPlayerPos(playerid, x, y, z);
+    
+  SavePlayerData(playerid);
 	
     if(killerid != INVALID_PLAYER_ID)
     { 
