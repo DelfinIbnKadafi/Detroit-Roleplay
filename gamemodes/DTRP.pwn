@@ -17,7 +17,6 @@
 #include <a_mysql>
 #include <foreach>
 
-
 // main modular //
 #include "legacy\core\defines.pwn"
 #include "legacy\core\variables.pwn"
@@ -26,7 +25,7 @@
 #include "legacy\core\functions.pwn"
 
 // command modular
-// #include "legacy\command\discord.pwn"
+#include "legacy\command\player.pwn"
 
 // server
 #include "legacy\server\OnPlayerDialogResponse.pwn"
