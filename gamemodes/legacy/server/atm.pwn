@@ -29,3 +29,20 @@ public OnATMLoaded()
     }
     printf("[ATM] %d ATM berhasil diload.", ATMCount);
 }
+
+forward OnATMCreated(Float:x, Float:y, Float:z, Float:a);
+public OnATMCreated(Float:x, Float:y, Float:z, Float:a)
+{
+    new id = cache_insert_id();
+
+    ATMID[ATMCount] = id;
+    ATMPos[ATMCount][0] = x;
+    ATMPos[ATMCount][1] = y;
+    ATMPos[ATMCount][2] = z;
+    ATMPos[ATMCount][3] = a;
+
+    ATMObject[ATMCount] = CreateDynamicObject(19324, x,y,z, 0.0,0.0,a);
+
+    ATMCount++;
+    printf("[ATM] ATM baru dibuat ID %d", id);
+}
