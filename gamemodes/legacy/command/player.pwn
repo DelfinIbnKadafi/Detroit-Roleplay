@@ -34,3 +34,17 @@ CMD:death(playerid)
     );
     mysql_tquery(g_SQL, query, "SavePlayerData", "i", playerid);
 }
+
+CMD:createatm(playerid)
+{
+    new Float:x, Float:y, Float:z, Float:a;
+    GetPlayerPos(playerid, x, y, z);
+    GetPlayerFacingAngle(playerid, a);
+
+    new query[256];
+    format(query, sizeof(query),
+    "INSERT INTO atm (posx,posy,posz,angle) VALUES (%f,%f,%f,%f)",
+    x,y,z,a);
+    mysql_tquery(g_SQL, query, "OnATMCreated", "ffff", x,y,z,a);
+    return 1;
+}
