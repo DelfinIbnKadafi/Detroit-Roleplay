@@ -46,3 +46,52 @@ public OnATMCreated(Float:x, Float:y, Float:z, Float:a)
     ATMCount++;
     printf("[ATM] ATM baru dibuat ID %d", id);
 }
+
+CMD:createatm(playerid)
+{
+    new Float:x, Float:y, Float:z, Float:a;
+    GetPlayerPos(playerid, x, y, z);
+    GetPlayerFacingAngle(playerid, a);
+
+    new query[256];
+    format(query, sizeof(query),
+    "INSERT INTO atm (posx,posy,posz,angle) VALUES (%f,%f,%f,%f)",
+    x,y,z,a);
+    mysql_tquery(g_SQL, query, "OnATMCreated", "ffff", x,y,z,a);
+    return 1;
+}
+
+CMD:editatm(playerid, params[])
+{
+    new id;
+    if(sscanf(params, "d", id)) return SendClientMessage(playerid, -1, "Gunakan: /editatm <id>");
+
+    for(new i=0;i<ATMCount;i++)
+    {
+        if(ATMID[i] == id)
+        {
+            new Float:x, Float:y, Float:z, Float:a;
+            GetPlayerPos(playerid, x, y, z);
+            GetPlayerFacingAngle(playerid, a);
+
+            DestroyDynamicObject(ATMObject[i]);
+
+            ATMPos[i][0] = x;
+            ATMPos[i][1] = y;
+            ATMPos[i][2] = z;
+            ATMPos[i][3] = a;
+
+            ATMObject[i] = CreateDynamicObject(19324, x,y,z, 0.0,0.0,a);
+
+            new query[256];
+            format(query, sizeof(query),
+            "UPDATE atm SET posx=%f,posy=%f,posz=%f,angle=%f WHERE id=%d",
+            x,y,z,a,id);
+            mysql_tquery(g_SQL, query);
+
+            SendClientMessage(playerid, -1, "ATM berhasil dipindahkan.");
+            return 1;
+        }
+    }
+    return SendClientMessage(playerid, -1, "ATM ID tidak ditemukan.");
+}
