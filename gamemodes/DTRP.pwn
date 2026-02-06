@@ -24,13 +24,14 @@
 #include "legacy\core\native.pwn"
 #include "legacy\core\functions.pwn"
 
-// command modular
-#include "legacy\command\player.pwn"
-
 // server
 #include "legacy\server\OnPlayerDialogResponse.pwn"
 #include "legacy\server\atm.pwn"
 #include "legacy\map.pwn"
+
+
+// command modular
+#include "legacy\command\player.pwn"
 
 // server core //
 public OnGameModeInit()
