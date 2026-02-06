@@ -50,6 +50,7 @@ public OnGameModeInit()
 
     DisableInteriorEnterExits();
     LoadMap();
+    LoadAtm();
     return 1;
 }
 
