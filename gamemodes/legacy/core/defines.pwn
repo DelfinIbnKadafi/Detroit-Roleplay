@@ -16,3 +16,6 @@
 
 // anti spam
 #define AutoUnmuteTime 2
+
+// atm
+#define MAX_ATM 200
