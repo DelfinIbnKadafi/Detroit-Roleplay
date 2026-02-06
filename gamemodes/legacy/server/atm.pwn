@@ -95,3 +95,17 @@ CMD:editatm(playerid, params[])
     }
     return SendClientMessage(playerid, -1, "ATM ID tidak ditemukan.");
 }
+
+CMD:atm(playerid)
+{
+    for(new i=0;i<ATMCount;i++)
+    {
+        if(IsPlayerInRangeOfPoint(playerid, 1.5,
+            ATMPos[i][0], ATMPos[i][1], ATMPos[i][2]))
+        {
+            SendClientMessage(playerid, -1, "ATM terbuka. (lanjutkan sendiri)");
+            return 1;
+        }
+    }
+    return SendClientMessage(playerid, -1, "Kamu tidak berada dekat ATM.");
+}
