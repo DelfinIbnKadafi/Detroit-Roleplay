@@ -29,6 +29,7 @@
 
 // server
 #include "legacy\server\OnPlayerDialogResponse.pwn"
+#include "legacy\server\atm.pwn"
 #include "legacy\map.pwn"
 
 // server core //
