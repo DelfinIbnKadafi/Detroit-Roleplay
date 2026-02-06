@@ -89,11 +89,11 @@ CMD:editatm(playerid, params[])
             x,y,z,a,id);
             mysql_tquery(g_SQL, query);
 
-            SendClientMessage(playerid, -1, "ATM berhasil dipindahkan.");
+            SendMessageServer(playerid, "ATM berhasil dipindahkan.");
             return 1;
         }
     }
-    return SendClientMessage(playerid, -1, "ATM ID tidak ditemukan.");
+    SendMessageError(playerid, "ATM ID tidak ditemukan.");
 }
 
 CMD:atm(playerid)
@@ -103,9 +103,10 @@ CMD:atm(playerid)
         if(IsPlayerInRangeOfPoint(playerid, 1.5,
             ATMPos[i][0], ATMPos[i][1], ATMPos[i][2]))
         {
-            SendClientMessage(playerid, -1, "ATM terbuka. (lanjutkan sendiri)");
+            // kapan kapan
             return 1;
         }
     }
-    return SendClientMessage(playerid, -1, "Kamu tidak berada dekat ATM.");
+    SendMessageError(playerid, "Kamu tidak berada di dekat atm")
+    return 1;
 }
