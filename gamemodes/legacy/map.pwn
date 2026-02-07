@@ -1,31 +1,5 @@
 LoadMap()
 {
-    // Remove
-    // rs
-    RemoveBuildingForPlayer(playerid, 617, 1178.599, -1332.069, 12.890, 0.250);
-    RemoveBuildingForPlayer(playerid, 618, 1177.729, -1315.660, 13.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 1440, 1148.680, -1385.189, 13.265, 0.250);
-    RemoveBuildingForPlayer(playerid, 1440, 1141.979, -1346.109, 13.265, 0.250);
-    RemoveBuildingForPlayer(playerid, 5993, 1110.900, -1328.810, 13.851, 0.250);
-    RemoveBuildingForPlayer(playerid, 1297, 1190.770, -1320.859, 15.945, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1300.920, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1317.739, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1335.050, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1374.609, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1356.550, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1374.609, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1356.550, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1335.050, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1317.739, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1300.920, 12.296, 0.250);
-    RemoveBuildingForPlayer(playerid, 739, 1231.140, -1328.089, 12.734, 0.250);
-    RemoveBuildingForPlayer(playerid, 739, 1231.140, -1341.849, 12.734, 0.250);
-    RemoveBuildingForPlayer(playerid, 739, 1231.140, -1356.209, 12.734, 0.250);
-    RemoveBuildingForPlayer(playerid, 5812, 1230.890, -1337.979, 12.539, 0.250);
-    RemoveBuildingForPlayer(playerid, 5929, 1230.890, -1337.979, 12.539, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1184.010, -1343.270, 12.578, 0.250);
-    RemoveBuildingForPlayer(playerid, 620, 1184.010, -1353.500, 12.578, 0.250);
-
     // Mapping
     // rs
     new tmpobjid;
@@ -318,4 +292,33 @@ LoadMap()
     tmpobjid = CreateObject(18980, 1244.412231, -1304.016113, 12.708949, 0.000022, 90.000000, 89.999931, 300.00); 
     tmpobjid = CreateObject(18980, 1244.412231, -1371.945434, 12.708949, 0.000022, 90.000000, 89.999931, 300.00); 
     tmpobjid = CreateObject(18980, 1244.412231, -1337.086303, 12.708949, 0.000022, 90.000000, 89.999931, 300.00); 
+}
+
+RemoveMap(playerid)
+{
+     // Remove
+    // rs
+    RemoveBuildingForPlayer(playerid, 617, 1178.599, -1332.069, 12.890, 0.250);
+    RemoveBuildingForPlayer(playerid, 618, 1177.729, -1315.660, 13.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 1440, 1148.680, -1385.189, 13.265, 0.250);
+    RemoveBuildingForPlayer(playerid, 1440, 1141.979, -1346.109, 13.265, 0.250);
+    RemoveBuildingForPlayer(playerid, 5993, 1110.900, -1328.810, 13.851, 0.250);
+    RemoveBuildingForPlayer(playerid, 1297, 1190.770, -1320.859, 15.945, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1300.920, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1317.739, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1335.050, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1374.609, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1222.660, -1356.550, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1374.609, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1356.550, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1335.050, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1317.739, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1240.920, -1300.920, 12.296, 0.250);
+    RemoveBuildingForPlayer(playerid, 739, 1231.140, -1328.089, 12.734, 0.250);
+    RemoveBuildingForPlayer(playerid, 739, 1231.140, -1341.849, 12.734, 0.250);
+    RemoveBuildingForPlayer(playerid, 739, 1231.140, -1356.209, 12.734, 0.250);
+    RemoveBuildingForPlayer(playerid, 5812, 1230.890, -1337.979, 12.539, 0.250);
+    RemoveBuildingForPlayer(playerid, 5929, 1230.890, -1337.979, 12.539, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1184.010, -1343.270, 12.578, 0.250);
+    RemoveBuildingForPlayer(playerid, 620, 1184.010, -1353.500, 12.578, 0.250);
 }

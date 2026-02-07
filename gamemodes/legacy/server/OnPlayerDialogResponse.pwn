@@ -6,7 +6,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
     //=================[LOGIN]=================//
     if(dialogid == DIALOG_LOGIN)
     {
-        if(isnull(inputtext) || strlen(inputtext) == 0)
+        if(!strlen(inputtext))
         {
             SendMessageError(playerid, "Password tidak boleh kosong!");
 

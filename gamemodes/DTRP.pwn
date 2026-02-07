@@ -68,6 +68,8 @@ public OnPlayerConnect(playerid)
 
     SpamCount[playerid] = 0;
     muted[playerid] = 0;
+    
+    RemoveMap(playerid);
 
     new query[256];
     mysql_format(g_SQL, query, sizeof(query),
@@ -99,9 +101,6 @@ public OnPlayerText(playerid, text[])
     
     AntiSpam(playerid);
     
-    new Float:x, Float:y, Float:z;
-    GetPlayerPos(playerid, x, y, z);
-    
     new msg[256];
     format(msg, sizeof(msg), "%s says: %s", Player[playerid][pName], text);
 
@@ -114,18 +113,20 @@ public OnPlayerDeath(playerid, killerid, reason)
 	new Float:x, Float:y, Float:z;
     GetPlayerPos(playerid, x, y, z);
     
-  SavePlayerData(playerid);
+    SavePlayerData(playerid);
 	
     if(killerid != INVALID_PLAYER_ID)
     { 
         new msgdeath[256];
-        format(msgdeath, sizeof(msgdeath)),
-            "Kamu telah pingsan karena dibunuh oleh %s", killerid);
-        
+
+        new killerName[MAX_PLAYER_NAME];
+        GetPlayerName(killerid, killerName, sizeof(killerName));
+
+        format(msgdeath, sizeof(msgdeath), "Kamu telah pingsan karena dibunuh oleh %s", killerName);
+
         PlayerIsDeath[playerid] = 1;
-            
-        SendMessageInfo(playerid, msgdeath);
-        print(msgdeath);
+
+        SendClientMessage(playerid, 0xFF0000FF, msgdeath);
         
         SendMessageInfo(playerid, "Gunakan /death untuk bangun dari pingsan di rumah sakit");
     
@@ -134,7 +135,7 @@ public OnPlayerDeath(playerid, killerid, reason)
             "UPDATE players SET death = 1 WHERE username='%e'",
             Player[playerid][pName]
         );
-        mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
+        mysql_tquery(g_SQL, query, "PlayerDeath", "i", playerid);
         
         return 1;
     }
@@ -149,6 +150,6 @@ public OnPlayerDeath(playerid, killerid, reason)
         "UPDATE players SET death = 1 WHERE username='%e'",
         Player[playerid][pName]
     );
-    mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
-    return 1:
+    mysql_tquery(g_SQL, query, "PlayerDeath", "i", playerid);
+    return 1;
 }
