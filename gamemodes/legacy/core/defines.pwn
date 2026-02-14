@@ -1,6 +1,6 @@
 // server-side
 #define server_name "Detroit Project Roleplay"
-#define server_version "DTRP 0.0.3"
+#define server_version "DTRP 0.0.5"
 #define server_url "nothing"
 
 // mysql configuration
