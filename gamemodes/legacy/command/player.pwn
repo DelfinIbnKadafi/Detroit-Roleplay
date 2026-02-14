@@ -18,6 +18,60 @@ CMD:help(playerid)
     return 1;
 }
 
+CMD:me(playerid, params[])
+{
+    new text[128];
+
+    if (isnull(params))
+        return SendClientMessage(playerid, -1, "Usage: /me <text>");
+
+    format(text, sizeof(text), "%s %s", Player[playerid][pName], params);
+
+    new Float:px, Float:py, Float:pz;
+    GetPlayerPos(playerid, px, py, pz);
+
+    foreach(new i : Player)
+    {
+        if(!IsPlayerConnected(i)) continue;
+
+        new Float:ix, Float:iy, Float:iz;
+        GetPlayerPos(i, ix, iy, iz);
+
+        if(GetDistanceBetweenCoords(px, py, pz, ix, iy, iz) <= 20.0)
+        {
+            SendClientMessage(i, 0x6B0E66FF, text);
+        }
+    }
+    return 1;
+}
+
+CMD:do(playerid, params[])
+{
+    new text[128];
+
+    if (isnull(params))
+        return SendClientMessage(playerid, -1, "Usage: /do <text>");
+
+    format(text, sizeof(text), "%s (%s)", params, Player[playerid][pName]);
+
+    new Float:px, Float:py, Float:pz;
+    GetPlayerPos(playerid, px, py, pz);
+
+    foreach(new i : Player)
+    {
+        if(!IsPlayerConnected(i)) continue;
+
+        new Float:ix, Float:iy, Float:iz;
+        GetPlayerPos(i, ix, iy, iz);
+
+        if(GetDistanceBetweenCoords(px, py, pz, ix, iy, iz) <= 20.0)
+        {
+            SendClientMessage(i, 0x6B0E66FF, text);
+        }
+    }
+    return 1;
+}
+
 CMD:death(playerid)
 {
     if(PlayerDeath[playerid] == 0)
