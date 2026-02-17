@@ -33,7 +33,7 @@ public LoadPlayerData(playerid)
     cache_get_value_float(0, "armor", PlayerSpawn[playerid][pArmor]);
     cache_get_value_int(0, "job1", Player[playerid][pJob1]);
     cache_get_value_int(0, "job2", Player[playerid][pJob2]);
-    cache_get_value_int(0, "death", PlayerIsDeath[playerid]);
+    cache_get_value_int(0, "death", PlayerDeath[playerid]);
     
     SpawnPlayerLogin(playerid);
     return 1;
@@ -52,7 +52,7 @@ public SpawnPlayerLogin(playerid)
 
     TogglePlayerSpectating(playerid, false);
     
-    if(SpawnPlayer(playerid) == 1)
+    if(PlayerDeath[playerid] == 1)
     {
         PlayerIsDeath(playerid);
         SetPlayerScore(playerid, Player[playerid][pLevel]);
