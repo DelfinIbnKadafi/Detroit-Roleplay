@@ -4,13 +4,7 @@ CMD:help(playerid)
     SendMessageInfo(playerid, "membuka menu help.");
   
     ShowPlayerDialog(playerid, DIALOG_HELP, DIALOG_STYLE_LIST,
-        {CD7000}Detroit {FFFFFF}Roleplay - Help",
-        "Account\n
-        General\n
-        Vehicle\n
-        Job\n
-        House\n
-        Busines",
+        {CD7000}Detroit {FFFFFF}Roleplay - Help", "Account\nGeneral\nVehicle\nJob\nHouse\nBusines",
         "Pilih",
         "Keluar"
     );
