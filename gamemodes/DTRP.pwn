@@ -124,7 +124,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
         format(msgdeath, sizeof(msgdeath), "Kamu telah pingsan karena dibunuh oleh %s", killerName);
 
-        PlayerIsDeath[playerid] = 1;
+        PlayerDeath[playerid] = 1;
 
         SendClientMessage(playerid, 0xFF0000FF, msgdeath);
         
@@ -135,7 +135,7 @@ public OnPlayerDeath(playerid, killerid, reason)
             "UPDATE players SET death = 1 WHERE username='%e'",
             Player[playerid][pName]
         );
-        mysql_tquery(g_SQL, query, "PlayerDeath", "i", playerid);
+        mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
         
         return 1;
     }
@@ -143,13 +143,13 @@ public OnPlayerDeath(playerid, killerid, reason)
     SendMessageInfo(playerid, "Kamu telah pingsan karena kehabisan darah");
     SendMessageInfo(playerid, "Gunakan /death untuk bangun dari pingsan di rumah sakit");
     
-    PlayerIsDeath[playerid] = 1;
+    PlayerDeath[playerid] = 1;
     
     new query[256];
     mysql_format(g_SQL, query, sizeof(query),
         "UPDATE players SET death = 1 WHERE username='%e'",
         Player[playerid][pName]
     );
-    mysql_tquery(g_SQL, query, "PlayerDeath", "i", playerid);
+    mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
     return 1;
 }
