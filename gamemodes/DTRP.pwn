@@ -64,6 +64,7 @@ public OnGameModeExit()
 
 public OnPlayerConnect(playerid)
 {
+    TextDrawShowForPlayer(playerid, Text:Nama_Server[i]);
     SetPlayerColor(playerid, 0xFFFFFFFF);
     GetPlayerName(playerid, Player[playerid][pName], MAX_PLAYER_NAME);
 
