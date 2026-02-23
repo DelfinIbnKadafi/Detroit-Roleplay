@@ -53,7 +53,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
         new query[512];
         mysql_format(g_SQL, query, sizeof(query),
-            "SELECT money, level, skin, lahir, tinggi, berat, bank, phone, rek, interior, posx, posy, posz, angle, nyawa, armor, job1, job2, death \
+            "SELECT money, level, skin, lahir, tinggi, berat, bank, phone, rek,
+            interior, posx, posy, posz, angle, nyawa, hunger, energy, armor, job1, job2, death,
+            admin\
             FROM players WHERE id = %d",
             Player[playerid][pId]
         );
@@ -199,7 +201,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
         new query[512];
         mysql_format(g_SQL, query, sizeof(query),
-            "UPDATE players SET password='%e', lahir='%e', tinggi=%d, berat=%d, verified=1 WHERE id=%d",
+            "UPDATE players SET password='%e', lahir='%e', tinggi=%d, berat=%d,
+            verified=1 WHERE id=%d",
             Player[playerid][pPassword],
             Player[playerid][pLahir],
             Player[playerid][pTinggi],
