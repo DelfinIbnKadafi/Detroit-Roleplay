@@ -7,7 +7,7 @@
 /*
 • Delfin Ibn Kadafi - Founder and Scripter
 • Panntzyy - Scripter
-• Martin - Scripter
+• Martin - Scripter (Then)
 */
 
 //===[INCLUDE]===//
@@ -28,7 +28,7 @@
 #include "legacy\server\OnPlayerDialogResponse.pwn"
 #include "legacy\server\atm.pwn"
 #include "legacy\map.pwn"
-
+#include "legacy\textdraw.pwn"
 
 // command modular
 #include "legacy\command\player.pwn"
@@ -52,6 +52,7 @@ public OnGameModeInit()
     DisableInteriorEnterExits();
     LoadMap();
     LoadATM();
+    LoadTd();
     return 1;
 }
 
@@ -63,6 +64,7 @@ public OnGameModeExit()
 
 public OnPlayerConnect(playerid)
 {
+    TextDrawShowForPlayer(playerid, Text:Nama_Server[i]);
     SetPlayerColor(playerid, 0xFFFFFFFF);
     GetPlayerName(playerid, Player[playerid][pName], MAX_PLAYER_NAME);
 

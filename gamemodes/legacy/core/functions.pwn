@@ -32,7 +32,9 @@ public LoadPlayerData(playerid)
     cache_get_value_float(0, "nyawa", PlayerSpawn[playerid][pNyawa]);
     cache_get_value_float(0, "armor", PlayerSpawn[playerid][pArmor]);
     cache_get_value_int(0, "job1", Player[playerid][pJob1]);
-    cache_get_value_int(0, "job2", Player[playerid][pJob2]);
+    cache_get_value_int(0, "hunger", Player[playerid][pHunger);
+    cache_get_value_int(0, "energi", Player[playerid][pEnergi);
+    cache_get_value_int(0, "admin", Player[playerid][pAdmin]);
     cache_get_value_int(0, "death", PlayerDeath[playerid]);
     
     SpawnPlayerLogin(playerid);
@@ -112,7 +114,7 @@ public SavePlayerData(playerid)
         tinggi=%d, berat=%d, \
         skin=%d, interior=%d, \
         posx=%f, posy=%f, posz=%f, angle=%f, \
-        nyawa=%f, armor=%f \
+        nyawa=%f, armor=%f, hunger=%d, energi=%d, admin=%d \
         WHERE id=%d",
 
         Player[playerid][pMoney],
@@ -135,6 +137,10 @@ public SavePlayerData(playerid)
 
         PlayerSpawn[playerid][pNyawa],
         PlayerSpawn[playerid][pArmor],
+        
+        Player[playerid][pHunger,
+        Player[playerid][pEnergi],
+        Player[playerid][pAdmin],
 
         Player[playerid][pId]
     );

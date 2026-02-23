@@ -33,7 +33,10 @@ enum PlayerData
     pPhone,
     pRek,
     pJob1,
-    pJob2
+    pJob2,
+    pHunger,
+    pEnergi,
+    pAdmin
 };
 
 new Player[MAX_PLAYERS][PlayerData];
