@@ -55,3 +55,4 @@ enum PSpawn
 
 new Float:PlayerSpawn[MAX_PLAYERS][PSpawn];
 new PlayerInt[MAX_PLAYERS];
+new Registered[MAX_PLAYERS];
