@@ -50,7 +50,14 @@ public SpawnPlayerLogin(playerid)
     );
     SendClientMessageToAll(0xFFFFFFFF, msg);
     
-    SendMessageServer(playerid, "Selamat datang kembali di server Detroit Roleplay");
+    if(Registered[playerid] = 0)
+    {
+        SendMessageServer(playerid, "Selamat datang kembali di server Detroit Roleplay");
+    }
+    
+    PlayerTextDrawShow(playerid, PlayerText:HUNGER[playerid]);
+    
+    UpdateStatsHbe(playerid);
 
     TogglePlayerSpectating(playerid, false);
     
@@ -160,9 +167,14 @@ public OnPasswordSet(playerid)
     SetPlayerInterior(playerid, 0);
 
     SpawnPlayer(playerid);
+    
+    Registered[playerid] = 1;
 
     GivePlayerMoney(playerid, 100000);
     SetPlayerScore(playerid, 1);
+    SavePlayerData(playerid);
+    SetTimerEx("LoadPlayerData", 3000, false, "i", playerid);
+    
     return 1;
 }
 
@@ -345,4 +357,15 @@ public PlayerIsDeath(playerid)
     TogglePlayerControllable(playerid, 0);
 
     return 1;
+}
+
+stock UpdateStatsHbe(playerid)
+{
+    new str[16];
+
+    format(str, sizeof(str), "%d", Player[playerid][pHunger]);
+    PlayerTextDrawSetString(playerid, HUNGER[playerid], str);
+
+    format(str, sizeof(str), "%d", Player[playerid][pEnergy]);
+    PlayerTextDrawSetString(playerid, ENERGY[playerid], str);
 }
