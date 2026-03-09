@@ -4,9 +4,8 @@ forward KickPlayerTimer(playerid);
 forward CekVerifiedPlayer(playerid);
 forward CekAccountPlayer(playerid);
 forward OnPlayerLogin(playerid);
-forward OnPasswordSet(playerid);
 forward LoadPlayerData(playerid);
-forward SpawnPlayerLogin(playerid);
+forward PlayerJoinspawn(playerid);
 forward SavePlayerData(playerid);
 forward AutoUnMute(playerid);
 forward PlayerIsDeath(playerid);
@@ -37,12 +36,15 @@ public LoadPlayerData(playerid)
     cache_get_value_int(0, "admin", Player[playerid][pAdmin]);
     cache_get_value_int(0, "death", PlayerDeath[playerid]);
     
-    SpawnPlayerLogin(playerid);
+    PlayerJoinspawn(playerid);
     return 1;
 }
 
-public SpawnPlayerLogin(playerid)
+new typelogin[MAX_PLAYERS];
+
+public PlayerJoinspawn(playerid)
 {
+  if(typelogin[playerid] == 1) {
     new msg[256];
     format(msg, sizeof(msg),
         "{00EBFF}[SERVER]{FFF000} %s {FFFFFF}telah bergabung ke server.",
@@ -56,11 +58,11 @@ public SpawnPlayerLogin(playerid)
     }
     
     TextDrawShowForPlayer(playerid, BACKGROUND_STATS[0]);
-TextDrawShowForPlayer(playerid, BACKGROUND_STATS[1]);
-TextDrawShowForPlayer(playerid, BACKGROUND_STATS[2]);
+    TextDrawShowForPlayer(playerid, BACKGROUND_STATS[1]);
+    TextDrawShowForPlayer(playerid, BACKGROUND_STATS[2]);
 
-PlayerTextDrawShow(playerid, HUNGER[playerid]);
-PlayerTextDrawShow(playerid, ENERGY[playerid]);
+    PlayerTextDrawShow(playerid, HUNGER[playerid]);
+    PlayerTextDrawShow(playerid, ENERGY[playerid]);
     
     UpdateStatsHbe(playerid);
 
@@ -93,8 +95,38 @@ PlayerTextDrawShow(playerid, ENERGY[playerid]);
     SetPlayerArmour(playerid, PlayerSpawn[playerid][pArmor]);
     SetPlayerScore(playerid, Player[playerid][pLevel]);
     GivePlayerMoney(playerid, Player[playerid][pMoney]);
-
+    
     return 1;
+  }
+  
+  if(typelogin[playerid] == 0) {
+    SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay");
+    
+    TogglePlayerSpectating(playerid, false);
+
+    SetSpawnInfo(playerid, 0, 147, 1496.65, -1716.51, 14.04, 90.0, 0, 0, 0, 0, 0, 0);
+
+    SetPlayerVirtualWorld(playerid, 0);
+    SetPlayerInterior(playerid, 0);
+
+    SpawnPlayer(playerid);
+    
+    Registered[playerid] = 1;
+    
+    TextDrawShowForPlayer(playerid, BACKGROUND_STATS[0]);
+    TextDrawShowForPlayer(playerid, BACKGROUND_STATS[1]);
+    TextDrawShowForPlayer(playerid, BACKGROUND_STATS[2]);
+
+    PlayerTextDrawShow(playerid, HUNGER[playerid]);
+    PlayerTextDrawShow(playerid, ENERGY[playerid]);
+    
+    UpdateStatsHbe(playerid);
+
+    GivePlayerMoney(playerid, 100000);
+    SetPlayerScore(playerid, 1);
+    SavePlayerData(playerid);
+  }
+  return 1;
 }
 
 public SavePlayerData(playerid)
@@ -121,7 +153,7 @@ public SavePlayerData(playerid)
     new query[512];
     mysql_format(g_SQL, query, sizeof(query),
         "UPDATE players SET \
-        money=%d, bank=%d, level=%d, \
+        verified=%d, money=%d, bank=%d, level=%d, \
         job1=%d, job2=%d, \
         tinggi=%d, berat=%d, \
         skin=%d, interior=%d, \
@@ -129,6 +161,7 @@ public SavePlayerData(playerid)
         nyawa=%f, armor=%f, hunger=%d, energi=%d, admin=%d \
         WHERE id=%d",
 
+        Registered[playerid],
         Player[playerid][pMoney],
         Player[playerid][pBank],
         Player[playerid][pLevel],
@@ -157,28 +190,6 @@ public SavePlayerData(playerid)
         Player[playerid][pId]
     );
     mysql_tquery(g_SQL, query);
-    return 1;
-}
-
-public OnPasswordSet(playerid)
-{
-    SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay");
-    
-    TogglePlayerSpectating(playerid, false);
-
-    SetSpawnInfo(playerid, 0, 147, 1496.65, -1716.51, 14.04, 90.0, 0, 0, 0, 0, 0, 0);
-
-    SetPlayerVirtualWorld(playerid, 0);
-    SetPlayerInterior(playerid, 0);
-
-    SpawnPlayer(playerid);
-    
-    Registered[playerid] = 1;
-
-    GivePlayerMoney(playerid, 100000);
-    SetPlayerScore(playerid, 1);
-    SavePlayerData(playerid);
-    
     return 1;
 }
 
