@@ -198,6 +198,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         }
 
         Player[playerid][pBerat] = berat;
+        
+        typelogin[playerid] = 0;
 
         new query[512];
         mysql_format(g_SQL, query, sizeof(query),
@@ -209,7 +211,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             Player[playerid][pBerat],
             Player[playerid][pId]
         );
-        mysql_tquery(g_SQL, query, "OnPasswordSet", "d", playerid);
+        mysql_tquery(g_SQL, query, "PlayerJoinspawn", "d", playerid);
         return 1;
     }
 
