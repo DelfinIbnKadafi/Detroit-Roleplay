@@ -209,7 +209,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
             Player[playerid][pBerat],
             Player[playerid][pId]
         );
-        mysql_tquery(g_SQL, query, "OnPasswordSet", "d", playerid);
+        mysql_tquery(g_SQL, query, "SpawnPlayer", "d", playerid);
         return 1;
     }
 
