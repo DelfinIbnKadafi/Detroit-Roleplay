@@ -6,6 +6,8 @@ new SpamCount[MAX_PLAYERS];
 new ChatSpamTime[MAX_PLAYERS][3];
 new muted[MAX_PLAYERS];
 
+new typelogin[MAX_PLAYERS];
+
 //Atm
 new ATMObject[MAX_ATM];
 new ATMID[MAX_ATM];
