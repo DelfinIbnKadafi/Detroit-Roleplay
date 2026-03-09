@@ -84,6 +84,7 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerRequestSpawn(playerid)
 {
+    SendMessageError("Kamu hanya bisa spawn dengan cara login atau register!");
     return 0;
 }
 
@@ -112,10 +113,16 @@ public OnPlayerText(playerid, text[])
 
 public OnPlayerDeath(playerid, killerid, reason)
 {	
-	new Float:x, Float:y, Float:z;
-    GetPlayerPos(playerid, x, y, z);
-    
     SavePlayerData(playerid);
+    
+    new query[256];
+    mysql_format(g_SQL, query, sizeof(query),
+        "UPDATE players SET death = 1 WHERE username='%e'",
+        Player[playerid][pName]
+    );
+    mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
+    
+    PlayerDeath[playerid] = 1;
 	
     if(killerid != INVALID_PLAYER_ID)
     { 
@@ -126,18 +133,9 @@ public OnPlayerDeath(playerid, killerid, reason)
 
         format(msgdeath, sizeof(msgdeath), "Kamu telah pingsan karena dibunuh oleh %s", killerName);
 
-        PlayerDeath[playerid] = 1;
-
         SendClientMessage(playerid, 0xFF0000FF, msgdeath);
         
         SendMessageInfo(playerid, "Gunakan /death untuk bangun dari pingsan di rumah sakit");
-    
-        new query[256];
-        mysql_format(g_SQL, query, sizeof(query),
-            "UPDATE players SET death = 1 WHERE username='%e'",
-            Player[playerid][pName]
-        );
-        mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
         
         return 1;
     }
@@ -145,13 +143,5 @@ public OnPlayerDeath(playerid, killerid, reason)
     SendMessageInfo(playerid, "Kamu telah pingsan karena kehabisan darah");
     SendMessageInfo(playerid, "Gunakan /death untuk bangun dari pingsan di rumah sakit");
     
-    PlayerDeath[playerid] = 1;
-    
-    new query[256];
-    mysql_format(g_SQL, query, sizeof(query),
-        "UPDATE players SET death = 1 WHERE username='%e'",
-        Player[playerid][pName]
-    );
-    mysql_tquery(g_SQL, query, "PlayerIsDeath", "i", playerid);
     return 1;
 }
