@@ -27,8 +27,8 @@
 // server
 #include "legacy\server\OnPlayerDialogResponse.pwn"
 #include "legacy\server\atm.pwn"
-#include "legacy\map.pwn"
-#include "legacy\textdraw.pwn"
+#include "legacy\desain\map.pwn"
+#include "legacy\desain\textdraw.pwn"
 
 // command modular
 #include "legacy\command\player.pwn"
