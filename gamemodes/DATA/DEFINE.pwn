@@ -6,4 +6,4 @@
 
 // Server Description
 #define server_name "Detroit Project Roleplay"
-#define server_version "DTRP 0.0.1 - Login sistem"
+#define server_version "DTRP 0.0.2 - Create account sistem"

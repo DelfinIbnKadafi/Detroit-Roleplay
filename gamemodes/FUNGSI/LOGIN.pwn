@@ -61,11 +61,9 @@ public CekAkunPemain(playerid) {
   }
   
   // tidak ada akun/Data
-  new nama[MAX_PLAYERS][MAX_PLAYER_NAME];
-  GetPlayerName(playerid, nama[playerid], MAX_PLAYER_NAME);
   
   new str[256];
-  format(str, sizeof(str), "UCP {e516fd}%s {ffffff}belum terdaftar, silahkan daftarkan\n\nakun anda di discord kami.", nama[MAX_PLAYER_NAME]);
+  format(str, sizeof(str), "Akun {e516fd}%s {ffffff}belum terdaftar, silahkan daftarkan\n\nakun anda di discord kami.", Pemain[playerid][pNama]);
   
   ShowPlayerDialog(playerid, DIALOG_UNUSED, DIALOG_STYLE_MSGBOX,
    "{CD7000}Detroit {FFFFFF}Roleplay - Account Information",

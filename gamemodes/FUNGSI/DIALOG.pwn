@@ -5,7 +5,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
     // tombol kirim
     if(response == 1) {
       // sandi benar
-      if(strcmp(inputtext, Pemain[playerid][pPassword], true) == 0) {
+      new hashpw[65];
+      SHA256_PassHash(inputtext, "DELFIN", hashpw, sizeof(hashpw));
+      
+      if(strcmp(hashpw, Pemain[playerid][pPassword], true) == 0) {
         SendMessageServer(playerid, "Pssword benar, selamat bermain");
         // ubah variabel status login
         StatusLogin[playerid] = true;
@@ -22,7 +25,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         
         new str[512];
         format(str, sizeof(str),
-         "Akun {FFF000}%s {FFFFFF}sudah terdaftar.\n\nSilahkan masukkan password akun anda.\n\n{ff0000}[ERROR]{ffffff}Sandi salah!",
+         "Akun {FFF000}%s {FFFFFF}sudah terdaftar.\n\nSilahkan masukkan password akun anda.\n\nPassword salah!",
          Pemain[playerid][pNama]
         );
         
@@ -33,6 +36,70 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         );
         return 1;
       }
+    }
+    // tombol batal
+    else {
+      SetTimerEx("KickPemain", 5000, false, "i", playerid);
+    }
+  }
+  
+  // verifikasi kode
+  if(dialogid == DIALOG_VERIFIKASI_KODE) {
+    if(response == 1) {
+      new inputkode;
+      inputkode = strval(inputtext);
+      
+      // kode benar
+      if(inputkode == Pemain[playerid][pKode]) {
+        SendMessageServer(playerid, "Kode vertifikasi benar, silahkan buat password anda!");
+        
+        new str[256];
+        format(str, sizeof(str), "Silahkan masukkan password akun baru anda!");
+        
+        ShowPlayerDialog(playerid, DIALOG_BUAT_PASSWORD, DIALOG_STYLE_INPUT,
+         "{CD7000}Detroit {FFFFFF}Roleplay - Account Creation",
+         str,
+         "Kirim", "Batal"
+        );
+        
+        return 1;
+      }
+      // kode salah
+      else {
+        new str[256];
+        format(str, sizeof(str),
+         "Akun {FFF000}%s {FFFFFF}belum diverifikasi.\n\nMasukkan kode verifikasi 6 digit yang telah diberikan.\n\nKode vertifikasi salah!",
+         Pemain[playerid][pNama]
+        );
+    
+        ShowPlayerDialog(playerid, DIALOG_VERIFIKASI_KODE, DIALOG_STYLE_INPUT,
+         "{CD7000}Detroit {FFFFFF}Roleplay - Account Verification",
+         str,
+         "Kirim", "Batal"
+        );
+        return 1;
+      }
+    }
+    // tombol batal
+    else {
+      SetTimerEx("KickPemain", 5000, false, "i", playerid);
+    }
+  }
+  
+  // buat sandi
+  if(dialogid == DIALOG_BUAT_PASSWORD) {
+    if(response == 1) {
+      new pwbaru[256];
+      SHA256_PassHash(inputtext, "DELFIN", pwbaru, sizeof(pwbaru));
+      
+      new query[256];
+      mysql_format(g_SQL, query, sizeof(query), "UPDATE Pemain SET verified=1, sandi='e' WHERE id='%d'",
+      pwbaru, Pemain[playerid][pId]);
+      
+      // set status login
+      StatusLogin[playerid] = true;
+        
+      return 1;
     }
     // tombol batal
     else {
