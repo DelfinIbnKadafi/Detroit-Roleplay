@@ -38,6 +38,8 @@ public OnGameModeInit() {
     printf("[MySQL] Koneksi BERHASIL ke database '%s' (Handle: %d)", MYSQL_DATABASE, _:g_SQL);
     mysql_set_charset("utf8mb4", g_SQL);
     
+    DisableInteriorEnterExits();
+    
     return 1;
 }
 

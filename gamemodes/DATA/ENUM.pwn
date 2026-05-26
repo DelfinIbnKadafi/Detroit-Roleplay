@@ -4,10 +4,23 @@ enum DataPemain {
   pId,
   pVerified,
   pKode,
-  pPassword[256]
+  pPassword[256],
+  pGender,
+  pSkin,
+  pLevel
 };
 
 new Pemain[MAX_PLAYERS][DataPemain];
+
+// posisi player
+enum PosisiPlayer {
+  Float:x,
+  Float:y,
+  Float:z,
+  Float:angel
+};
+
+new PosisiPemain[MAX_PLAYERS][PosisiPlayer];
 /////////////////////////////////////////////////////
 
 // enum dialog 

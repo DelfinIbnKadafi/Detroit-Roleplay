@@ -3,6 +3,44 @@ forward CekAkunPemain(playerid);
 forward CekVerifikasiAkun(playerid);
 forward OnSetGender(playerid);
 forward PemainSetData(playerid);
+forward MuatDataLogin(playerid);
+forward SpawnPemainEx(playerid);
+
+// fungsi spawn pemain
+public SpawnPemainEx(playerid) {
+  // login
+  if(TipeLogin[playerid] == 0) {
+  
+    return 1;
+  }
+  // register
+  if(TipeLogin[playerid] == 1) {
+    
+    return 1;
+  }
+  
+  return 1;
+}
+
+// load data login
+public MuatDataLogin(playerid) {
+  
+  cache_get_value_int(0, "gender", Pemain[playerid][pGender]);
+  cache_get_value_int(0, "skin", Pemain[playerid][pSkin]);
+  cache_get_value_int(0, "level", Pemain[playerid][pLevel]);
+  
+  // float
+  cache_get_value_name_float(0, "posx", PosisiPemain[playerid][x]);
+  cache_get_value_name_float(0, "posy", PosisiPemain[playerid][y]);
+  cache_get_value_name_float(0, "posz", PosisiPemain[playerid][z]);
+  cache_get_value_name_float(0, "angel", PosisiPemain[playerid][angel]);
+  
+  TipeLogin[playerid] = 0;
+  
+  SpawnPemainEx(playerid);
+  
+  return 1;
+}
 
 // setelah player set data
 public PemainSetData(playerid) {

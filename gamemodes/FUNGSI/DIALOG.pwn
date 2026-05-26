@@ -17,6 +17,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         format(blah, sizeof(blah), "{59ff28}[SERVER]{fff000} %s {ffffff}memasuki server.", Pemain[playerid][pNama]);
         SendClientMessageToAll(0xffffff, blah);
         
+        new data[512];
+        mysql_format(g_SQL, data, sizeof(data), "SELECT gender, skin, posx, posy, posz, angel, level FROM Pemain WHERE id='%d'",
+        Pemain[playerid][pId]);
+        mysql_tquery(g_SQL, data, "MuatDataLogin", "i", playerid);
+        
         return 1;
       }
       // sandi salah

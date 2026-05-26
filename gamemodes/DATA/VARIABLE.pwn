@@ -7,3 +7,6 @@ new bool:StatusLogin[MAX_PLAYERS];
 // bikin karakter
 new pwbaru[MAX_PLAYERS][256];
 new gender[MAX_PLAYERS];
+
+// login (0 = login, 1 = register)
+new TipeLogin[MAX_PLAYERS];
