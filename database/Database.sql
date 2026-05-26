@@ -3,5 +3,6 @@ CREATE TABLE Pemain (
     nama VARCHAR(64) NOT NULL,
     verified INT DEFAULT 0,
     kode INT,
-    sandi VARCHAR(256)
+    sandi VARCHAR(256),
+    gender INT
 );

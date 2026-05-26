@@ -11,9 +11,10 @@ new Pemain[MAX_PLAYERS][DataPemain];
 /////////////////////////////////////////////////////
 
 // enum dialog 
-enum dialog_akun {
+enum {
   DIALOG_UNUSED,
   DIALOG_VERIFIKASI_KODE,
   DIALOG_BUAT_PASSWORD,
-  DIALOG_LOGIN
+  DIALOG_LOGIN,
+  DIALOG_GENDER
 };

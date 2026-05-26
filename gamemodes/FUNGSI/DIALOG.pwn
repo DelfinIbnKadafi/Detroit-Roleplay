@@ -6,7 +6,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
     if(response == 1) {
       // sandi benar
       new hashpw[65];
-      SHA256_PassHash(inputtext, "DELFIN", hashpw, sizeof(hashpw));
+      SHA256_Hash(inputtext, "DELFIN", hashpw, sizeof(hashpw));
       
       if(strcmp(hashpw, Pemain[playerid][pPassword], true) == 0) {
         SendMessageServer(playerid, "Pssword benar, selamat bermain");
@@ -89,17 +89,37 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
   // buat sandi
   if(dialogid == DIALOG_BUAT_PASSWORD) {
     if(response == 1) {
-      new pwbaru[256];
-      SHA256_PassHash(inputtext, "DELFIN", pwbaru, sizeof(pwbaru));
       
-      new query[256];
-      mysql_format(g_SQL, query, sizeof(query), "UPDATE Pemain SET verified=1, sandi='e' WHERE id='%d'",
-      pwbaru, Pemain[playerid][pId]);
+      // hash pw 
+      SHA256_Hash(inputtext, "DELFIN", pwbaru[playerid], sizeof(pwbaru[playerid]));
       
-      // set status login
-      StatusLogin[playerid] = true;
-        
+      ShowPlayerDialog(playerid, DIALOG_GENDER, DIALOG_STYLE_LIST,
+       "{CD7000}Detroit {FFFFFF}Roleplay - Account Creation Gender",
+       "Pria\n\nWanita",
+       "Pilih", "Batal");
+       
       return 1;
+    }
+    // tombol batal
+    else {
+      SetTimerEx("KickPemain", 5000, false, "i", playerid);
+    }
+  }
+  
+  // gender/kelamin
+  if(dialogid == DIALOG_GENDER) {
+    if(response == 1) {
+      // Pria
+      if(listitem == 0) {
+        gender[playerid] = 1;
+        OnSetGender(playerid);
+        return 1;
+      }
+      else if(listitem == 1) {
+        gender[playerid] = 2;
+        OnSetGender(playerid);
+        return 1;
+      }
     }
     // tombol batal
     else {

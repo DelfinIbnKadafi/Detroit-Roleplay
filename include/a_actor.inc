@@ -1,34 +1,28 @@
-/*  SA-MP Actor Functions
- *
- *  (c) Copyright 2015, SA-MP Team
- *
- */
-
-#if defined _actor_included
+#if defined _INC_a_actor
 	#endinput
 #endif
-#define _actor_included
-#pragma library actors
 
-native CreateActor(modelid, Float:X, Float:Y, Float:Z, Float:Rotation);
-native DestroyActor(actorid);
+#if defined SAMP_COMPAT
+	#if !defined OPEN_MP_NO_WRAPPER_WARNING
+		#define OPEN_MP_NO_WRAPPER_WARNING
+	#endif
+#endif
 
-native IsActorStreamedIn(actorid, forplayerid);
+#if defined OPEN_MP_NO_WRAPPER_WARNING
+	#include <open.mp>
+	#endinput
+#endif
 
-native SetActorVirtualWorld(actorid, vworld);
-native GetActorVirtualWorld(actorid);
-
-native ApplyActorAnimation(actorid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time);
-native ClearActorAnimations(actorid);
-
-native SetActorPos(actorid, Float:X, Float:Y, Float:Z);
-native GetActorPos(actorid, &Float:X, &Float:Y, &Float:Z);
-native SetActorFacingAngle(actorid, Float:ang);
-native GetActorFacingAngle(actorid, &Float:ang);
-
-native SetActorHealth(actorid, Float:health);
-native GetActorHealth(actorid, &Float:health);
-native SetActorInvulnerable(actorid, invulnerable = true);
-native IsActorInvulnerable(actorid);
-
-native IsValidActor(actorid);
+#if !defined __PawnBuild
+	// Doesn't support `#warning`.
+	static Using_a_actor_legacy_wrapper;
+	static Include_open@mp_directly;
+	static Also_update_your_compiler;
+	#include <open.mp>
+	// The old compiler doesn't like `#warning`, even within `#if`.
+	#endinput
+#endif
+	
+// This is just a backwards-compatible wrapper.
+#warning Using <a_actor> legacy wrapper.  Include <open.mp> directly.
+#include <open.mp>

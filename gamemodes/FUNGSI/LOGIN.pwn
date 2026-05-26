@@ -1,6 +1,27 @@
 // definisi fungsi login
 forward CekAkunPemain(playerid);
 forward CekVerifikasiAkun(playerid);
+forward OnSetGender(playerid);
+forward PemainSetData(playerid);
+
+// setelah player set data
+public PemainSetData(playerid) {
+  
+  return 1;
+}
+
+// set gender
+public OnSetGender(playerid) {
+  new query[256];
+  mysql_format(g_SQL, query, sizeof(query), "UPDATE Pemain SET verified=1, sandi='%e', gender='%d' WHERE id='%d'",
+  pwbaru[playerid], gender[playerid], Pemain[playerid][pId]);
+  mysql_tquery(g_SQL, query, "PemainSetData","i", playerid);
+  
+  // set status login
+  StatusLogin[playerid] = true;
+  
+  return 1;
+}
 
 // cek verifikasi akun pemain
 public CekVerifikasiAkun(playerid) {

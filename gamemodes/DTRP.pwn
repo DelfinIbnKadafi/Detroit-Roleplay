@@ -8,7 +8,7 @@
 */
 
 //===[INCLUDE]===//
-#include <a_samp>
+#include <open.mp>
 #include <sscanf2>
 #include <streamer>
 #include <a_mysql>
