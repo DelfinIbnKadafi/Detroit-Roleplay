@@ -1,4 +1,4 @@
-Fungsi: MuatDataLogin(playerid) {
+Fungsi: MuatDataPemain(playerid) {
   
   cache_get_value_int(0, "gender", Pemain[playerid][pGender]);
   cache_get_value_int(0, "skin", Pemain[playerid][pSkin]);
