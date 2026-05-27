@@ -7,7 +7,7 @@ Fungsi: SpawnPemainEx(playerid) {
     
     SetPlayerPos(playerid,
      PosisiPemain[playerid][x],
-     PosisiPemain[playerid][z],
+     PosisiPemain[playerid][y],
      PosisiPemain[playerid][z]
     );
     
