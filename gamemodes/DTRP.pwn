@@ -12,6 +12,7 @@
 #include <sscanf2>
 #include <streamer>
 #include <a_mysql>
+#include <samp_bcrypt>
 
 //===[MODULES]===//
 #include "DATA/VARIABLE.pwn"
