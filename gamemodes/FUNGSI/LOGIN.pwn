@@ -1,75 +1,53 @@
-// fungsi spawn pemain
-Fungsi: SpawnPemainEx(playerid) {
-  // login
-  if(TipeLogin[playerid] == 0) {
-    
-    SetPlayerInterior(playerid, PosisiPemain[playerid][int]);
-    
-    SetPlayerPos(playerid,
-     PosisiPemain[playerid][x],
-     PosisiPemain[playerid][y],
-     PosisiPemain[playerid][z]
-    );
-    
-    SetPlayerFacingAngle(playerid, PosisiPemain[playerid][angel]);
-    
-    SetPlayerHealth(playerid, Pemain[playerid][pNyawa]);
+stock SpawnPemainEx(playerid, bool:new_player = false) 
+{
+  if(!new_player) 
+  {
+    SetPlayerHealth(playerid, Pemain[playerid][pDarah]);
     SetPlayerArmour(playerid, Pemain[playerid][pArmor]);
-    
-    SetPlayerSkin(playerid, Pemain[playerid][pSkin]);
-    
+    SetPlayerInterior(playerid, PosisiPemain[playerid][pInt]);
+    SetPlayerVirtualWorld(playerid, PosisiPemain[playerid][pVW]);
     SetPlayerScore(playerid, Pemain[playerid][pLevel]);
-    
-    SendMessageInfo(playerid, "Selamat datang kembali di server Detroit Roleplay");
-    
-    return 1;
+    SetSpawnInfo(
+      playerid,
+      NO_TEAM,
+      Pemain[playerid][pSkin],
+      PosisiPemain[playerid][pX],
+      PosisiPemain[playerid][pY],
+      PosisiPemain[playerid][pZ],
+      PosisiPemain[playerid][pAngle]
+    );    
   }
-  // register
-  if(TipeLogin[playerid] == 1) {
-    
-    SetPlayerInterior(playerid, 0);
-    
-    SetPlayerPos(playerid,
-     DefaultPos[x],
-     DefaultPos[y],
-     DefaultPos[z]
-    );
-    
-    SetPlayerFacingAngle(playerid, DefaultPos[angel]);
-    
+  else 
+  {
     SetPlayerHealth(playerid, 100.0);
-    
-    if(gender[playerid] == 1) {
-      SetPlayerSkin(playerid, DefaultSkin[pria]);
-    }
-    if(gender[playerid] == 2) {
-      SetPlayerSkin(playerid, DefaultSkin[wanita]);
-    }
-    
+    SetSpawnInfo(
+      playerid,
+      NO_TEAM,
+      DefaultSkin[gender[playerid] ? pria : wanita],
+      DefaultPos[x],
+      DefaultPos[y],
+      DefaultPos[z],
+      DefaultPos[angel]
+    );    
     SetPlayerScore(playerid, 1);
-    
-    SendMessageInfo(playerid, "Selamat datang di server Detroit Roleplay");
-    
-    return 1;
   }
-  
+
+  ShowGreetings(playerid);
+  SpawnPlayer(playerid);
   return 1;
 }
 
 // set gender
-Fungsi: OnSetGender(playerid) {
+Fungsi: OnSetGender(playerid) 
+{
   new query[256];
   mysql_format(g_SQL, query, sizeof(query), "UPDATE Pemain SET verified=1, sandi='%e', gender='%d' WHERE id='%d'",
   pwbaru[playerid], gender[playerid], Pemain[playerid][pId]);
-  
-  // set status login
   StatusLogin[playerid] = true;
-  
-  TipeLogin[playerid] = 1;
-  
-  // spawn player
-  mysql_tquery(g_SQL, query, "SpawnPemainEx","i", playerid);
-  
+  if(mysql_tquery(g_SQL, query))
+  {
+    SpawnPemainEx(playerid, .new_player = true);
+  }
   return 1;
 }
 

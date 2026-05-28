@@ -1,0 +1,11 @@
+# vscode
+.vscode/
+
+# logs
+.logs/
+*.log
+*.txt
+
+# others
+*.ini
+gamemodes/*.amx

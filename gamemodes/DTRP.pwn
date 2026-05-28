@@ -16,34 +16,35 @@
 #include <zcmd>
 
 //===[MODULES]===//
-#include "DATA/header.inc" 
-#include "FUNGSI/header.inc"
-#include "COMMAND/header.inc"
+#include "DATA/HEADER" 
+#include "FUNGSI/HEADER"
+#include "COMMAND/HEADER"
 
-//===[OnGameModeInit]===//
+main(){}
 
-public OnGameModeInit() {
-    SetGameModeText(server_version);
-
-    g_SQL = mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
-    if(mysql_errno(g_SQL) != 0) {
-        print("[MySQL] Koneksi GAGAL!");
-        SendRconCommand("exit");
-        return 0;
+public OnGameModeInit() 
+{
+    g_SQL = mysql_connect_file();
+    if(g_SQL == MYSQL_INVALID_HANDLE || mysql_errno(g_SQL) != 0) 
+    {
+      printf("[MySQL] Telah terjadi kesalahan saat menghubungkan koneksi mysql. (#%d)", mysql_errno(g_SQL));
+      SendRconCommand("exit");
+      return 0;
     }
 
-    printf("[MySQL] Koneksi BERHASIL ke database '%s' (Handle: %d)", MYSQL_DATABASE, _:g_SQL);
+    printf("[MySQL] Koneksi mysql berhasil terhubung dengan baik.");
     mysql_set_charset("utf8mb4", g_SQL);
-    
+    SetGameModeText(SERVER_VERSION);
     DisableInteriorEnterExits();
-    
     return 1;
 }
 
 public OnPlayerRequestSpawn(playerid) {
-  if(StatusLogin[playerid] == false) {
-    SendMessageError(playerid, "Login dulu, baru bisa spawn");
-    return 1;
-  }
   return 0;
+}
+
+public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle)
+{
+  printf("[MySQL] %s (Public-Function: %s) (#%d)", error, callback, errorid);
+  return 1;
 }

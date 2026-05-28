@@ -27,7 +27,12 @@ Untuk menjalankan server Detroit Roleplay, ikuti langkah-langkah berikut:
 
 Compile terlebih dahulu file gamemode utama menggunakan compiler Pawn pilihan Anda.
 
-2. Jalankan Server
+2. Setup ``mysql.ini``
+
+Buat terlebih dahulu file ``mysql.ini`` kemudian isi credentials nya.
+Silahkan lihat dokumentasi dari ``mysql_connect_file`` disini [docs](https://sampwiki.blast.hk/wiki/MySQL#mysql_connect_file)
+
+3. Jalankan Server
 
 Anda dapat menjalankan server ini di local host maupun cloud hosting dengan mengeksekusi
 file biner yang sesuai dengan sistem operasi Anda:

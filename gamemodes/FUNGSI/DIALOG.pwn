@@ -18,7 +18,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
         SendClientMessageToAll(0xffffff, blah);
         
         new data[512];
-        mysql_format(g_SQL, data, sizeof(data), "SELECT gender, skin, posx, posy, posz, interior, nyawa, armor, angel, level FROM Pemain WHERE id='%d'",
+        mysql_format(g_SQL, data, sizeof(data), "SELECT * FROM Pemain WHERE id='%d'",
         Pemain[playerid][pId]);
         mysql_tquery(g_SQL, data, "MuatDataPemain", "i", playerid);
         
