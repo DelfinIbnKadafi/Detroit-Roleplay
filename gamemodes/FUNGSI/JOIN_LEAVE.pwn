@@ -1,7 +1,7 @@
 // connect/disconnect
 
 public OnPlayerConnect(playerid) {
-  SetPlayerColor(playerid, 0xFFFFFF);
+  SetPlayerColor(playerid, 0xFFFFFFFF);
   // ambil nama
   GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME);
   ///////////////////////////////////////////////////////////////////

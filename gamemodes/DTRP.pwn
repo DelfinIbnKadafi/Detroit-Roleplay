@@ -13,10 +13,12 @@
 #include <sscanf2>
 #include <streamer>
 #include <a_mysql>
+#include <zcmd>
 
 //===[MODULES]===//
 #include "DATA/header.inc" 
 #include "FUNGSI/header.inc"
+#include "COMMAND/header.inc"
 
 //===[OnGameModeInit]===//
 
