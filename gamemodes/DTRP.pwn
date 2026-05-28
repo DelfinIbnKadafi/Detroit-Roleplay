@@ -16,9 +16,9 @@
 #include <zcmd>
 
 //===[MODULES]===//
-#include "DATA/header.inc" 
-#include "FUNGSI/header.inc"
-#include "COMMAND/header.inc"
+#include "DATA/HEADER" 
+#include "FUNGSI/HEADER"
+#include "COMMAND/HEADER"
 
 //===[OnGameModeInit]===//
 
@@ -28,7 +28,7 @@ public OnGameModeInit() {
     g_SQL = mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
     if(mysql_errno(g_SQL) != 0) {
         print("[MySQL] Koneksi GAGAL!");
-        SendRconCommand("exit");
+        SendRconCommand("exits");
         return 0;
     }
 
