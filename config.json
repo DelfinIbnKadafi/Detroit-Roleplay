@@ -105,7 +105,6 @@
         "legacy_plugins": [
             "crashdetect",
             "mysql",
-            "sscanf",
             "streamer",
             "samp_bcrypt"
         ],
