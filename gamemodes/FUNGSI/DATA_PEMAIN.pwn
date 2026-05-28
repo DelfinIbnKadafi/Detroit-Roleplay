@@ -55,3 +55,13 @@ Fungsi: SimpanDataPemain(playerid)
   mysql_query(g_SQL, query);
   return 1;
 }
+
+stock ResetDataPemain(playerid)
+{
+  static const data_pemain[DATA_PEMAIN];
+  static const posisi_player[POSISI_PLAYER];
+
+  Pemain[playerid] = data_pemain;
+  PosisiPemain[playerid] = posisi_player;
+  return 1;
+}

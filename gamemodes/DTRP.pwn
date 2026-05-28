@@ -1,24 +1,19 @@
-// DETROIT ROLEPLAY - OPEN SOURCE GAMMODE
-
-//========[CONTRIBUTOR]========//
-/*
-• Delfin Ibn Kadafi - Founder and Scripter
-• Panntzyy - Scripter
-• Martin - Scripter (Then)
-* Enkgq - Scripter (Three)
-*/
-
-//===[INCLUDE]===//
+// main includes
 #include <open.mp>
 #include <sscanf2>
 #include <streamer>
 #include <a_mysql>
+#include <strlib>
+#include <samp_bcrypt>
+#include <easyDialog>
 #include <zcmd>
 
-//===[MODULES]===//
+
+// local includes
 #include "DATA/HEADER" 
 #include "FUNGSI/HEADER"
 #include "COMMAND/HEADER"
+
 
 main(){}
 
@@ -35,11 +30,37 @@ public OnGameModeInit()
     printf("[MySQL] Koneksi mysql berhasil terhubung dengan baik.");
     mysql_set_charset("utf8mb4", g_SQL);
     SetGameModeText(SERVER_VERSION);
-    DisableInteriorEnterExits();
     return 1;
 }
 
-public OnPlayerRequestSpawn(playerid) {
+public OnPlayerConnect(playerid) 
+{
+  SetPlayerColor(playerid, 0xFFFFFFFF);
+  GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME);
+  SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay.");
+  SendMessageServer(playerid, "Akun kamu sedang kami proses");
+  
+  // cek akun player
+  new query[256];
+  mysql_format(
+    g_SQL, 
+    query, sizeof(query),
+    "SELECT * FROM Pemain WHERE nama='%e'",
+    Pemain[playerid][pNama]
+  );
+  mysql_pquery(g_SQL, query, "CekAkunPemain", "i", playerid);  
+  return 1;
+}
+
+public OnPlayerDisconnect(playerid, reason) 
+{
+  SimpanDataPemain(playerid);
+  ResetDataPemain(playerid);
+  return 1;
+}
+
+public OnPlayerRequestSpawn(playerid) 
+{
   return 0;
 }
 
