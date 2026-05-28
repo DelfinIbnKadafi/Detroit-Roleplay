@@ -1,24 +1,24 @@
 stock SpawnPemainEx(playerid, bool:new_player = false) 
 {
-  if(new_player) 
+  if(!new_player) 
   {
-    SetPlayerHealth(playerid, Pemain[playerid][pNyawa]);
+    SetPlayerHealth(playerid, Pemain[playerid][pDarah]);
     SetPlayerArmour(playerid, Pemain[playerid][pArmor]);
-    SetPlayerInterior(playerid, PosisiPemain[playerid][int]);
+    SetPlayerInterior(playerid, PosisiPemain[playerid][pInt]);
+    SetPlayerVirtualWorld(playerid, PosisiPemain[playerid][pVW]);
     SetPlayerScore(playerid, Pemain[playerid][pLevel]);
     SetSpawnInfo(
       playerid,
       NO_TEAM,
       Pemain[playerid][pSkin],
-      PosisiPemain[playerid][x],
-      PosisiPemain[playerid][y],
-      PosisiPemain[playerid][z],
-      PosisiPemain[playerid][angel]
+      PosisiPemain[playerid][pX],
+      PosisiPemain[playerid][pY],
+      PosisiPemain[playerid][pZ],
+      PosisiPemain[playerid][pAngle]
     );    
   }
   else 
   {
-    SetPlayerInterior(playerid, 0);
     SetPlayerHealth(playerid, 100.0);
     SetSpawnInfo(
       playerid,

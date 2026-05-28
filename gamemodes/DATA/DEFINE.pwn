@@ -1,8 +1,8 @@
 // Database
-#define MYSQL_HOST 				"142.132.203.47"
-#define MYSQL_USER 				"u187726_4RnIAxxxLP"
-#define MYSQL_PASSWORD 			".c!Vw.QmSbMiOP7gzyIl=wvL"
-#define MYSQL_DATABASE 			"s187726_Dbdtrp"
+#define MYSQL_HOST 				"localhost"
+#define MYSQL_USER 				"root"
+#define MYSQL_PASSWORD 			""
+#define MYSQL_DATABASE 			"detroit-db"
 
 // Server Description
 #define SERVER_NAME 			"Detroit Project Roleplay"

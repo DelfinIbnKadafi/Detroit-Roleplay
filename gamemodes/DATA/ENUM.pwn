@@ -1,5 +1,6 @@
 // Data player
-enum DataPemain {
+enum DATA_PEMAIN 
+{
   pNama[MAX_PLAYER_NAME],
   pId,
   pVerified,
@@ -8,25 +9,20 @@ enum DataPemain {
   pGender,
   pSkin,
   pLevel,
-  Float:pNyawa,
+  Float:pDarah,
   Float:pArmor
 };
 
-new Pemain[MAX_PLAYERS][DataPemain];
-
-// posisi player
-enum PosisiPlayer {
-  Float:x,
-  Float:y,
-  Float:z,
-  Float:angel,
-  int
+enum POSISI_PLAYER 
+{
+  Float:pX,
+  Float:pY,
+  Float:pZ,
+  Float:pAngle,
+  pInt,
+  pVW
 };
 
-new PosisiPemain[MAX_PLAYERS][PosisiPlayer];
-/////////////////////////////////////////////////////
-
-// enum dialog 
 enum {
   DIALOG_UNUSED,
   DIALOG_VERIFIKASI_KODE,
@@ -35,20 +31,21 @@ enum {
   DIALOG_GENDER
 };
 
-enum DPos 
+enum DEFAULT_POS 
 {
   Float:x = 0.0,
   Float:y = 0.0,
   Float:z = 0.0,
   Float:angel = 0.0
-}
+};
 
-new DefaultPos[DPos];
+new DefaultPos[DEFAULT_POS];
 
-// skin default
 enum DSkin {
   pria = 147,
   wanita = 150
 }
 
 new DefaultSkin[DSkin];
+new Pemain[MAX_PLAYERS][DATA_PEMAIN];
+new PosisiPemain[MAX_PLAYERS][POSISI_PLAYER];

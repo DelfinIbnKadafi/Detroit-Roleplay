@@ -20,16 +20,16 @@
 #include "FUNGSI/HEADER"
 #include "COMMAND/HEADER"
 
-//===[OnGameModeInit]===//
+main(){}
 
 public OnGameModeInit() 
 {
     g_SQL = mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
-    if(mysql_errno(g_SQL) != 0) 
+    if(g_SQL == MYSQL_INVALID_HANDLE || mysql_errno(g_SQL) != 0) 
     {
-        print("[MySQL] Koneksi GAGAL!");
-        SendRconCommand("exits");
-        return 0;
+      printf("[MySQL] Telah terjadi kesalahan saat menghubungkan koneksi mysql. (#%d)", mysql_errno(g_SQL));
+      SendRconCommand("exit");
+      return 0;
     }
 
     printf("[MySQL] Koneksi BERHASIL ke database '%s' (Handle: %d)", MYSQL_DATABASE, _:g_SQL);
@@ -40,9 +40,11 @@ public OnGameModeInit()
 }
 
 public OnPlayerRequestSpawn(playerid) {
-  if(StatusLogin[playerid] == false) {
-    SendMessageError(playerid, "Login dulu, baru bisa spawn");
-    return 1;
-  }
   return 0;
+}
+
+public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle)
+{
+  printf("[MySQL] %s (Public-Function: %s) (#%d)", error, callback, errorid);
+  return 1;
 }
