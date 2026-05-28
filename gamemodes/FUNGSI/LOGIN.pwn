@@ -18,6 +18,8 @@ Fungsi: SpawnPemainEx(playerid) {
     
     SetPlayerSkin(playerid, Pemain[playerid][pSkin]);
     
+    SetPlayerScore(playerid, Pemain[playerid][pLevel]);
+    
     SendMessageInfo(playerid, "Selamat datang kembali di server Detroit Roleplay");
     
     return 1;
@@ -43,6 +45,8 @@ Fungsi: SpawnPemainEx(playerid) {
     if(gender[playerid] == 2) {
       SetPlayerSkin(playerid, DefaultSkin[wanita]);
     }
+    
+    SetPlayerScore(playerid, 1);
     
     SendMessageInfo(playerid, "Selamat datang di server Detroit Roleplay");
     

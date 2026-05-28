@@ -2,4 +2,5 @@
 #include "FUNGSI/KICK.pwn"
 #include "FUNGSI/DATA_PEMAIN.pwn"
 #include "FUNGSI/LOGIN.pwn"
+#include "FUNGSI/JOIN_LEAVE.pwn"
 #include "FUNGSI/DIALOG.pwn"

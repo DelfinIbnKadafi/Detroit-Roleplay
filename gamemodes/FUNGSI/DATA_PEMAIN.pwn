@@ -23,5 +23,28 @@ Fungsi: MuatDataPemain(playerid) {
 }
 
 Fungsi: SimpanDataPemain(playerid) {
+
+  // posisi
+  GetPlayerPos(playerid,
+   PosisiPemain[playerid][x],
+   PosisiPemain[playerid][y],
+   PosisiPemain[playerid][z]
+  );
+  
+  GetPlayerFacingAngle(playerid, PosisiPemain[playerid][angel]);
+  PosisiPemain[playerid][int] = GetPlayerInterior(playerid);
+  
+  // set
+  Pemain[playerid][pLevel] = GetPlayerScore(playerid);
+  Pemain[playerid][pSkin] = GetPlayerSkin(playerid);
+  
+  GetPlayerHealth(playerid, Pemain[playerid][pNyawa]);
+  GetPlayerArmour(playerid, Pemain[playerid][pArmor]);
+  
+  new query[512];
+  mysql_format(g_SQL, query, sizeof(query),
+   "UPDATE Pemain SET posx='%f', posy='%f', posz='%z', angel='%f', interior='%d', level='%d', skin='%d', nyawa='%f', armor='%f' WHERE id='%d'", 
+  );
+  
   return 1;
 }
