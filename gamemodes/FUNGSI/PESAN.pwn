@@ -55,5 +55,5 @@ public OnPlayerText(playerid, text[]) {
   SendClientMessage(playerid, 0xFFFFFFFF, msg);
   AntiSpam(playerid); // antispam diletakkan di paling bawah agar player benar benar bisa kirim pesan 3x
   
-  return 1;
+  return 0;
 }
