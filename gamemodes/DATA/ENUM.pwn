@@ -11,7 +11,8 @@ enum DATA_PEMAIN
   pSkin,
   pLevel,
   Float:pDarah,
-  Float:pArmor
+  Float:pArmor,
+  pUang
 };
 
 enum POSISI_PLAYER 

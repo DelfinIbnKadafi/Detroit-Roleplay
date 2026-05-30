@@ -18,7 +18,7 @@ Fungsi: OnVerifyPassword(playerid, bool:success)
       format(
         tmp, sizeof(tmp),
        ""E_WHITE"Akun kamu sudah terverifikasi oleh sistem.\nSilahkan masukkan password kamu dibawah ini dengan benar.\n\
-       Kamu mempunya "#MAX_LOGIN_ATTEMPTS" kali kesempatan login untuk memasukkan password"
+       Kamu mempunyai "#MAX_LOGIN_ATTEMPTS" kali kesempatan login untuk memasukkan password"
       );    
       Dialog_Show(playerid, DL_LOGIN, DIALOG_STYLE_PASSWORD, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Login", tmp, "Login", "Batal");
     }

@@ -40,7 +40,7 @@ public OnPlayerText(playerid, text[]) {
   // radius chat
   new Float:radius = 20.0;
 
-  foreach (new i : Player) {
+  foreach(new i : Player) {
   
     new Float:d = GetPlayerDistanceFromPoint(i, px, py, pz);
 

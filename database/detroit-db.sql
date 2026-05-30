@@ -18,7 +18,8 @@ CREATE TABLE `pemain` (
   `virtualworld` int(11) NOT NULL DEFAULT '0',
   `darah` float DEFAULT NULL,
   `armor` float DEFAULT NULL,
-  `level` smallint(6) DEFAULT '1'
+  `level` smallint(6) DEFAULT '1',
+  `uang` int DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `pemain`

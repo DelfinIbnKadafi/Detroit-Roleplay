@@ -12,6 +12,7 @@ Fungsi: MuatDataPemain(playerid)
   cache_get_value_name_float(0, "angle", PosisiPemain[playerid][pAngle]);
   cache_get_value_name_float(0, "darah", Pemain[playerid][pDarah]);
   cache_get_value_name_float(0, "armor", Pemain[playerid][pArmor]);
+  cache_get_value_int(0, "uang", Pemain[playerid][pUang]);
   SpawnPemainEx(playerid);
   return 1;
 }
@@ -35,9 +36,11 @@ Fungsi: SimpanDataPemain(playerid)
   GetPlayerHealth(playerid, Pemain[playerid][pDarah]);
   GetPlayerArmour(playerid, Pemain[playerid][pArmor]);
   
+  Pemain[playerid][pUang] = GetPlayerMoney(playerid);
+  
   new query[512];
   mysql_format(g_SQL, query, sizeof(query),
-    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f' WHERE id='%d'",
+    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d' WHERE id='%d'",
     PosisiPemain[playerid][pX],
     PosisiPemain[playerid][pY],
     PosisiPemain[playerid][pZ],
@@ -49,6 +52,7 @@ Fungsi: SimpanDataPemain(playerid)
     Pemain[playerid][pSkin],
     Pemain[playerid][pDarah],
     Pemain[playerid][pArmor],
+    Pemain[playerid][pUang],
     
     Pemain[playerid][pId]
   );

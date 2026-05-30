@@ -7,6 +7,7 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     SetPlayerInterior(playerid, PosisiPemain[playerid][pInt]);
     SetPlayerVirtualWorld(playerid, PosisiPemain[playerid][pVW]);
     SetPlayerScore(playerid, Pemain[playerid][pLevel]);
+    GivePlayerMoney(playerid, Pemain[playerid][pUang]);
     SetSpawnInfo(
       playerid,
       NO_TEAM,
@@ -33,6 +34,7 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
       DEFAULT_POS_A
     );    
     SetPlayerScore(playerid, 1);
+    GivePlayerMoney(playerid, 100000);
   }
   
   StatusLogin[playerid] = true;
