@@ -6,15 +6,14 @@ Fungsi: AutoUnMute(playerid) {
 }
 
 stock AntiSpam(playerid) {
-  if(Mute[playerid] == true) {
-    return 1;
-  }
+  if(Mute[playerid] == true) return 1;
   if(JumlahSpam[playerid] < 3) {
     JumlahSpam[playerid]++;
+    return 1;
   }
   if(JumlahSpam[playerid] == 3) {
     Mute[playerid] = true;
-    SetTimerEx("AutoUnMute", 5000, false, "i", playerid);
+    SetTimerEx("AutoUnMute", 10000, false, "i", playerid);
   }
   return 1;
 }

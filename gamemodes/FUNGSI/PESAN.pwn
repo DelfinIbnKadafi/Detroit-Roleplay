@@ -19,6 +19,8 @@ stock ShowGreetings(playerid)
 }
 
 public OnPlayerText(playerid, text[]) {
+  // player bisa chat sbnyk 3 kali, lalu akan dimute
+
   if(StatusLogin[playerid] == false) {
     SendMessageError(playerid, "Kamu harus login agar bisa mengirim pesan!");
     return 1;
@@ -43,16 +45,15 @@ public OnPlayerText(playerid, text[]) {
     new Float:d = GetPlayerDistanceFromPoint(i, px, py, pz);
 
     if (d <= radius / 4)
-      SendClientMessage(i, 0xFFFFFFFF, text);
+      SendClientMessage(i, 0xFFFFFFFF, msg);
     else if (d <= radius / 2)
-      SendClientMessage(i, 0xDDDDDDFF, text);
+      SendClientMessage(i, 0xDDDDDDFF, msg);
     else if (d <= radius)
-      SendClientMessage(i, 0xAAAAAAFF, text);
+      SendClientMessage(i, 0xAAAAAAFF, msg);
   }
   
-  SendClientMessage(playerid, 0xFFFFFFFF, text);
-  
-  AntiSpam(playerid);
+  SendClientMessage(playerid, 0xFFFFFFFF, msg);
+  AntiSpam(playerid); // antispam diletakkan di paling bawah agar player benar benar bisa kirim pesan 3x
   
   return 1;
 }

@@ -2,5 +2,7 @@
 #include "FUNGSI/ANTI_SPAM.pwn"
 #include "FUNGSI/WRAPPER.pwn"
 #include "FUNGSI/DATA_PEMAIN.pwn"
+#include "FUNGSI/CEK_AKUN.pwn"
+#include "FUNGSI/SPAWN.pwn"
 #include "FUNGSI/REGISTER.pwn"
 #include "FUNGSI/LOGIN.pwn"

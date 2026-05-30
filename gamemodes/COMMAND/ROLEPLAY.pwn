@@ -9,16 +9,16 @@ CMD:south(playerid, params[]) {
   
   format(text, sizeof(text), "[TERIAK] %s %s", Pemain[playerid][pNama], params);
   
-  new Float:px, Float:py, Float:pz;
+  new Float:px, Float:py, Float:pz, Float:k;
   GetPlayerPos(playerid, px, py, pz);
 
   foreach(new i : Player) {
     if(!IsPlayerConnected(i) || i == playerid) continue;
-      // hitung jarak
-      new Float:k = GetPlayerDistanceFromPoint(i, px, py, pz);
-      if(k <= 10.0) {
-        SendClientMessage(i, 0xFFFFFFFF, text);
-      }
+    // hitung jarak
+    k = GetPlayerDistanceFromPoint(i, px, py, pz);
+    if(k <= 10.0) {
+      SendClientMessage(i, 0xFFFFFFFF, text);
+    }
   }
 
   SendClientMessage(playerid, 0xFFFFFFFF, text);
@@ -36,16 +36,16 @@ CMD:low(playerid, params[]) {
   
   format(text, sizeof(text), "[KECIL] %s %s", Pemain[playerid][pNama], params);
   
-  new Float:px, Float:py, Float:pz;
+  new Float:px, Float:py, Float:pz, Float:k;
   GetPlayerPos(playerid, px, py, pz);
 
   foreach(new i : Player) {
     if(!IsPlayerConnected(i) || i == playerid) continue;
-      // hitung jarak
-      new Float:k = GetPlayerDistanceFromPoint(i, px, py, pz);
-      if(k <= 10.0) {
-        SendClientMessage(i, 0xFFFFFFFF, text);
-      }
+    // hitung jarak
+    k = GetPlayerDistanceFromPoint(i, px, py, pz);
+    if(k <= 10.0) {
+      SendClientMessage(i, 0xFFFFFFFF, text);
+    }
   }
 
   SendClientMessage(playerid, 0xFFFFFFFF, text);
@@ -63,16 +63,16 @@ CMD:do(playerid, params[]) {
 
   format(text, sizeof(text), "(%s) %s", params, Pemain[playerid][pNama]);
 
-  new Float:px, Float:py, Float:pz;
+  new Float:px, Float:py, Float:pz, Float:k;
   GetPlayerPos(playerid, px, py, pz);
 
   foreach(new i : Player) {
     if(!IsPlayerConnected(i) || i == playerid) continue;
-      // hitung jarak
-      new Float:k = GetPlayerDistanceFromPoint(i, px, py, pz);
-      if(k <= 20.0) {
-        SendClientMessage(i, 0x6B0E66FF, text);
-      }
+    // hitung jarak
+    k = GetPlayerDistanceFromPoint(i, px, py, pz);
+    if(k <= 10.0) {
+      SendClientMessage(i, 0xFFFFFFFF, text);
+    }
   }
 
   SendClientMessage(playerid, 0x6B0E66FF, text);
@@ -90,16 +90,16 @@ CMD:me(playerid, params[]) {
 
   format(text, sizeof(text), "%s %s", Pemain[playerid][pNama], params);
 
-  new Float:px, Float:py, Float:pz;
+  new Float:px, Float:py, Float:pz, Float:k;
   GetPlayerPos(playerid, px, py, pz);
 
   foreach(new i : Player) {
     if(!IsPlayerConnected(i) || i == playerid) continue;
-      // hitung jarak
-      new Float:k = GetPlayerDistanceFromPoint(i, px, py, pz);
-      if(k <= 20.0) {
-        SendClientMessage(i, 0x6B0E66FF, text);
-      }
+    // hitung jarak
+    k = GetPlayerDistanceFromPoint(i, px, py, pz);
+    if(k <= 10.0) {
+      SendClientMessage(i, 0xFFFFFFFF, text);
+    }
   }
 
   SendClientMessage(playerid, 0x6B0E66FF, text);
