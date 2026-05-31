@@ -42,4 +42,3 @@ enum DataVeh {
 };
 
 new PVeh[MAX_PLAYERS][MAX_KENDARAAN][DataVeh];
-new JumVeh[MAX_PLAYERS];

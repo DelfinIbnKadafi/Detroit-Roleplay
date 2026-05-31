@@ -45,3 +45,63 @@ CMD:pay(playerid, params[]) {
   }
   return 1;
 }
+
+
+
+
+// kendaraan
+CMD:myveh(playerid, params[]) {
+  if(JumVeh[playerid] == 0) {
+    SendMessageInfo(playerid, "Kamu tidak memiliki kendaraan!");
+    return 1;
+  }
+
+  new liststr[256], line[64];
+  for(new i = 0; i < JumVeh[playerid]; i++) {
+    new vnama[32];
+    GetVehicleModelName(PVeh[playerid][i][vModel], vnama, sizeof(vnama));
+    format(line, sizeof(line), "%d\t%s\n", PVeh[playerid][i][vId], vnama);
+    strcat(liststr, line, sizeof(liststr));
+  }
+  Dialog_Show(playerid, DL_VEHLIST, DIALOG_STYLE_LIST, "Id\tModel", liststr, "Pilih", "Batal");
+  return 1;
+}
+
+Dialog:DL_VEHLIST(playerid, response, listitem, inputtext[]) {
+  if(!response) return 1;
+
+  new judul[64], pilihan[128];
+  new vnama[32];
+  GetVehicleModelName(PVeh[playerid][listitem][vModel], vnama, sizeof(vnama));
+  format(judul, sizeof(judul), "Kendaraan: %s", vnama);
+  format(pilihan, sizeof(pilihan), "Spawn Kendaraan\nLihat Info\nKunci");
+
+  PilihanVeh[playerid] = listitem;
+  Dialog_Show(playerid, DL_AKSIVEH, DIALOG_STYLE_LIST, judul, pilihan, "Pilih", "Batal");
+  return 1;
+}
+
+Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
+  if(!response) return 1;
+
+  new idp = PilihanVeh[playerid];
+
+  switch(listitem) {
+    case 0: {
+      // spawn veh
+      return 1;
+    }
+    case 1: {
+      new vnama[32], str[128];
+      GetVehicleModelName(PVeh[playerid][idp][vModel], vnama, sizeof(vnama));
+      format(str, sizeof(str), "Model Kendaraan: %s\n\nId Kendaraan: %d\n\nKondisi: %.1f",vnama, PVeh[playerid][idp][vId], PVeh[playerid][idp][vHealth]);
+      Dialog_Show(playerid, DL_INFOVEH, DIALOG_STYLE_MSGBOX, "Info Kendaraan", str, "Kembali", " ");
+      return 1;
+    }
+    case 2: {
+      // kunci
+      return 1;
+    }
+  }
+  return 1;
+}
