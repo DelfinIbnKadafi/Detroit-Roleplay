@@ -9,3 +9,5 @@
 # others
 *.ini
 gamemodes/*.amx
+
+.pawn/
