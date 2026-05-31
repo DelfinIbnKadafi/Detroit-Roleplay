@@ -2,41 +2,32 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+07:00";
 
--- --------------------------------------------------------
--- Tabel `pemain`
--- --------------------------------------------------------
-
 CREATE TABLE `Pemain` (
-  `id`          INT(11)      NOT NULL,
-  `nama`        VARCHAR(24)  NOT NULL,
-  `verified`    INT(11)      DEFAULT '0',
-  `kode`        INT(11)      DEFAULT NULL,
-  `sandi`       VARCHAR(90)  DEFAULT NULL,
-  `gender`      TINYINT(4)   DEFAULT NULL,
-  `skin`        SMALLINT(6)  DEFAULT '1',
-  `posx`        FLOAT        DEFAULT NULL,
-  `posy`        FLOAT        DEFAULT NULL,
-  `posz`        FLOAT        DEFAULT NULL,
-  `angle`       FLOAT        DEFAULT NULL,
-  `interior`    INT(11)      DEFAULT '0',
-  `virtualworld` INT(11)     NOT NULL DEFAULT '0',
-  `darah`       FLOAT        DEFAULT NULL,
-  `armor`       FLOAT        DEFAULT NULL,
-  `level`       SMALLINT(6)  DEFAULT '1',
-  `uang`        INT          DEFAULT '0'
+  `id` int(11) NOT NULL,
+  `nama` varchar(24) NOT NULL,
+  `verified` int(11) DEFAULT '0',
+  `kode` int(11) DEFAULT NULL,
+  `sandi` varchar(90) DEFAULT NULL,
+  `gender` tinyint(4) DEFAULT NULL,
+  `skin` smallint(6) DEFAULT '1',
+  `posx` float DEFAULT NULL,
+  `posy` float DEFAULT NULL,
+  `posz` float DEFAULT NULL,
+  `angle` float DEFAULT NULL,
+  `interior` int(11) DEFAULT '0',
+  `virtualworld` int(11) NOT NULL DEFAULT '0',
+  `darah` float DEFAULT NULL,
+  `armor` float DEFAULT NULL,
+  `level` smallint(6) DEFAULT '1',
+  `uang` int DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `Pemain`
   ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `Pemain`
-  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
-
--- --------------------------------------------------------
--- Tabel `kendaraan`
--- --------------------------------------------------------
 
 CREATE TABLE `Kendaraan` (
   `vid`    INT(11) NOT NULL,
@@ -44,6 +35,7 @@ CREATE TABLE `Kendaraan` (
   `model`  INT(11) NOT NULL,
   `color1` INT(11) DEFAULT '0',
   `color2` INT(11) DEFAULT '0',
+  `plate`  VARCHAR(16),
   `health` FLOAT   DEFAULT '100.0',
   `x`      FLOAT   DEFAULT '0.0',
   `y`      FLOAT   DEFAULT '0.0',

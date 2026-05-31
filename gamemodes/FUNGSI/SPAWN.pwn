@@ -19,6 +19,8 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     );
     
     StatusLogin[playerid] = true;
+    SpawnPlayer(playerid);
+    MuatDataKendaraan(playerid);
     
   }
   else 

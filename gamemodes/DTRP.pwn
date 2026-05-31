@@ -11,9 +11,9 @@
 
 
 // local includes
-#include "DATA/HEADER" 
-#include "FUNGSI/HEADER"
-#include "COMMAND/HEADER"
+#include "DATA/header" 
+#include "FUNGSI/header"
+#include "COMMAND/header"
 
 
 main(){}

@@ -27,3 +27,19 @@ enum POSISI_PLAYER
 
 new Pemain[MAX_PLAYERS][DATA_PEMAIN];
 new PosisiPemain[MAX_PLAYERS][POSISI_PLAYER];
+
+// veh 
+enum DataVeh {
+  vId,
+  vModel,
+  vColor1,
+  vColor2,
+  vPlate[16],
+  Float:vHealth,
+  Float:vX,
+  Float:vY,
+  Float:vZ
+};
+
+new PVeh[MAX_PLAYERS][MAX_KENDARAAN][DataVeh];
+new JumVeh[MAX_PLAYERS];
