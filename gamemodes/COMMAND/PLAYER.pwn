@@ -10,6 +10,10 @@ CMD:pay(playerid, params[]) {
     SendMessageError(playerid, "kamu tidak bisa memberi uang kedirimu sendiri!");
     return 1;
   }
+  if(GetPlayerMoney(playerid) < jumlah) {
+    SendMessageError(playerid, "Uangmu tidak cukup!");
+    return 1;
+  }
   if(jumlah < 1000 || jumlah > 1000000) {
     SendMessageError(playerid, "Jumlah uang yang diberikan minimal 1000 rupiah dan maksimal 1.000.000 rupiah");
     return 1;
