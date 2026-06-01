@@ -21,8 +21,7 @@ Fungsi: CekVerifikasiAkun(playerid)
   {
     format(
       tmp, sizeof(tmp),
-     ""E_WHITE"Akun kamu sudah terverifikasi oleh sistem. Silahkan masukkan password kamu dibawah ini dengan benar.\n\
-     Kamu mempunyai "#MAX_LOGIN_ATTEMPTS" kali kesempatan login untuk memasukkan password"
+     ""E_WHITE"Akun kamu sudah terverifikasi oleh sistem. Silahkan masukkan password kamu dibawah ini dengan benar."
     );
   
     SetPVarInt(playerid, "login_attempts", 0);

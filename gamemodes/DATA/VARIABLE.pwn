@@ -10,4 +10,8 @@ new bool:Mute[MAX_PLAYERS];
 // kendaraan
 new JumVeh[MAX_PLAYERS];
 new PilihanVeh[MAX_PLAYERS];
-new VehID[1000];
+
+new VehID[MAX_VEHICLES_SERVER];
+new VehOwner[MAX_VEHICLES_SERVER];
+new VehSlot[MAX_VEHICLES_SERVER];
+new bool:MesinVeh[MAX_VEHICLES_SERVER];

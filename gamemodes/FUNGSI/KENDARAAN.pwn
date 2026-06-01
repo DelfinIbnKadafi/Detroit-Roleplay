@@ -22,6 +22,9 @@ stock MuatDataKendaraan(playerid) {
     cache_get_value_name_float(i, "y", PVeh[playerid][i][vY]);
     cache_get_value_name_float(i, "z", PVeh[playerid][i][vZ]);
     cache_get_value_name_float(i, "angel", PVeh[playerid][i][vAngel]);
+    
+    cache_get_value_name_int(i, "fuel", PVeh[playerid][i][vFuel]);
+    cache_get_value_name_int(i, "kunci", PVeh[playerid][i][vKunci]);
 
     JumVeh[playerid]++;
   }
@@ -57,4 +60,23 @@ stock GetVehicleModelName(modelid, name[], len) {
     return 1;
   }
   return 0;
+}
+
+public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
+  new owner = VehOwner[vehicleid];
+  new slot  = VehSlot[vehicleid];
+  
+  if(owner < 0 || owner >= MAX_PLAYERS) return 1;
+  if(slot < 0 || slot >= MAX_KENDARAAN) return 1;
+  
+  if(PVeh[owner][slot][vKunci] == 1) {
+    SendMessageError(playerid, "Kendaraan ini terkunci!");
+    return 0;
+  }
+    
+  return 1;
+}
+
+public OnPlayerExitVehicle(playerid, vehicleid) {
+  return 1;
 }

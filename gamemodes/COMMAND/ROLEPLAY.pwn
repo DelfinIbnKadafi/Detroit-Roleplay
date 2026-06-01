@@ -1,9 +1,9 @@
 // rp cmd
-CMD:south(playerid, params[]) {
+CMD:s(playerid, params[]) {
   new text[512];
   
   if (isnull(params)) {
-    SendClientMessage(playerid, -1, "Gunakan: /south <text>");
+    SendClientMessage(playerid, -1, "Gunakan: /s <text>");
     return 1;
   }
   
@@ -16,7 +16,7 @@ CMD:south(playerid, params[]) {
     if(!IsPlayerConnected(i) || i == playerid) continue;
     // hitung jarak
     k = GetPlayerDistanceFromPoint(i, px, py, pz);
-    if(k <= 10.0) {
+    if(k <= 30.0) {
       SendClientMessage(i, 0xFFFFFFFF, text);
     }
   }
@@ -26,11 +26,11 @@ CMD:south(playerid, params[]) {
   return 1;
 }
 
-CMD:low(playerid, params[]) {
+CMD:l(playerid, params[]) {
   new text[512];
   
   if (isnull(params)) {
-    SendClientMessage(playerid, -1, "Gunakan: /low <text>");
+    SendClientMessage(playerid, -1, "Gunakan: /l <text>");
     return 1;
   }
   
@@ -70,12 +70,12 @@ CMD:do(playerid, params[]) {
     if(!IsPlayerConnected(i) || i == playerid) continue;
     // hitung jarak
     k = GetPlayerDistanceFromPoint(i, px, py, pz);
-    if(k <= 10.0) {
-      SendClientMessage(i, 0xFFFFFFFF, text);
+    if(k <= 20.0) {
+      SendClientMessage(i, 0xb600c4FF, text);
     }
   }
 
-  SendClientMessage(playerid, 0x6B0E66FF, text);
+  SendClientMessage(playerid, 0xb600c4FF, text);
 
   return 1;
 }
@@ -97,12 +97,12 @@ CMD:me(playerid, params[]) {
     if(!IsPlayerConnected(i) || i == playerid) continue;
     // hitung jarak
     k = GetPlayerDistanceFromPoint(i, px, py, pz);
-    if(k <= 10.0) {
-      SendClientMessage(i, 0xFFFFFFFF, text);
+    if(k <= 20.0) {
+      SendClientMessage(i, 0xb600c4FF, text);
     }
   }
 
-  SendClientMessage(playerid, 0x6B0E66FF, text);
+  SendClientMessage(playerid, 0xb600c4FF, text);
 
   return 1;
 }

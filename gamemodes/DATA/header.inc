@@ -1,3 +1,4 @@
+#include "DATA/DEFINE.pwn"
 #include "DATA/VARIABLE.pwn"
 #include "DATA/DEFINE.pwn"
 #include "DATA/ENUM.pwn"

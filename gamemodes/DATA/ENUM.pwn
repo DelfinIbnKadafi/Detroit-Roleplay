@@ -39,7 +39,9 @@ enum DataVeh {
   Float:vX,
   Float:vY,
   Float:vZ,
-  Float:vAngel
+  Float:vAngel,
+  vFuel,
+  vKunci
 };
 
 new PVeh[MAX_PLAYERS][MAX_KENDARAAN][DataVeh];

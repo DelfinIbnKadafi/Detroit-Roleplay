@@ -20,7 +20,8 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
   switch(listitem) {
     case 0: {
       // spawn veh
-      VehID[PVeh[playerid][idp][vId]] = CreateVehicle(
+      new dbid = PVeh[playerid][idp][vId];
+      new vehicleid = CreateVehicle(
        PVeh[playerid][idp][vModel],
        PVeh[playerid][idp][vX],
        PVeh[playerid][idp][vY],
@@ -30,7 +31,15 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
        PVeh[playerid][idp][vColor2],
        -1
       );
-      SetVehicleHealth(VehID[PVeh[playerid][idp][vId]], PVeh[playerid][idp][vHealth]);
+      
+      VehID[dbid] = vehicleid;
+      
+      VehOwner[vehicleid] = playerid;
+      VehSlot[vehicleid] = idp;
+      
+      MesinVeh[vehicleid] = false;
+      
+      SetVehicleHealth(vehicleid, PVeh[playerid][idp][vHealth]);
       
       SendMessageInfo(playerid, "Kendaran telah di spawn");
       return 1;
@@ -43,7 +52,21 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
       return 1;
     }
     case 2: {
-      // kunci
+      if(!IsPlayerInRangeOfPoint(playerid, 4.0, PVeh[playerid][idp][vX], PVeh[playerid][idp][vY], PVeh[playerid][idp][vZ])) {
+        SendMessageError(playerid, "Kamu terlalu jauh dari kendaraan ini.");
+        return 1;
+      }
+      new vname[32];
+      GetVehicleModelName(PVeh[playerid][idp][vModel], vname, sizeof(vname));
+
+      if(PVeh[playerid][idp][vKunci] == 0) {
+        PVeh[playerid][idp][vKunci] = 1;
+        SendMessageInfo(playerid, "Kendaraan berhasil di kunci");
+      }
+      else {
+        PVeh[playerid][idp][vKunci] = 0;
+        SendMessageInfo(playerid, "Kunci kendaraan berhadil di buka");
+      }
       return 1;
     }
     case 3: {
