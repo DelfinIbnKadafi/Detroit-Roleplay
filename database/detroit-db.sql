@@ -30,16 +30,17 @@ ALTER TABLE `Pemain`
 COMMIT;
 
 CREATE TABLE `Kendaraan` (
-  `vid`    INT(11) NOT NULL,
-  `pid`    INT(11) NOT NULL,
-  `model`  INT(11) NOT NULL,
-  `color1` INT(11) DEFAULT '0',
-  `color2` INT(11) DEFAULT '0',
-  `plate`  VARCHAR(16),
-  `health` FLOAT   DEFAULT '100.0',
-  `x`      FLOAT   DEFAULT '0.0',
-  `y`      FLOAT   DEFAULT '0.0',
-  `z`      FLOAT   DEFAULT '0.0'
+  `vid` int(11) NOT NULL,
+  `pid` int(11) NOT NULL,
+  `model` int(11) NOT NULL,
+  `color1` int(11) DEFAULT '0',
+  `color2` int(11) DEFAULT '0',
+  `plate` varchar(16),
+  `health` float DEFAULT '100.0',
+  `x` float DEFAULT '0.0',
+  `y` float DEFAULT '0.0',
+  `z` float DEFAULT '0.0',
+  `angel` float DEFAULT '0.0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `Kendaraan`

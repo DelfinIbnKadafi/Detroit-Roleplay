@@ -10,3 +10,4 @@ new bool:Mute[MAX_PLAYERS];
 // kendaraan
 new JumVeh[MAX_PLAYERS];
 new PilihanVeh[MAX_PLAYERS];
+new VehID[1000];

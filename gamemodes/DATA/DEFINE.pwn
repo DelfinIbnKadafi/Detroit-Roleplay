@@ -15,5 +15,4 @@
 #define DEFAULT_POS_Z   		1.4297
 #define DEFAULT_POS_A   		261.0740
 
-// veh 
 #define MAX_KENDARAAN 5

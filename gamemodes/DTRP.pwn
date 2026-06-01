@@ -14,6 +14,7 @@
 #include "DATA/header" 
 #include "FUNGSI/header"
 #include "COMMAND/header"
+#include "COMMAND/DIALOG/header"
 
 
 main(){}

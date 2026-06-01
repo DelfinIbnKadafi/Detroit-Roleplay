@@ -21,6 +21,7 @@ stock MuatDataKendaraan(playerid) {
     cache_get_value_name_float(i, "x", PVeh[playerid][i][vX]);
     cache_get_value_name_float(i, "y", PVeh[playerid][i][vY]);
     cache_get_value_name_float(i, "z", PVeh[playerid][i][vZ]);
+    cache_get_value_name_float(i, "angel", PVeh[playerid][i][vAngel]);
 
     JumVeh[playerid]++;
   }
