@@ -74,4 +74,27 @@ CMD:myveh(playerid, params[]) {
   Dialog_Show(playerid, DL_VEHLIST, DIALOG_STYLE_LIST, "Id\tModel", liststr, "Pilih", "Batal");
   return 1;
 }
+
+CMD:en(playerid, params[]) {
+  if(!IsPlayerInAnyVehicle(playerid)) {
+    SendMessageError(playerid, "Kamu tidak berada di kendaraan manapun");
+    return 1;
+  }
+  else {
+    new vehicleid;
+    vehicleid = GetPlayerVehicleID(playerid);
+    
+    if(MesinVeh[vehicleid] == false) {
+      SendMessageInfo(playerid, "Menghidupkan mesin kendaraan");
+      MesinVeh[vehicleid] = true;
+      SetVehicleParamsEx(vehicleid, 1, 0, 0, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci], 0, 0, 0);
+    }
+    else {
+      SendMessageInfo(playerid, "Mematikan mesin kendaraan");
+      MesinVeh[vehicleid] = false;
+      SetVehicleParamsEx(vehicleid, 0, 0, 0, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci], 0, 0, 0);
+    }
+  }
+  return 1;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////

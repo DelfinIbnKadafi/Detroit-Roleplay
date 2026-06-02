@@ -33,6 +33,40 @@ stock MuatDataKendaraan(playerid) {
   return 1;
 }
 
+stock SaveDataKendaraan(playerid) {
+  if(JumVeh[playerid] == 0) {
+    return 1;
+  }
+    
+  for(new i = 0; i < JumVeh[playerid]; i++) {
+    new vehicleid = VehID[PVeh[playerid][i][vId]];
+    if(IsValidVehicle(vehicleid)) {
+      GetVehicleHealth(vehicleid, PVeh[playerid][i][vHealth]);
+      GetVehiclePos(vehicleid,
+       PVeh[playerid][i][vX],
+       PVeh[playerid][i][vY],
+       PVeh[playerid][i][vZ]
+      );
+      GetVehicleZAngle(vehicleid, PVeh[playerid][i][vAngel]);
+    }
+      
+    new query[256];
+    mysql_format(g_SQL, query, sizeof(query),
+     "UPDATE Kendaraan SET health='%.1f', x='%.4f', y='%.4f', z='%.4f', angel='%.4f', fuel=%d, kunci=%d WHERE vid='%d'",
+     PVeh[playerid][i][vHealth],
+     PVeh[playerid][i][vX],
+     PVeh[playerid][i][vY],
+     PVeh[playerid][i][vZ],
+     PVeh[playerid][i][vAngel],
+     PVeh[playerid][i][vFuel],
+     PVeh[playerid][i][vKunci],
+     PVeh[playerid][i][vId]
+    );
+    mysql_tquery(g_SQL, query);
+  }
+  return 1;
+}
+
 stock GetVehicleModelName(modelid, name[], len) {
   new const vehicleNames[][] = {
     "Landstalker", "Bravura", "Buffano", "Linerunner", "Perennial", "Sentinel", "Dumper", "Firetruck", "Trashmaster", "Stretch",

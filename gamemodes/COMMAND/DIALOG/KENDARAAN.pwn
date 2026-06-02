@@ -40,6 +40,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
       MesinVeh[vehicleid] = false;
       
       SetVehicleHealth(vehicleid, PVeh[playerid][idp][vHealth]);
+      SetVehicleParamsEx(vehicleid, 0, 0, 0, PVeh[playerid][idp][vKunci], 0, 0, 0);
       
       SendMessageInfo(playerid, "Kendaran telah di spawn");
       return 1;
