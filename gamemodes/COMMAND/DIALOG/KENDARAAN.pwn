@@ -53,20 +53,36 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
       return 1;
     }
     case 2: {
+      new vehicleid = VehID[PVeh[playerid][idp][vId]];
+      
+      if(!IsValidVehicle(vehicleid)) {
+        SendMessageError(playerid, "Kendaraan belum di-spawn.");
+        return 1;
+      }
+      
+      GetVehiclePos(vehicleid,
+       PVeh[playerid][idp][vX],
+       PVeh[playerid][idp][vY],
+       PVeh[playerid][idp][vZ]
+      );
+      
       if(!IsPlayerInRangeOfPoint(playerid, 4.0, PVeh[playerid][idp][vX], PVeh[playerid][idp][vY], PVeh[playerid][idp][vZ])) {
         SendMessageError(playerid, "Kamu terlalu jauh dari kendaraan ini.");
         return 1;
       }
-      new vname[32];
-      GetVehicleModelName(PVeh[playerid][idp][vModel], vname, sizeof(vname));
-
+      
       if(PVeh[playerid][idp][vKunci] == 0) {
         PVeh[playerid][idp][vKunci] = 1;
-        SendMessageInfo(playerid, "Kendaraan berhasil di kunci");
+        
+        SetVehicleParamsEx(vehicleid, MesinVeh[vehicleid], 0, 0, 1, 0, 0, 0);
+        
+        SendMessageInfo(playerid, "Kendaraan berhasil dikunci.");
       }
       else {
         PVeh[playerid][idp][vKunci] = 0;
-        SendMessageInfo(playerid, "Kunci kendaraan berhadil di buka");
+        SetVehicleParamsEx(vehicleid, MesinVeh[vehicleid], 0, 0, 0, 0, 0, 0);
+        
+        SendMessageInfo(playerid, "Kunci kendaraan berhasil dibuka.");
       }
       return 1;
     }
