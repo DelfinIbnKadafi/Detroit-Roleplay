@@ -12,7 +12,9 @@ enum DATA_PEMAIN
   pLevel,
   Float:pDarah,
   Float:pArmor,
-  pUang
+  pUang,
+  pHaus,
+  pLapar
 };
 
 enum POSISI_PLAYER 

@@ -8,3 +8,4 @@
 #include "FUNGSI/REGISTER.pwn"
 #include "FUNGSI/LOGIN.pwn"
 #include "FUNGSI/OTOT.pwn"
+#include "FUNGSI/HBE.pwn"

@@ -19,7 +19,9 @@ CREATE TABLE `Pemain` (
   `darah` float DEFAULT NULL,
   `armor` float DEFAULT NULL,
   `level` smallint(6) DEFAULT '1',
-  `uang` int DEFAULT 0
+  `uang` int DEFAULT '0',
+  `lapar` int DEFAULT '100',
+  `haus` int DEFAULT '100'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `Pemain`

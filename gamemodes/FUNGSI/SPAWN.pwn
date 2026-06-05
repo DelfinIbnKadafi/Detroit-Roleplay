@@ -18,6 +18,8 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
       PosisiPemain[playerid][pAngle]
     );
     
+    ShowHbeTextdraw(playerid);
+    
     StatusLogin[playerid] = true;
     SpawnPlayer(playerid);
     MuatDataKendaraan(playerid);
@@ -38,6 +40,11 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     SetPlayerScore(playerid, 1);
     GivePlayerMoney(playerid, 100000);
   }
+  Pemain[playerid][pHaus] = 100;
+  Pemain[playerid][pLapar] = 100;
+  Pemain[playerid][pDarah] = 100.0;
+  
+  ShowHbeTextdraw(playerid);
   
   StatusLogin[playerid] = true;
   
