@@ -18,6 +18,7 @@ stock ShowHbeTextdraw(playerid) {
   PlayerTextDrawShow(playerid, HBE_NYAWA[playerid]);
   
   SetTimerEx("UpdateTextdrawHbe", 1000, true, "i", playerid);
+  SetTimerEx("KurangiLaparHaus", 180000, true, "i", playerid);
   return 1;
 }
 
@@ -35,37 +36,13 @@ Fungsi: UpdateTextdrawHbe(playerid) {
   PlayerTextDrawSetString(playerid, HBE_NYAWA[playerid], nyawa);
   return 1;
 }
-// tes
-CMD:sethp(playerid, params[]) {
-  new t;
-  if(sscanf(params, "i", t)) {
-    return 1;
-  }
-  
-  new Float:d = float(t);
-  SetPlayerHealth(playerid, d);
-  
-  return 1;
-}
 
-CMD:setlapar(playerid, params[]) {
-  new a;
-  if(sscanf(params, "i", a)) {
-    return 1;
-  }
-  Pemain[playerid][pLapar] = a;
-  SendClientMessage(playerid, COLOR_WHITE, "done");
+Fungsi: KurangiLaparHaus(playerid) {
+  if(Pemain[playerid][pLapar] == 0) return 1;
+  if(Pemain[playerid][pHaus] == 0) return 1;
   
-  return 1;
-}
-
-CMD:sethaus(playerid, params[]) {
-  new a;
-  if(sscanf(params, "i", a)) {
-    return 1;
-  }
-  Pemain[playerid][pHaus] = a;
-  SendClientMessage(playerid, COLOR_WHITE, "done");
+  Pemain[playerid][pLapar]--;
+  Pemain[playerid][pHaus]--;
   
   return 1;
 }

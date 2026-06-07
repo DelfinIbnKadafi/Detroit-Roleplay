@@ -45,6 +45,7 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
   Pemain[playerid][pDarah] = 100.0;
   
   ShowHbeTextdraw(playerid);
+  MuatDataKendaraan(playerid);
   
   StatusLogin[playerid] = true;
   
