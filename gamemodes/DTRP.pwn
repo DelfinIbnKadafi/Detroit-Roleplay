@@ -9,7 +9,6 @@
 #include <zcmd>
 #include <foreach>
 
-
 // local includes
 #include "DATA/header"
 #include "ASET/header"
@@ -34,6 +33,7 @@ public OnGameModeInit()
     SetGameModeText(SERVER_VERSION);
     
     LoadTextdraw();
+    DisableInteriorEnterExits();
     
     return 1;
 }
