@@ -62,8 +62,9 @@ public OnPlayerConnect(playerid)
 public OnPlayerDisconnect(playerid, reason) 
 {
   SimpanDataPemain(playerid);
-  ResetDataPemain(playerid);
+  HancurkanKendaraanPlayer(playerid);
   SaveDataKendaraan(playerid);
+  ResetDataPemain(playerid);
   return 1;
 }
 //////////////////////////////////////////////////////////////////////////

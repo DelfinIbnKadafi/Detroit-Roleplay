@@ -67,6 +67,14 @@ stock SaveDataKendaraan(playerid) {
   return 1;
 }
 
+stock HancurkanKendaraanPlayer(playerid) {
+  for(new i = 0; i < JumVeh[playerid]; i++) {
+    if(!IsValidVehicle(VehID[PVeh[playerid][i][vId]])) continue;
+    DestroyVehicle(VehID[PVeh[playerid][i][vId]]);
+  }
+  return 1;
+}
+
 stock GetVehicleModelName(modelid, name[], len) {
   new const vehicleNames[][] = {
     "Landstalker", "Bravura", "Buffano", "Linerunner", "Perennial", "Sentinel", "Dumper", "Firetruck", "Trashmaster", "Stretch",
