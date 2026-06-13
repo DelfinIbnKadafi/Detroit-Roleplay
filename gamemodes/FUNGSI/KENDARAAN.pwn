@@ -115,10 +115,13 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
     SendMessageError(playerid, "Kendaraan ini terkunci!");
     return 0;
   }
-    
+  
+  ShowSpeedoMeter(playerid);
+  
   return 1;
 }
 
 public OnPlayerExitVehicle(playerid, vehicleid) {
+  HideSpeedoMeter(playerid);
   return 1;
 }

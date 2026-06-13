@@ -84,6 +84,7 @@ CMD:en(playerid, params[]) {
     new vehicleid;
     vehicleid = GetPlayerVehicleID(playerid);
     
+    if(GetVehicleDriver(vehicleid) != playerid) return 1;
     if(PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel] == 0) return 1;
     
     if(MesinVeh[vehicleid] == false) {
