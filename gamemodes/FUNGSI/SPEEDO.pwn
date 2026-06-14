@@ -18,6 +18,6 @@ stock HideSpeedoMeter(playerid) {
 }
 
 stock ShowSpeedoMeter(playerid) {
-
+  SetTimerEx("UpdateSpeedo", 500, true, "i", playerid);
   return 1;
 }

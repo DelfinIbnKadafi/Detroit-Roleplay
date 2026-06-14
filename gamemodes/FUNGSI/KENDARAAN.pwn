@@ -70,6 +70,7 @@ stock SaveDataKendaraan(playerid) {
 stock HancurkanKendaraanPlayer(playerid) {
   for(new i = 0; i < JumVeh[playerid]; i++) {
     if(!IsValidVehicle(VehID[PVeh[playerid][i][vId]])) continue;
+    VehicleIsSpawn[VehSlot[VehID[VehID[PVeh[playerid][i][vId]]]]] = false;
     DestroyVehicle(VehID[PVeh[playerid][i][vId]]);
   }
   return 1;

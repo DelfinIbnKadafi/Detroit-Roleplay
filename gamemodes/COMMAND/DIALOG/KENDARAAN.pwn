@@ -20,6 +20,11 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
   switch(listitem) {
     case 0: {
       // spawn veh
+      if(VehicleIsSpawn[idp] == true) {
+        SendMesageError(playerid, "Kendaraan tersebut telah di spawn");
+        return 1;
+      }
+      
       new dbid = PVeh[playerid][idp][vId];
       new vehicleid = CreateVehicle(
        PVeh[playerid][idp][vModel],
@@ -31,6 +36,8 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
        PVeh[playerid][idp][vColor2],
        -1
       );
+      
+      VehicleIsSpawn[idp] = true;
       
       VehID[dbid] = vehicleid;
       
