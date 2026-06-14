@@ -125,3 +125,15 @@ public OnPlayerExitVehicle(playerid, vehicleid) {
   HideSpeedoMeter(playerid);
   return 1;
 }
+
+const GetVehicleSpeed(vehicleid) {
+  new Float:x, Float:y, Float:z, Float:SpeedFloat;
+  new Speed;
+  
+  GetVehicleVelocity(vehicleid, x, y, z);
+  SpeedFloat = floatsqroot((x * x) + (y * y) + (z * z)) *  180;
+  
+  Speed = floatround(SpeedFloat, floatround_floor);
+  
+  return Speed;
+}

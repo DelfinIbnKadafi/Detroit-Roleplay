@@ -15,3 +15,4 @@ new VehID[MAX_VEHICLES_SERVER];
 new VehOwner[MAX_VEHICLES_SERVER];
 new VehSlot[MAX_VEHICLES_SERVER];
 new bool:MesinVeh[MAX_VEHICLES_SERVER];
+new bool:VehicleIsSpawn[MAX_KENDARAAN];

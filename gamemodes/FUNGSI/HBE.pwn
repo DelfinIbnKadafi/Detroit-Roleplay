@@ -1,7 +1,7 @@
 stock ShowHbeTextdraw(playerid) {
-  for(new i = 0; i < 10; i++) {
+  /*for(new i = 0; i < 10; i++) {
       TextDrawShowForPlayer(playerid, BACKROUNd_HBE[i]);
-  }
+  }*/
 
   new lapar[4], haus[4], nyawa[4];
   
