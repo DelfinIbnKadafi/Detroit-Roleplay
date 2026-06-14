@@ -21,7 +21,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
     case 0: {
       // spawn veh
       if(VehicleIsSpawn[idp] == true) {
-        SendMesageError(playerid, "Kendaraan tersebut telah di spawn");
+        SendMessageError(playerid, "Kendaraan tersebut telah di spawn");
         return 1;
       }
       

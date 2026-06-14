@@ -18,7 +18,7 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
       PosisiPemain[playerid][pAngle]
     );
     
-    ShowHbeTextdraw(playerid);
+    ShowHideHbeTextdraw(playerid, true);
     
     StatusLogin[playerid] = true;
     SpawnPlayer(playerid);
@@ -44,7 +44,7 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
   Pemain[playerid][pLapar] = 100;
   Pemain[playerid][pDarah] = 100.0;
   
-  ShowHbeTextdraw(playerid);
+  ShowHideHbeTextdraw(playerid, true);
   MuatDataKendaraan(playerid);
   
   StatusLogin[playerid] = true;

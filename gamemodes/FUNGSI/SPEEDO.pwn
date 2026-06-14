@@ -1,23 +1,59 @@
-Fungsi: UpdateSpeedo(playerid) {
+Fungsi: UpdateSpeedoMeter(playerid) {
   if(!IsPlayerInAnyVehicle(playerid)) return 1;
   
   new vehicleid = GetPlayerVehicleID(playerid);
-  if(!IsValidVehicle(vehicleid)) return 1;
+  new speed = GetVehicleSpeed(vehicleid);
   
-  new speed = GetVehicleSpeed(playerid);
+  new str[16];
+  format(str, sizeof(str), "%d", speed);
+  PlayerTextDrawSetString(playerid, VEHSPEED[playerid][2], str);
   
-  new owner = VehOwner[vehicleid];
+  format(str, sizeof(str), "%d", PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel]);
+  PlayerTextDrawSetString(playerid, VEHSPEED[playerid][1], str);
   
+  new Float:floathealth;
+  GetVehicleHealth(vehicleid, floathealth);
+  new hpveh = floatround(floathealth, floatround_floor);
+  format(str, sizeof(str), "%d", hpveh);
+  PlayerTextDrawSetString(playerid, VEHSPEED[playerid][0], str);
   
   return 1;
 }
 
-stock HideSpeedoMeter(playerid) {
-  
-  return 1;
-}
-
-stock ShowSpeedoMeter(playerid) {
-  SetTimerEx("UpdateSpeedo", 500, true, "i", playerid);
+stock ShowHideSpeedo(playerid, bool:showorhide) {
+  if(showorhide == true) {
+    for(new i  = 0; i < 4;  i++) {
+      TextDrawShowForPlayer(playerid, BACKGROUND_SPEDO[i]);
+    }
+    for(new i = 0; i <  3; i ++) {
+      PlayerTextDrawShow(playerid, VEHSPEED[playerid][i]);
+    }
+    
+    new vehicleid = GetPlayerVehicleID(playerid);
+    new speed = GetVehicleSpeed(vehicleid);
+    
+    new str[16];
+    format(str, sizeof(str), "%d", speed);
+    PlayerTextDrawSetString(playerid, VEHSPEED[playerid][2], str);
+    
+    format(str, sizeof(str), "%d", PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel]);
+    PlayerTextDrawSetString(playerid, VEHSPEED[playerid][1], str);
+    
+    new Float:floathealth;
+    GetVehicleHealth(vehicleid, floathealth);
+    new hpveh = floatround(floathealth, floatround_floor);
+    format(str, sizeof(str), "%d", hpveh);
+    PlayerTextDrawSetString(playerid, VEHSPEED[playerid][0], str);
+    
+    SetTimerEx("UpdateSpeedoMeter", 500, true, "i",  playerid);
+  }
+  else {
+    for(new i = 0; i < 4; i++) {
+      TextDrawHideForPlayer(playerid, BACKGROUND_SPEDO[i]);
+    }
+    for(new i = 0; i <  3; i ++) {
+      PlayerTextDrawHide(playerid, VEHSPEED[playerid][i]);
+    }
+  }
   return 1;
 }

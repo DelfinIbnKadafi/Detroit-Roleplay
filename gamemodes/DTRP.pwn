@@ -41,6 +41,10 @@ public OnGameModeInit()
 // connect/disconnect
 public OnPlayerConnect(playerid) 
 {
+  for(new i = 0; i < 3; i++) {
+    TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);
+  }
+  
   SetPlayerColor(playerid, 0xFFFFFFFF);
   LoadPlayerTextdraw(playerid);
   GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME);

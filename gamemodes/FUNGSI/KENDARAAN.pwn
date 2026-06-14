@@ -117,17 +117,19 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
     return 0;
   }
   
-  ShowSpeedoMeter(playerid);
+  if(GetVehicleDriver(vehicleid) != playerid) return 1;
+  
+  ShowHideSpeedo(playerid, true);
   
   return 1;
 }
 
 public OnPlayerExitVehicle(playerid, vehicleid) {
-  HideSpeedoMeter(playerid);
+  ShowHideSpeedo(playerid, false);
   return 1;
 }
 
-const GetVehicleSpeed(vehicleid) {
+stock GetVehicleSpeed(vehicleid) {
   new Float:x, Float:y, Float:z, Float:SpeedFloat;
   new Speed;
   

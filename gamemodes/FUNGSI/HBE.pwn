@@ -1,39 +1,38 @@
-stock ShowHbeTextdraw(playerid) {
-  /*for(new i = 0; i < 10; i++) {
-      TextDrawShowForPlayer(playerid, BACKROUNd_HBE[i]);
-  }*/
-
-  new lapar[4], haus[4], nyawa[4];
-  
-  format(nyawa, sizeof(nyawa), "%d", floatround(Pemain[playerid][pDarah], floatround_floor));
-  format(lapar, sizeof(lapar), "%d", Pemain[playerid][pLapar]);
-  format(haus,  sizeof(haus),  "%d", Pemain[playerid][pHaus]);
-  
-  PlayerTextDrawSetString(playerid, HBE_LAPAR[playerid], lapar);
-  PlayerTextDrawSetString(playerid, HBE_HAUS[playerid],  haus);
-  PlayerTextDrawSetString(playerid, HBE_NYAWA[playerid], nyawa);
-  
-  PlayerTextDrawShow(playerid, HBE_LAPAR[playerid]);
-  PlayerTextDrawShow(playerid, HBE_HAUS[playerid]);
-  PlayerTextDrawShow(playerid, HBE_NYAWA[playerid]);
-  
-  SetTimerEx("UpdateTextdrawHbe", 1000, true, "i", playerid);
-  SetTimerEx("KurangiLaparHaus", 180000, true, "i", playerid);
+stock ShowHideHbeTextdraw(playerid, bool:showorhide) {
+  if(showorhide == true) {
+    for(new i = 0; i < 3; i++) {
+      TextDrawShowForPlayer(playerid, BACKGROUND_HBE[i]);
+    }
+    PlayerTextDrawShow(playerid, STATS[playerid][0]);
+    PlayerTextDrawShow(playerid, STATS[playerid][1]);
+    
+    new str[16];
+    format(str, sizeof(str), "%d", Pemain[playerid][pLapar]);
+    PlayerTextDrawSetString(playerid, STATS[playerid][0], str);
+    
+    format(str, sizeof(str), "%d", Pemain[playerid][pHaus]);
+    PlayerTextDrawSetString(playerid, STATS[playerid][1], str);
+    
+    SetTimerEx("UpdateTextdrawHbe", 1000, true, "i", playerid);
+    SetTimerEx("KurangiLaparHaus", 180000, true, "i", playerid);
+  }
+  else {
+    for(new i = 0; i < 3; i++) {
+      TextDrawHideForPlayer(playerid, BACKGROUND_HBE[i]);
+    }
+    PlayerTextDrawHide(playerid, STATS[playerid][0]);
+    PlayerTextDrawHide(playerid, STATS[playerid][1]);
+  }
   return 1;
 }
 
 Fungsi: UpdateTextdrawHbe(playerid) {
-  new lapar[4], haus[4], nyawa[4];
+  new str[16];
+  format(str, sizeof(str), "%d", Pemain[playerid][pLapar]);
+  PlayerTextDrawSetString(playerid, STATS[playerid][0], str);
   
-  GetPlayerHealth(playerid, Pemain[playerid][pDarah]);
-  
-  format(nyawa, sizeof(nyawa), "%d", floatround(Pemain[playerid][pDarah], floatround_floor));
-  format(lapar, sizeof(lapar), "%d", Pemain[playerid][pLapar]);
-  format(haus,  sizeof(haus),  "%d", Pemain[playerid][pHaus]);
-  
-  PlayerTextDrawSetString(playerid, HBE_LAPAR[playerid], lapar);
-  PlayerTextDrawSetString(playerid, HBE_HAUS[playerid],  haus);
-  PlayerTextDrawSetString(playerid, HBE_NYAWA[playerid], nyawa);
+  format(str, sizeof(str), "%d", Pemain[playerid][pHaus]);
+  PlayerTextDrawSetString(playerid, STATS[playerid][1], str);
   return 1;
 }
 
