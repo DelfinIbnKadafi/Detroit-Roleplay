@@ -139,7 +139,7 @@ stock GetVehicleSpeed(vehicleid) {
   return Speed;
 }
 
-Fungsi: HidupMatiMesinVeh(vehicleid, bool:hidupormati) {
+Fungsi: HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati) {
   if(hidupormati == true) {
     SetVehicleParamsEx(vehicleid, 1, 0, 0, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci], 0, 0, 0);
     MesinVeh[vehicleid] = true;

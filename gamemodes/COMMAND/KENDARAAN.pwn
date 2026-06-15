@@ -30,12 +30,12 @@ CMD:en(playerid, params[]) {
     
     if(MesinVeh[vehicleid] == false) {
       SendMessageInfo(playerid, "Menghidupkan mesin kendaraan....");
-      SetTimerEx("HidupMatiMesinVeh", 2000, false, "ii", vehicleid, true);
+      SetTimerEx("HidupMatiMesinVeh", 2000, false, "iii", playerid, vehicleid, true);
       TextDrawShowForPlayer(playerid, MENGHIDUPKAN_MESIN_KENDARAAN[0]);
     }
     else {
       SendMessageInfo(playerid, "Mematikan mesin kendaraan....");
-      SetTimerEx("HidupMatiMesinVeh", 2000, false, "ii", vehicleid, false);
+      SetTimerEx("HidupMatiMesinVeh", 2000, false, "iii", playerid, vehicleid, false);
       TextDrawHideForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
     }
   }
