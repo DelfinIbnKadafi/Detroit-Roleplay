@@ -8,12 +8,24 @@ Fungsi: UpdateSpeedoMeter(playerid) {
   format(str, sizeof(str), "%d", speed);
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][2], str);
   
+  new len = strlen(str);
+  
+  if(len == 1) {
+    PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000 + 3.000, 402.000);
+  }
+  else if(len == 2) {
+    PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000 + 1.500, 402.000);
+  }
+  else if(len == 3) {
+    PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000, 402.000);
+  }
+  
   format(str, sizeof(str), "%d", PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel]);
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][1], str);
   
   new Float:floathealth;
   GetVehicleHealth(vehicleid, floathealth);
-  new hpveh = floatround(floathealth, floatround_floor);
+  new hpveh = floatround(floathealth, floatround_floor) / 10;
   format(str, sizeof(str), "%d", hpveh);
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][0], str);
   
@@ -41,11 +53,11 @@ stock ShowHideSpeedo(playerid, bool:showorhide) {
     
     new Float:floathealth;
     GetVehicleHealth(vehicleid, floathealth);
-    new hpveh = floatround(floathealth, floatround_floor);
+    new hpveh = floatround(floathealth, floatround_floor) / 10;
     format(str, sizeof(str), "%d", hpveh);
     PlayerTextDrawSetString(playerid, VEHSPEED[playerid][0], str);
     
-    SetTimerEx("UpdateSpeedoMeter", 500, true, "i",  playerid);
+    SetTimerEx("UpdateSpeedoMeter", 250, true, "i",  playerid);
   }
   else {
     for(new i = 0; i < 4; i++) {

@@ -117,8 +117,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
     return 0;
   }
   
-  if(GetVehicleDriver(vehicleid) != playerid) return 1;
-  
   ShowHideSpeedo(playerid, true);
   
   return 1;

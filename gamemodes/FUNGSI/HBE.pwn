@@ -14,7 +14,7 @@ stock ShowHideHbeTextdraw(playerid, bool:showorhide) {
     PlayerTextDrawSetString(playerid, STATS[playerid][1], str);
     
     SetTimerEx("UpdateTextdrawHbe", 1000, true, "i", playerid);
-    SetTimerEx("KurangiLaparHaus", 180000, true, "i", playerid);
+    SetTimerEx("KurangiLaparHaus", 120000, true, "i", playerid);
   }
   else {
     for(new i = 0; i < 3; i++) {
@@ -37,11 +37,11 @@ Fungsi: UpdateTextdrawHbe(playerid) {
 }
 
 Fungsi: KurangiLaparHaus(playerid) {
-  if(Pemain[playerid][pLapar] == 0) return 1;
-  if(Pemain[playerid][pHaus] == 0) return 1;
-  
-  Pemain[playerid][pLapar]--;
-  Pemain[playerid][pHaus]--;
-  
+  if(Pemain[playerid][pLapar] > 0) {
+    Pemain[playerid][pLapar] -= 1;
+  }
+  if(Pemain[playerid][pHaus] > 0) {
+    Pemain[playerid][pHaus] -= 1;
+  }
   return 1;
 }
