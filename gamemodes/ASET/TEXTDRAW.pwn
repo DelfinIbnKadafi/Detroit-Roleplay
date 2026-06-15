@@ -9,6 +9,10 @@ new PlayerText:STATS[MAX_PLAYERS][2]; //  0 = lapar, 1 = haus
 new Text:BACKGROUND_SPEDO[4];
 new PlayerText:VEHSPEED[MAX_PLAYERS][3]; // 0 = kerusakan , 1 = fuel, 3 = speed
 
+// info td 
+new Text:MENGHIDUPKAN_MESIN_KENDARAAN[1];
+new Text:TD_PINTU[2];
+
 stock LoadPlayerTextdraw(playerid) {
   // speedo value
   VEHSPEED[playerid][0] = CreatePlayerTextDraw(playerid, 543.000, 395.000, "100");
@@ -173,6 +177,38 @@ stock LoadTextdraw() {
   TextDrawFont(LOGO_SERVER[2], TEXT_DRAW_FONT_1);
   TextDrawSetProportional(LOGO_SERVER[2], true);
   //////////////////////////////////////////////////////////////
+  
+  // info td 
+  MENGHIDUPKAN_MESIN_KENDARAAN[0] = TextDrawCreate(234.000, 411.000, "Menghidupkan mesin kendaraan....");
+  TextDrawLetterSize(MENGHIDUPKAN_MESIN_KENDARAAN[0], 0.300, 1.500);
+  TextDrawAlignment(MENGHIDUPKAN_MESIN_KENDARAAN[0], TEXT_DRAW_ALIGN_LEFT);
+  TextDrawColour(MENGHIDUPKAN_MESIN_KENDARAAN[0], -1);
+  TextDrawSetShadow(MENGHIDUPKAN_MESIN_KENDARAAN[0], 1);
+  TextDrawSetOutline(MENGHIDUPKAN_MESIN_KENDARAAN[0], 1);
+  TextDrawBackgroundColour(MENGHIDUPKAN_MESIN_KENDARAAN[0], 150);
+  TextDrawFont(MENGHIDUPKAN_MESIN_KENDARAAN[0], TEXT_DRAW_FONT_1);
+  TextDrawSetProportional(MENGHIDUPKAN_MESIN_KENDARAAN[0], true);
+  
+  TD_PINTU[0] = TextDrawCreate(216.000, 80.000, "Tekan tombol    untuk masuk/keluar pintu");
+  TextDrawLetterSize(TD_PINTU[0], 0.359, 3.299);
+  TextDrawAlignment(TD_PINTU[0], TEXT_DRAW_ALIGN_LEFT);
+  TextDrawColour(TD_PINTU[0], -1);
+  TextDrawSetShadow(TD_PINTU[0], 1);
+  TextDrawSetOutline(TD_PINTU[0], 1);
+  TextDrawBackgroundColour(TD_PINTU[0], 150);
+  TextDrawFont(TD_PINTU[0], TEXT_DRAW_FONT_1);
+  TextDrawSetProportional(TD_PINTU[0], true);
+  
+  TD_PINTU[1] = TextDrawCreate(291.000, 81.000, "F");
+  TextDrawLetterSize(TD_PINTU[1], 0.359, 3.299);
+  TextDrawAlignment(TD_PINTU[1], TEXT_DRAW_ALIGN_LEFT);
+  TextDrawColour(TD_PINTU[1], -16776961);
+  TextDrawSetShadow(TD_PINTU[1], 1);
+  TextDrawSetOutline(TD_PINTU[1], 1);
+  TextDrawBackgroundColour(TD_PINTU[1], 255);
+  TextDrawFont(TD_PINTU[1], TEXT_DRAW_FONT_1);
+  TextDrawSetProportional(TD_PINTU[1], true);
+  /////////////////////////////////////////////////////////////// 
   
   return 1;
 }
