@@ -11,10 +11,10 @@ Fungsi: UpdateSpeedoMeter(playerid) {
   new len = strlen(str);
   
   if(len == 1) {
-    PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000 + 3.000, 402.000);
+    PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000 + 4.000, 402.000);
   }
   else if(len == 2) {
-    PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000 + 1.500, 402.000);
+    PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000 + 8.000, 402.000);
   }
   else if(len == 3) {
     PlayerTextDrawSetPos(playerid, VEHSPEED[playerid][2], 495.000, 402.000);

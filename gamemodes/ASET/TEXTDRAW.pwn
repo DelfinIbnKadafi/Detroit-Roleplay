@@ -11,6 +11,7 @@ new PlayerText:VEHSPEED[MAX_PLAYERS][3]; // 0 = kerusakan , 1 = fuel, 3 = speed
 
 // info td 
 new Text:MENGHIDUPKAN_MESIN_KENDARAAN[1];
+new Text:MEMATIKAN_MESIN_KENDARAAN[1];
 new Text:TD_PINTU[2];
 
 stock LoadPlayerTextdraw(playerid) {
@@ -188,6 +189,16 @@ stock LoadTextdraw() {
   TextDrawBackgroundColour(MENGHIDUPKAN_MESIN_KENDARAAN[0], 150);
   TextDrawFont(MENGHIDUPKAN_MESIN_KENDARAAN[0], TEXT_DRAW_FONT_1);
   TextDrawSetProportional(MENGHIDUPKAN_MESIN_KENDARAAN[0], true);
+  
+  MEMATIKAN_MESIN_KENDARAAN[0] = TextDrawCreate(234.000, 411.000, "Mematikan mesin kendaraan....");
+  TextDrawLetterSize(MEMATIKAN_MESIN_KENDARAAN[0], 0.300, 1.500);
+  TextDrawAlignment(MEMATIKAN_MESIN_KENDARAAN[0], TEXT_DRAW_ALIGN_LEFT);
+  TextDrawColour(MEMATIKAN_MESIN_KENDARAAN[0], -1);
+  TextDrawSetShadow(MEMATIKAN_MESIN_KENDARAAN[0], 1);
+  TextDrawSetOutline(MEMATIKAN_MESIN_KENDARAAN[0], 1);
+  TextDrawBackgroundColour(MEMATIKAN_MESIN_KENDARAAN[0], 150);
+  TextDrawFont(MEMATIKAN_MESIN_KENDARAAN[0], TEXT_DRAW_FONT_1);
+  TextDrawSetProportional(MEMATIKAN_MESIN_KENDARAAN[0], true);
   
   TD_PINTU[0] = TextDrawCreate(216.000, 80.000, "Tekan tombol    untuk masuk/keluar pintu");
   TextDrawLetterSize(TD_PINTU[0], 0.359, 3.299);

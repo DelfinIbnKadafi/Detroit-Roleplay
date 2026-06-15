@@ -138,3 +138,17 @@ stock GetVehicleSpeed(vehicleid) {
   
   return Speed;
 }
+
+Fungsi: HidupMatiMesinVeh(vehicleid, bool:hidupormati) {
+  if(hidupormati == true) {
+    SetVehicleParamsEx(vehicleid, 1, 0, 0, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci], 0, 0, 0);
+    MesinVeh[vehicleid] = true;
+    TextDrawHideForPlayer(playerid, MENGHIDUPKAN_MESIN_KENDARAAN[0]);
+  }
+  else {
+    SetVehicleParamsEx(vehicleid, 0, 0, 0, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci], 0, 0, 0);
+    MesinVeh[vehicleid] = false;
+    TextDrawHideForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
+  }
+  return 1;
+}

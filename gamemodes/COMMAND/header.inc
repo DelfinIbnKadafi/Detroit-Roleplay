@@ -2,3 +2,4 @@
 #include "COMMAND/UTILITY.pwn"
 #include "COMMAND/ROLEPLAY.pwn"
 #include "COMMAND/PLAYER.pwn"
+#include "COMMAND/KENDARAAN.pwn"
