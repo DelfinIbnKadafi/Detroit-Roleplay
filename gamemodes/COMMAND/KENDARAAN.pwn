@@ -36,7 +36,7 @@ CMD:en(playerid, params[]) {
     else {
       SendMessageInfo(playerid, "Mematikan mesin kendaraan....");
       SetTimerEx("HidupMatiMesinVeh", 2000, false, "iii", playerid, vehicleid, false);
-      TextDrawHideForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
+      TextDrawShowForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
     }
   }
   return 1;
