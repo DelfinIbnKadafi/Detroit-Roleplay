@@ -20,6 +20,8 @@ CREATE TABLE `Pemain` (
   `armor` float DEFAULT NULL,
   `level` smallint(6) DEFAULT '1',
   `uang` int DEFAULT '0',
+  `bank` int DEFAULT '0',
+  `norek` int DEFAULT '123456789',
   `ktp` int DEFAULT '0',
   `job` int DEFAULT '0',
   `lapar` int DEFAULT '100',

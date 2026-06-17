@@ -13,6 +13,10 @@ enum DATA_PEMAIN
   Float:pDarah,
   Float:pArmor,
   pUang,
+  pBank,
+  pNorek,
+  pKtp,
+  pJob,
   pHaus,
   pLapar
 };

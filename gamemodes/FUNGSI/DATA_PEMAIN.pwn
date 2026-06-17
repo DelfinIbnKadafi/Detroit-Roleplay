@@ -13,6 +13,10 @@ Fungsi: MuatDataPemain(playerid)
   cache_get_value_name_float(0, "darah", Pemain[playerid][pDarah]);
   cache_get_value_name_float(0, "armor", Pemain[playerid][pArmor]);
   cache_get_value_int(0, "uang", Pemain[playerid][pUang]);
+  cache_get_value_int(0, "bank", Pemain[playerid][pBank]);
+  cache_get_value_int(0, "norek", Pemain[playerid][pNorek]);
+  cache_get_value_int(0, "ktp", Pemain[playerid][pKtp]);
+  cache_get_value_int(0, "job", Pemain[playerid][pJob]);
   cache_get_value_int(0, "haus", Pemain[playerid][pHaus]);
   cache_get_value_int(0, "lapar", Pemain[playerid][pLapar]);
   SpawnPemainEx(playerid);
@@ -42,7 +46,7 @@ Fungsi: SimpanDataPemain(playerid)
   
   new query[512];
   mysql_format(g_SQL, query, sizeof(query),
-    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', haus='%d', lapar='%d' WHERE id='%d'",
+    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', ktp='%d', job='%d', haus='%d', lapar='%d' WHERE id='%d'",
     PosisiPemain[playerid][pX],
     PosisiPemain[playerid][pY],
     PosisiPemain[playerid][pZ],
@@ -54,7 +58,13 @@ Fungsi: SimpanDataPemain(playerid)
     Pemain[playerid][pSkin],
     Pemain[playerid][pDarah],
     Pemain[playerid][pArmor],
+    
     Pemain[playerid][pUang],
+    Pemain[playerid][pBank],
+    Pemain[playerid][pNorek],
+    
+    Pemain[playerid][pKtp],
+    Pemain[playerid][pJob],
     
     Pemain[playerid][pHaus],
     Pemain[playerid][pLapar],
