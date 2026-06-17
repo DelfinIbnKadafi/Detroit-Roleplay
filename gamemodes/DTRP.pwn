@@ -13,9 +13,9 @@
 #include "DATA/header"
 #include "ASET/header"
 #include "FUNGSI/header"
+#include "JOB/header"
 #include "COMMAND/header"
 #include "COMMAND/DIALOG/header"
-#include "JOB/header"
 
 main(){}
 

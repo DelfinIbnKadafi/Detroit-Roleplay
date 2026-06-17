@@ -54,20 +54,24 @@ CMD:pay(playerid, params[]) {
   return 1;
 }
 
-CMD:stats(playerid, params[]) {
-  new stats[512], job[64];
+CMD:stats(playerid, params[])
+{
+  new stats[512], job[64], money;
+
   GetJobName(Pemain[playerid][pJob], job);
+  money = GetPlayerMoney(playerid);
+
   format(stats, sizeof(stats),
-   "Nama : %s | Gender : %s | Uang : %s | Uang Bank : %d | Norek : %d | Pekerjaan : %s",
-   Pemain[playerid][pNama],
-   gender[Pemain[playerid][pGender]],
-   GetPlayerMoney(playerid),
-   Pemain[playerid][pBank],
-   Pemain[playerid][pNorek],
-   job
+    "Nama : %s | Gender : %s | Uang : %d | Uang Bank : %d | Norek : %d | Pekerjaan : %s",
+    Pemain[playerid][pNama],
+    GetGender[Pemain[playerid][pGender]],
+    money,
+    Pemain[playerid][pBank],
+    Pemain[playerid][pNorek],
+    job
   );
-  
-  Dialog_Show(playerid, DL_STATS, DIALOG_STYLE_MSGBOX, "Stats", stats, "Keluar", " ");
-  
+
+  Dialog_Show(playerid, DL_STATS, DIALOG_STYLE_MSGBOX, "Stats", stats, "Keluar", "");
+
   return 1;
 }

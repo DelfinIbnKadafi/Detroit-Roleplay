@@ -17,6 +17,6 @@ new VehSlot[MAX_VEHICLES_SERVER];
 new bool:MesinVeh[MAX_VEHICLES_SERVER];
 new bool:VehicleIsSpawn[MAX_KENDARAAN];
 
-static const gender[][] = {
+new const GetGender[][] = {
   "Gay/Lesbi", "Pria", "Wanita"
 };
