@@ -10,10 +10,10 @@
 
 #define DEFAULT_MALE_SKIN		59
 #define DEFAULT_FEMALE_SKIN		141
-#define DEFAULT_POS_X   		130.6785
-#define DEFAULT_POS_Y   		-98.9067
-#define DEFAULT_POS_Z   		1.4297
-#define DEFAULT_POS_A   		261.0740
+#define DEFAULT_POS_X   		1743.06
+#define DEFAULT_POS_Y   		-1862.50
+#define DEFAULT_POS_Z   		13.57
+#define DEFAULT_POS_A   		3.34
 
 // veh 
 #define MAX_VEHICLES_SERVER 1000
