@@ -51,5 +51,8 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
   
   ShowGreetings(playerid);
   SpawnPlayer(playerid);
+  
+  Pemain[playerid][pNorek] =  random(900000000) + 100000000;
+  
   return 1;
 }
