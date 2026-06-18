@@ -16,6 +16,9 @@
 #include "JOB/header"
 #include "COMMAND/DIALOG/header"
 #include "COMMAND/header"
+#include "DUNIA/BISNIS/header"
+#include "DUNIA/PINTU/header"
+#include "DUNIA/RUMAH/header"
 
 main(){}
 
