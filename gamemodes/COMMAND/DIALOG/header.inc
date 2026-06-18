@@ -1,1 +1,2 @@
 #include "COMMAND/DIALOG/KENDARAAN.pwn"
+#include "COMMAND/DIALOG/HELP.pwn"

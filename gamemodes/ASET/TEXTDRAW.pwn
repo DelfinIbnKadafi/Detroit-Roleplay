@@ -16,7 +16,7 @@ new Text:TD_PINTU[2];
 
 stock LoadPlayerTextdraw(playerid) {
   // speedo value
-  VEHSPEED[playerid][0] = CreatePlayerTextDraw(playerid, 543.000, 395.000, "100");
+  VEHSPEED[playerid][0] = CreatePlayerTextDraw(playerid, 542.000, 395.000, "100");
   PlayerTextDrawLetterSize(playerid, VEHSPEED[playerid][0], 0.300, 1.500);
   PlayerTextDrawAlignment(playerid, VEHSPEED[playerid][0], TEXT_DRAW_ALIGN_LEFT);
   PlayerTextDrawColour(playerid, VEHSPEED[playerid][0], -1);

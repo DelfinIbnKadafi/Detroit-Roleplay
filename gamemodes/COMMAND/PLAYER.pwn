@@ -71,7 +71,12 @@ CMD:stats(playerid, params[])
     job
   );
 
-  Dialog_Show(playerid, DL_STATS, DIALOG_STYLE_MSGBOX, "Stats", stats, "Keluar", "");
+  Dialog_Show(playerid, DL_STATS, DIALOG_STYLE_MSGBOX, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Stats", stats, "Keluar", "");
 
+  return 1;
+}
+
+CMD:help(playerid, params[]) {
+  ShowHelpDialog(playerid);
   return 1;
 }

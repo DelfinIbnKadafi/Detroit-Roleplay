@@ -118,6 +118,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
   }
   
   ShowHideSpeedo(playerid, true);
+  SendMessageInfo(playerid, "Gunakan /en atau tombol N untuk menghidupkan mesin kendaran.");
   
   return 1;
 }

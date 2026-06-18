@@ -2,10 +2,10 @@
 #include <open.mp>
 #include <sscanf2>
 #include <streamer>
+#include <easyDialog>
 #include <a_mysql>
 #include <strlib>
 #include <samp_bcrypt>
-#include <easyDialog>
 #include <zcmd>
 #include <foreach>
 
@@ -14,8 +14,8 @@
 #include "ASET/header"
 #include "FUNGSI/header"
 #include "JOB/header"
-#include "COMMAND/header"
 #include "COMMAND/DIALOG/header"
+#include "COMMAND/header"
 
 main(){}
 
@@ -46,6 +46,8 @@ public OnPlayerConnect(playerid)
     TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);
   }
   
+  StatusLogin[playerid] = false;
+  
   SetPlayerColor(playerid, 0xFFFFFFFF);
   LoadPlayerTextdraw(playerid);
   GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME);
@@ -66,6 +68,11 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason) 
 {
+  if(StatusLogin[playerid] == false) return 1;
+  
+  KillTimer(TimerLapar[playerid]);
+  KillTimer(TimerHaus[playerid]);
+  
   SimpanDataPemain(playerid);
   SaveDataKendaraan(playerid);
   HancurkanKendaraanPlayer(playerid);
