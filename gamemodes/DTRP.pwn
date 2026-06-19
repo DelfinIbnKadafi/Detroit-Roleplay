@@ -33,6 +33,7 @@ public OnGameModeInit()
     mysql_set_charset("utf8mb4", g_SQL);
     SetGameModeText(SERVER_VERSION);
     
+    LoadMapping();
     LoadTextdraw();
     DisableInteriorEnterExits();
     
@@ -89,5 +90,10 @@ public OnPlayerRequestSpawn(playerid)
 public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle)
 {
   printf("[MySQL] %s (Public-Function: %s) (#%d)", error, callback, errorid);
+  return 1;
+}
+
+CMD:balkot(playerid, params[]) {
+  SetPlayerPos(playerid, 920.2, -1476.0, 2753.0);
   return 1;
 }
