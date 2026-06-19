@@ -92,8 +92,3 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
   printf("[MySQL] %s (Public-Function: %s) (#%d)", error, callback, errorid);
   return 1;
 }
-
-CMD:balkot(playerid, params[]) {
-  SetPlayerPos(playerid, 920.2, -1476.0, 2753.0);
-  return 1;
-}

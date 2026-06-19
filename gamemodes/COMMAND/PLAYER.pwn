@@ -80,3 +80,10 @@ CMD:help(playerid, params[]) {
   ShowHelpDialog(playerid);
   return 1;
 }
+
+CMD:enter(playerid, params[]) {
+  if(IsPlayerInAnyVehicle(playerid)) return 1;
+  
+  if(DeteksiPintuBalaiKota(playerid)) return 1;
+  return 1;
+}

@@ -1,6 +1,15 @@
 #pragma warning disable 213
 
 LoadMapping() {
+  
+  
+  
+  
+  
+  // city hall
+  CreatePickup(19130, 1, 1481.04, -1771.79, 18.78, -1);
+  CreatePickup(19130, 1, 920.27, -1475.06, 2754.33, -1);
+  
   new g_Object[732];
   g_Object[0] = CreateObject(19464, 908.9829, -1475.7220, 2755.7070, 0.0000, 0.0000, 0.0000); //wall104
   SetObjectMaterial(g_Object[0], 0, 10765, "airportgnd_sfse", "white", 0xFFFFFFFF);
@@ -1423,6 +1432,9 @@ LoadMapping() {
   SetObjectMaterial(g_Object[730], 0, 17049, "cuntwf", "sw_walltile", 0xFFFFFFFF);
   g_Object[731] = CreateObject(19430, 920.1735, -1448.4266, 2763.5612, 0.0000, 0.0000, 90.0000); //wall070
   SetObjectMaterial(g_Object[731], 0, 17049, "cuntwf", "sw_walltile", 0xFFFFFFFF);
+  ////////////////////////////////////////////////////////////////////
+  
+  
 }
 
 #pragma warning enable 213
