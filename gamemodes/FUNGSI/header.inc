@@ -7,6 +7,7 @@
 #include "FUNGSI/SPAWN.pwn"
 #include "FUNGSI/REGISTER.pwn"
 #include "FUNGSI/LOGIN.pwn"
+#include "FUNGSI/PINTU/header"
 #include "FUNGSI/OTOT.pwn"
 #include "FUNGSI/HBE.pwn"
 #include "FUNGSI/SPEEDO.pwn"
