@@ -4,7 +4,6 @@
 #define SendMessageInfo(%1,%2)   SendClientMessage(%1, 0xFFFFFF, "{00EBFF}[INFO]{FFFFFF} "%2)
 #define SendMessageServer(%1,%2) SendClientMessage(%1, 0xFFFFFF, "{00EBFF}[SERVER]{FFFFFF} "%2)
 
-
 stock ClearPlayerChat(playerid, lines = 75) {
 	for(new i ; i < lines; i ++) {
 		SendClientMessage(playerid, -1, " ");
@@ -18,41 +17,71 @@ stock ShowGreetings(playerid)
 	return 1;
 }
 
-public OnPlayerText(playerid, text[]) {
-  // player bisa chat sbnyk 3 kali, lalu akan dimute
-
-  if(StatusLogin[playerid] == false) {
+public OnPlayerText(playerid, text[])
+{
+  if(!StatusLogin[playerid]) {
     SendMessageError(playerid, "Kamu harus login agar bisa mengirim pesan!");
-    return 1;
+    return 0;
   }
-  
-  if(Mute[playerid] == true) {
+
+  if(Mute[playerid]) {
     SendMessageError(playerid, "Kamu sedang dibisukan!");
-    return 1;
+    return 0;
   }
-  
-  new msg[256];
-  format(msg, sizeof(msg), "%s says: %s", Pemain[playerid][pNama], text);
-  
+
+  if(isnull(text) || strlen(text) < 1) {
+    return 0;
+  }
+
   new Float:px, Float:py, Float:pz;
   GetPlayerPos(playerid, px, py, pz);
 
-  // radius chat
+  new msg[144];
+  format(msg, sizeof(msg), "%s says: %s", Pemain[playerid][pNama], text);
+
   new Float:radius = 20.0;
 
-  foreach(new i : Player) {
-  
-    new Float:d = GetPlayerDistanceFromPoint(i, px, py, pz);
+  foreach(new i : Player)
+  {
+    if(!IsPlayerConnected(i)) continue;
 
-    if (d <= radius / 4)
-      SendClientMessage(i, 0xFFFFFFFF, msg);
-    else if (d <= radius / 2)
-      SendClientMessage(i, 0xDDDDDDFF, msg);
-    else if (d <= radius)
-      SendClientMessage(i, 0xAAAAAAFF, msg);
+    new Float:dist = GetPlayerDistanceFromPoint(i, px, py, pz);
+    new color;
+
+    if(dist <= radius / 4.0) {
+      color = 0xFFFFFFFF;
+    }
+    else if(dist <= radius / 2.0) {
+      color = 0xDDDDDDFF;
+    }
+    else if(dist <= radius) {
+      color = 0xAAAAAAFF;
+    }
+    else continue;
+
+    SendClientMessage(i, color, msg);
   }
-  
-  AntiSpam(playerid); // antispam diletakkan di paling bawah agar player benar benar bisa kirim pesan 3x
-  
+
+  // reset spam kalau player diam
+  new now = GetTickCount();
+
+  if(now - LastChatTime[playerid] > 5000) {
+    JumlahSpam[playerid] = 0;
+  }
+
+  LastChatTime[playerid] = now;
+
+  if(!Mute[playerid]) {
+    JumlahSpam[playerid]++;
+
+    if(JumlahSpam[playerid] >= 3)
+    {
+      Mute[playerid] = true;
+      SendMessageWarning(playerid, "Kamu dibisukan karena spam!");
+
+      SetTimerEx("AutoUnMute", 10000, false, "i", playerid);
+    }
+  }
+
   return 0;
 }

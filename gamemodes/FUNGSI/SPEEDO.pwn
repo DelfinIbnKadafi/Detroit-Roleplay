@@ -8,8 +8,6 @@ Fungsi: UpdateSpeedoMeter(playerid) {
   format(str, sizeof(str), "%d", speed);
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][2], str);
   
-  new len = strlen(str);
-  
   format(str, sizeof(str), "%d", PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel]);
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][1], str);
   
