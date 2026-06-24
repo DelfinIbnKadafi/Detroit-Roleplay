@@ -37,6 +37,8 @@ public OnGameModeInit()
     LoadTextdraw();
     DisableInteriorEnterExits();
     
+    ShowNameTags(true);
+    
     return 1;
 }
 

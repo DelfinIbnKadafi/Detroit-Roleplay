@@ -11,10 +11,12 @@
 stock DeteksiPintuBalaiKota(playerid) {
   if(GetPlayerDistanceFromPoint(playerid, EXT_BALAI_KOTA_x, EXT_BALAI_KOTA_y, EXT_BALAI_KOTA_z) <= 2) {
     SetPlayerPos(playerid, INT_BALAI_KOTA_x, INT_BALAI_KOTA_y, INT_BALAI_KOTA_z);
+    SetPlayerFacingAngle(playerid, INT_BALAI_KOTA_a);
     return 1;
   }
   else if(GetPlayerDistanceFromPoint(playerid, INT_BALAI_KOTA_x, INT_BALAI_KOTA_y, INT_BALAI_KOTA_z) <= 2) {
     SetPlayerPos(playerid, EXT_BALAI_KOTA_x, EXT_BALAI_KOTA_y, EXT_BALAI_KOTA_z);
+    SetPlayerFacingAngle(playerid, EXT_BALAI_KOTA_a);
     return 1;
   }
   return 0;
