@@ -22,9 +22,7 @@ CREATE TABLE `Pemain` (
   `uang` int DEFAULT '0',
   `bank` int DEFAULT '0',
   `norek` int DEFAULT '123456789',
-  `nohp` int DEFAULT '000000'
   `ktp` int DEFAULT '0',
-  `tanggallahir` varchar(64) DEFAULT 'None',
   `job` int DEFAULT '0',
   `lapar` int DEFAULT '100',
   `haus` int DEFAULT '100'
@@ -36,6 +34,9 @@ ALTER TABLE `Pemain`
 ALTER TABLE `Pemain`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+INSERT INTO `Pemain` (`id`, `nama`, `verified`, `kode`, `sandi`, `gender`, `skin`, `posx`, `posy`, `posz`, `angle`, `interior`, `virtualworld`, `darah`, `armor`, `level`, `uang`, `bank`, `norek`, `ktp`, `job`, `lapar`, `haus`) VALUES
+(1, 'User', 0, 123456, 'Password', 1, 59, 918.664, -1463.9, 2754.34, 164.395, 0, 0, 100, 0, 0, 100000, 0, 190921257, 0, 0, 57, 42);
 
 CREATE TABLE `Kendaraan` (
   `vid` int(11) NOT NULL,
