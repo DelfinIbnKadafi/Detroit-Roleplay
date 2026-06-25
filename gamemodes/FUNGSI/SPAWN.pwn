@@ -39,6 +39,10 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     Pemain[playerid][pLapar] = 100;
     Pemain[playerid][pDarah] = 100.0;
     Pemain[playerid][pNorek] = random(900000000) + 100000000;
+    
+    Pemain[playerid][pKtp] = 0;
+    
+    format(Pemain[playerid][pDateBirth],  64, "None");
   }
 
   ShowHideHbeTextdraw(playerid, true);

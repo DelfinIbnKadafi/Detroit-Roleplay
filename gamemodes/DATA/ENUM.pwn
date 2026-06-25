@@ -16,6 +16,7 @@ enum DATA_PEMAIN
   pBank,
   pNorek,
   pKtp,
+  pDateBirth[64],
   pJob,
   pHaus,
   pLapar

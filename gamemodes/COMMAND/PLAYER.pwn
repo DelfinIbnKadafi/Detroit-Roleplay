@@ -62,12 +62,13 @@ CMD:stats(playerid, params[])
   money = GetPlayerMoney(playerid);
 
   format(stats, sizeof(stats),
-    "Nama : %s | Gender : %s | Uang : %d | Uang Bank : %d | Norek : %d | Pekerjaan : %s",
+    "Nama : %s | Gender : %s | Uang : %d | Uang Bank : %d | Norek : %d | Tanggal Lahir : %sPekerjaan : %s",
     Pemain[playerid][pNama],
     GetGender[Pemain[playerid][pGender]],
     money,
     Pemain[playerid][pBank],
     Pemain[playerid][pNorek],
+    Pemain[playerid][pDateBirth],
     job
   );
 
@@ -85,5 +86,10 @@ CMD:enter(playerid, params[]) {
   if(IsPlayerInAnyVehicle(playerid)) return 1;
   
   if(DeteksiPintuBalaiKota(playerid)) return 1;
+  return 1;
+}
+
+CMD:balkot(playerid, params[]) {
+  ShowBalkotMenu(playerid);
   return 1;
 }

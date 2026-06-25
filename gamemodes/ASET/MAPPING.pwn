@@ -10,6 +10,9 @@ LoadMapping() {
   CreatePickup(19130, 1, 1481.04, -1771.79, 18.78, -1);
   CreatePickup(19130, 1, 920.27, -1475.06, 2754.33, -1);
   
+  CreatePickup(1239, 1, 918.81, -1463.48, 2754.33, -1);
+  Create3DTextLabel("/balkot", 0xe7ff30ff, 918.81, -1463.48, 2755.00, 30, -1, true);
+  
   new g_Object[732];
   g_Object[0] = CreateObject(19464, 908.9829, -1475.7220, 2755.7070, 0.0000, 0.0000, 0.0000); //wall104
   SetObjectMaterial(g_Object[0], 0, 10765, "airportgnd_sfse", "white", 0xFFFFFFFF);

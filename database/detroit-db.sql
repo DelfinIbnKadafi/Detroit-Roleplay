@@ -22,7 +22,9 @@ CREATE TABLE `Pemain` (
   `uang` int DEFAULT '0',
   `bank` int DEFAULT '0',
   `norek` int DEFAULT '123456789',
+  `nohp` int DEFAULT '000000'
   `ktp` int DEFAULT '0',
+  `tanggallahir` varchar(64) DEFAULT 'None',
   `job` int DEFAULT '0',
   `lapar` int DEFAULT '100',
   `haus` int DEFAULT '100'
