@@ -17,13 +17,8 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
       PosisiPemain[playerid][pZ],
       PosisiPemain[playerid][pAngle]
     );
-    
-    ShowHideHbeTextdraw(playerid, true);
-    
-    StatusLogin[playerid] = true;
-    SpawnPlayer(playerid);
+
     MuatDataKendaraan(playerid);
-    
   }
   else 
   {
@@ -39,20 +34,18 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     );    
     SetPlayerScore(playerid, 1);
     GivePlayerMoney(playerid, 100000);
+    
+    Pemain[playerid][pHaus] = 100;
+    Pemain[playerid][pLapar] = 100;
+    Pemain[playerid][pDarah] = 100.0;
+    Pemain[playerid][pNorek] = random(900000000) + 100000000;
   }
-  Pemain[playerid][pHaus] = 100;
-  Pemain[playerid][pLapar] = 100;
-  Pemain[playerid][pDarah] = 100.0;
-  
+
   ShowHideHbeTextdraw(playerid, true);
-  MuatDataKendaraan(playerid);
-  
   StatusLogin[playerid] = true;
-  
+
   ShowGreetings(playerid);
   SpawnPlayer(playerid);
-  
-  Pemain[playerid][pNorek] =  random(900000000) + 100000000;
-  
+
   return 1;
 }
