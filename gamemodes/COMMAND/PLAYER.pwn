@@ -60,16 +60,33 @@ CMD:stats(playerid, params[])
 
   GetJobName(Pemain[playerid][pJob], job);
   money = GetPlayerMoney(playerid);
-
+  
+  new hpstr[32], hpno[32];
+  if(Pemain[playerid][pPhone] == 0) {
+    format(hpstr, sizeof(hpstr), "Tidak Ada");
+    format(hpno, sizeof(hpno), "-");
+  }
+  else {
+    format(hpno, sizeof(hpno), "%d", Pemain[playerid][pNohp]);
+  }
+  if(Pemain[playerid][pPhoneStatus] == 0) {
+    format(hpstr, sizeof(hpstr), "Tidak Aktif");
+  }
+  else {
+    format(hpstr, sizeof(hpstr), "Aktif");
+  }
+  
   format(stats, sizeof(stats),
-    "Nama : %s | Gender : %s | Uang : %d | Uang Bank : %d | Norek : %d | Tanggal Lahir : %sPekerjaan : %s",
+    "Nama : %s | Gender : %s | Uang : %d | Uang Bank : %d | Norek : %d | Tanggal Lahir : %s | Pekerjaan : %s\nPonsel : %s | No Telepon : %s",
     Pemain[playerid][pNama],
     GetGender[Pemain[playerid][pGender]],
     money,
     Pemain[playerid][pBank],
     Pemain[playerid][pNorek],
     Pemain[playerid][pDateBirth],
-    job
+    job,
+    hpstr,
+    hpno
   );
 
   Dialog_Show(playerid, DL_STATS, DIALOG_STYLE_MSGBOX, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Stats", stats, "Keluar", "");
