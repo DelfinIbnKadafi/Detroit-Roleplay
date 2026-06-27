@@ -8,6 +8,7 @@ CREATE TABLE `Pemain` (
   `verified` int(11) DEFAULT '0',
   `kode` int(11) DEFAULT NULL,
   `sandi` varchar(90) DEFAULT NULL,
+  `admin` int DEFAULT '0',
   `gender` tinyint(4) DEFAULT NULL,
   `skin` smallint(6) DEFAULT '1',
   `posx` float DEFAULT NULL,

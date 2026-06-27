@@ -27,3 +27,6 @@ new TimerHBE[MAX_PLAYERS];
 new const GetGender[][] = {
   "Gay/Lesbi", "Pria", "Wanita"
 };
+
+new Admin[MAX_PLAYERS];
+new bool:AdminDuty[MAX_PLAYERS];

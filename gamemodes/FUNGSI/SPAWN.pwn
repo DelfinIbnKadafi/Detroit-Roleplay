@@ -19,6 +19,10 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     );
 
     MuatDataKendaraan(playerid);
+    
+    if(Admin[playerid] > 0) {
+      SendMessageServer(playerid, "Kamu memiliki akses sebagai admin, gunakan /ahelp untuk daftar command admin.");
+    }
   }
   else 
   {
@@ -41,6 +45,8 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     Pemain[playerid][pNorek] = random(900000000) + 100000000;
     
     Pemain[playerid][pKtp] = 0;
+    
+    Admin[playerid] = 0;
     
     format(Pemain[playerid][pDateBirth],  64, "None");
   }

@@ -1,6 +1,6 @@
 Fungsi: MuatDataPemain(playerid) 
 {
-  
+  cache_get_value_int(0, "admin", Admin[playerid]);
   cache_get_value_int(0, "gender", Pemain[playerid][pGender]);
   cache_get_value_int(0, "skin", Pemain[playerid][pSkin]);
   cache_get_value_int(0, "level", Pemain[playerid][pLevel]);
@@ -50,7 +50,7 @@ Fungsi: SimpanDataPemain(playerid)
   
   new query[512];
   mysql_format(g_SQL, query, sizeof(query),
-    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%d', ktp='%d', tanggallahir='%s', job='%d', haus='%d', lapar='%d' WHERE id='%d'",
+    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%d', ktp='%d', tanggallahir='%s', job='%d', haus='%d', lapar='%d', admin='%d' WHERE id='%d'",
     PosisiPemain[playerid][pX],
     PosisiPemain[playerid][pY],
     PosisiPemain[playerid][pZ],
@@ -78,6 +78,8 @@ Fungsi: SimpanDataPemain(playerid)
     
     Pemain[playerid][pHaus],
     Pemain[playerid][pLapar],
+    
+    Admin[playerid],
     
     Pemain[playerid][pId]
   );

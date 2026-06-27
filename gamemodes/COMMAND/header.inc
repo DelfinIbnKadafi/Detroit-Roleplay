@@ -3,3 +3,4 @@
 #include "COMMAND/ROLEPLAY.pwn"
 #include "COMMAND/PLAYER.pwn"
 #include "COMMAND/KENDARAAN.pwn"
+#include "COMMAND/ADMIN.pwn"
