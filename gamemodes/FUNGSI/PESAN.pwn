@@ -13,7 +13,9 @@ stock ClearPlayerChat(playerid, lines = 75) {
 stock ShowGreetings(playerid)
 {
 	ClearPlayerChat(playerid);
-	SendMessageServer(playerid, "Halo %s, selamat datang di %s", Pemain[playerid][pNama], SERVER_NAME);
+	new msg[128];
+	format(msg, sizeof(msg), "{00EBFF}[SERVER]{FFFFFF} Halo %s, selamat datang di %s", Pemain[playerid][pNama], SERVER_NAME);
+	SendClientMessage(playerid, 0xFFFFFF, msg);
 	return 1;
 }
 

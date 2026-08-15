@@ -30,7 +30,7 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     SetSpawnInfo(
       playerid,
       NO_TEAM,
-      Pemain[playerid][pGender] ? DEFAULT_MALE_SKIN : DEFAULT_FEMALE_SKIN,
+      Pemain[playerid][pGender] == 2 ? DEFAULT_FEMALE_SKIN : DEFAULT_MALE_SKIN,
       DEFAULT_POS_X,
       DEFAULT_POS_Y,
       DEFAULT_POS_Z,

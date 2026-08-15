@@ -50,7 +50,7 @@ Fungsi: SimpanDataPemain(playerid)
   
   new query[512];
   mysql_format(g_SQL, query, sizeof(query),
-    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%d', ktp='%d', tanggallahir='%s', job='%d', haus='%d', lapar='%d', admin='%d' WHERE id='%d'",
+    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%d', ktp='%d', tanggallahir='%e', job='%d', haus='%d', lapar='%d', admin='%d' WHERE id='%d'",
     PosisiPemain[playerid][pX],
     PosisiPemain[playerid][pY],
     PosisiPemain[playerid][pZ],

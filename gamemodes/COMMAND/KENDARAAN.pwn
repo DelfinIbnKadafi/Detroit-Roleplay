@@ -26,7 +26,10 @@ CMD:en(playerid, params[]) {
     vehicleid = GetPlayerVehicleID(playerid);
     
     if(GetVehicleDriver(vehicleid) != playerid) return 1;
-    if(PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel] == 0) return 1;
+    if(PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel] == 0) {
+      SendMessageError(playerid, "Bahan bakar kendaraan ini sudah habis!");
+      return 1;
+    }
     
     if(MesinVeh[vehicleid] == false) {
       SendMessageInfo(playerid, "Menghidupkan mesin kendaraan....");
@@ -50,6 +53,7 @@ CMD:lockveh(playerid, params[]) {
     GetVehiclePos(vehicleid, vx, vy, vz);
     if(IsPlayerInRangeOfPoint(playerid, 4.0, vx, vy, vz)) {
       if(VehOwner[vehicleid] != playerid) {
+        SendMessageError(playerid, "Ini bukan kendaraan milikmu!");
         return 1;
       }
       else {

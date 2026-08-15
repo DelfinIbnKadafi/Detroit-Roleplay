@@ -42,7 +42,7 @@ CMD:sethp(playerid, params[]) {
     return 1;
   }
   new Float:fhp = float(amount);
-  SetPlayerHealth(playerid, fhp);
+  SetPlayerHealth(target, fhp);
   
   SendMessageInfo(target, "Nyawa kamu sudah diubah oleh admin.");
   SendMessageInfo(playerid, "Berhasil mengubah nyawa player.");
@@ -64,7 +64,7 @@ CMD:setarmour(playerid, params[]) {
     return 1;
   }
   new Float:farmour = float(amount);
-  SetPlayerArmour(playerid, farmour);
+  SetPlayerArmour(target, farmour);
   
   SendMessageInfo(target, "Armour kamu sudah diubah oleh admin.");
   SendMessageInfo(playerid, "Berhasil mengubah armour player.");
@@ -151,8 +151,8 @@ CMD:getmoney(playerid, params[]) {
     return 1;
   }
   GivePlayerMoney(target, -amount);
-  SendMessageInfo(target, "Uang kamu sudah diambil oleh admin! oleh admin!");
-  SendMessageInfo(playerid, "Berhasil mengambil uang  player.");
+  SendMessageInfo(target, "Uang kamu sudah diambil oleh admin!");
+  SendMessageInfo(playerid, "Berhasil mengambil uang player.");
   return 1;
 }
 
@@ -178,7 +178,7 @@ CMD:getplayermoney(playerid, params[]) {
   return 1;
 }
 
-new aveh[1000];
+new aveh[1001];
 new jumaveh;
 
 CMD:spawnaveh(playerid, params[]) {
@@ -206,8 +206,9 @@ CMD:destroyaveh(playerid, params[]) {
     SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
     return 1;
   }
-  for(new i = 0; i < jumaveh; i++) {
+  for(new i = 1; i <= jumaveh; i++) {
     DestroyVehicle(aveh[i]);
   }
+  jumaveh = 0;
   return 1;
 }

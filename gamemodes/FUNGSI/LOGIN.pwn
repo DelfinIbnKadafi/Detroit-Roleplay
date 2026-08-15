@@ -13,7 +13,9 @@ Fungsi: OnVerifyPassword(playerid, bool:success)
     }
     else
     {
-      SendMessageError(playerid, "Kamu memasukkan password yang salah. (attempts: %d/"#MAX_LOGIN_ATTEMPTS")", attempts);
+      new err[128];
+      format(err, sizeof(err), "{FF0000}[ERROR]{FFFFFF} Kamu memasukkan password yang salah. (attempts: %d/"#MAX_LOGIN_ATTEMPTS")", attempts);
+      SendClientMessage(playerid, 0xFFFFFF, err);
       new tmp[256];
       format(
         tmp, sizeof(tmp),

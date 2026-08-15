@@ -15,7 +15,5 @@ stock GetJobName(idjob, dest[], size = sizeof(dest)) {
 
   format(dest, size, "%s", jobname[idjob]);
   
-  // GetJobName(idjob, output)
-  
   return 1;
 }

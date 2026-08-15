@@ -68,12 +68,12 @@ CMD:stats(playerid, params[])
   }
   else {
     format(hpno, sizeof(hpno), "%d", Pemain[playerid][pNohp]);
-  }
-  if(Pemain[playerid][pPhoneStatus] == 0) {
-    format(hpstr, sizeof(hpstr), "Tidak Aktif");
-  }
-  else {
-    format(hpstr, sizeof(hpstr), "Aktif");
+    if(Pemain[playerid][pPhoneStatus] == 0) {
+      format(hpstr, sizeof(hpstr), "Tidak Aktif");
+    }
+    else {
+      format(hpstr, sizeof(hpstr), "Aktif");
+    }
   }
   
   format(stats, sizeof(stats),

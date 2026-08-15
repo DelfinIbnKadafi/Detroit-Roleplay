@@ -10,7 +10,10 @@ public OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys) {
     vehicleid = GetPlayerVehicleID(playerid);
     
     if(GetVehicleDriver(vehicleid) != playerid) return 1;
-    if(PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel] == 0) return 1;
+    if(PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel] == 0) {
+      SendMessageError(playerid, "Bahan bakar kendaraan ini sudah habis!");
+      return 1;
+    }
     
     if(MesinVeh[vehicleid] == false) {
       SendMessageInfo(playerid, "Menghidupkan mesin kendaraan....");

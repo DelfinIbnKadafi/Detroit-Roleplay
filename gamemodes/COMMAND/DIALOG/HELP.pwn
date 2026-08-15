@@ -4,6 +4,13 @@ stock ShowHelpDialog(playerid) {
   return 1;
 }
 
+Dialog:DL_HELP(playerid, response, listitem, const inputtext[]) {
+  if(!response) return 1;
+  
+  ShowHelpDialog(playerid);
+  return 1;
+}
+
 Dialog:DL_HELP_MAIN(playerid, response, listitem, const inputtext[]) {
   if(!response) return 1;
   

@@ -45,7 +45,8 @@ stock ShowHideSpeedo(playerid, bool:showorhide) {
     format(str, sizeof(str), "%d", hpveh);
     PlayerTextDrawSetString(playerid, VEHSPEED[playerid][0], str);
     
-    SetTimerEx("UpdateSpeedoMeter", 250, true, "i",  playerid);
+    KillTimer(TimerSpedo[playerid]);
+    TimerSpedo[playerid] = SetTimerEx("UpdateSpeedoMeter", 250, true, "i",  playerid);
   }
   else {
     for(new i = 0; i < 4; i++) {
@@ -54,6 +55,8 @@ stock ShowHideSpeedo(playerid, bool:showorhide) {
     for(new i = 0; i <  3; i ++) {
       PlayerTextDrawHide(playerid, VEHSPEED[playerid][i]);
     }
+    
+    KillTimer(TimerSpedo[playerid]);
   }
   return 1;
 }

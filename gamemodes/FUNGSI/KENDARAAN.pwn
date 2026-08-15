@@ -70,7 +70,7 @@ stock SaveDataKendaraan(playerid) {
 stock HancurkanKendaraanPlayer(playerid) {
   for(new i = 0; i < JumVeh[playerid]; i++) {
     if(!IsValidVehicle(VehID[PVeh[playerid][i][vId]])) continue;
-    VehicleIsSpawn[VehSlot[VehID[VehID[PVeh[playerid][i][vId]]]]] = false;
+    VehicleIsSpawn[playerid][VehSlot[VehID[PVeh[playerid][i][vId]]]] = false;
     DestroyVehicle(VehID[PVeh[playerid][i][vId]]);
   }
   return 1;
@@ -95,7 +95,11 @@ stock GetVehicleModelName(modelid, name[], len) {
     "Vincent", "Bullet", "Clover", "Sadler", "Firetruck LA", "Hustler", "Intruder", "Primo", "Cargobob", "Tampa",
     "Sunrise", "Merit", "Utility", "Nevada", "Yosemite", "Windsor", "Monster A", "Monster B", "Uranus", "Jester",
     "Sultan", "Stratum", "Elegy", "Raindance", "RC Tiger", "Flash", "Kendrick", "Savanna", "Bandito", "Freight Flat",
-    "Streak Carriage", "Kart", "Mower", "Duneride", "Sweeper", "Broadway", "Tornado", "AT-400", "DFT-30"
+    "Streak Carriage", "Kart", "Mower", "Duneride", "Sweeper", "Broadway", "Tornado", "AT-400", "DFT-30",
+    "Huntley", "Stafford", "BF-400", "News Van", "Tug", "Trailer", "Emperor", "Wayfarer", "Euros", "Hotdog",
+    "Club", "Freight Box", "Trailer", "Andromada", "Dodo", "RC Cam", "Launch", "Police LS", "Police SF", "Police LV",
+    "Police Ranger", "Picador", "S.W.A.T.", "Alpha", "Phoenix", "Glendale", "Sadler", "Luggage Trailer", "Luggage Trailer", "Stair Trailer",
+    "Boxville", "Farm Plow", "Utility Trailer"
   };
 
   if(modelid >= 400 && modelid <= 611) {

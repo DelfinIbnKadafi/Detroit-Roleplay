@@ -11,3 +11,6 @@
 gamemodes/*.amx
 
 .pawn/
+
+# database
+mysql.ini

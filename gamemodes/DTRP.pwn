@@ -71,10 +71,14 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason) 
 {
+  TdPintuShown[playerid] = false;
+  
   if(StatusLogin[playerid] == false) return 1;
   
   KillTimer(TimerLapar[playerid]);
   KillTimer(TimerHaus[playerid]);
+  KillTimer(TimerHBE[playerid]);
+  KillTimer(TimerSpedo[playerid]);
   
   SimpanDataPemain(playerid);
   SaveDataKendaraan(playerid);

@@ -20,7 +20,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
   switch(listitem) {
     case 0: {
       // spawn veh
-      if(VehicleIsSpawn[idp] == true) {
+      if(VehicleIsSpawn[playerid][idp] == true) {
         SendMessageError(playerid, "Kendaraan tersebut telah di spawn");
         return 1;
       }
@@ -37,7 +37,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
        -1
       );
       
-      VehicleIsSpawn[idp] = true;
+      VehicleIsSpawn[playerid][idp] = true;
       
       VehID[dbid] = vehicleid;
       
@@ -95,6 +95,16 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
     }
     case 3: {
       // track
+      new vehicleid = VehID[PVeh[playerid][idp][vId]];
+      
+      if(IsValidVehicle(vehicleid)) {
+        GetVehiclePos(vehicleid,
+         PVeh[playerid][idp][vX],
+         PVeh[playerid][idp][vY],
+         PVeh[playerid][idp][vZ]
+        );
+      }
+      
       SetPlayerCheckpoint(playerid,
        PVeh[playerid][idp][vX],
        PVeh[playerid][idp][vY],

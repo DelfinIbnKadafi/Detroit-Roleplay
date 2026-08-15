@@ -126,12 +126,7 @@ Dialog:DL_CREATE_PW(playerid, response, listitem, const inputtext[])
   if(strlen(inputtext) < 8 || strlen(inputtext) > 32) 
   {
     SendMessageError(playerid, "Panjang password tidak valid!");
-    new tmp[256];
-    format(
-      tmp, sizeof(tmp),
-     ""E_WHITE"Silahkan masukkan password untuk akun anda, minimal 8-32 karakter!"
-    );
-    Dialog_Show(playerid, DL_LOGIN, DIALOG_STYLE_PASSWORD, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Register", tmp, "Login", "Batal");
+    ShowCreatePasswordDialog(playerid);
   }
   else bcrypt_hash(playerid, "OnHashPassword", inputtext, BCRYPT_COST);
   return 1;
