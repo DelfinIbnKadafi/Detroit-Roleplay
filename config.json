@@ -106,7 +106,8 @@
             "crashdetect",
             "mysql",
             "streamer",
-            "samp_bcrypt"
+            "samp_bcrypt",
+            "sscanf"
         ],
         "main_scripts": [
             "DTRP"
