@@ -4,8 +4,18 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack", "keluar", " ");
   
+  return 1;
+}
+
+CMD:jetpack(playerid, params[]) {
+  if(Admin[playerid] < 1) {
+    SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+    return 1;
+  }
+  
+  SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USEJETPACK);
   return 1;
 }
 
@@ -197,6 +207,7 @@ CMD:spawnaveh(playerid, params[]) {
   
   jumaveh++;
   aveh[jumaveh] = CreateVehicle(id, x + 3.00, y, z, a, color, color, -1, false);
+  SetVehicleParamsEx(aveh[jumaveh], true);
   SendMessageInfo(playerid, "Berhasil spawn veh");
   return 1;
 }
