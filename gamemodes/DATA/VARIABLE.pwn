@@ -29,8 +29,11 @@ new const GetGender[][] = {
   "Gay/Lesbi", "Pria", "Wanita"
 };
 
+// admin
 new Admin[MAX_PLAYERS];
 new bool:AdminDuty[MAX_PLAYERS];
+new aveh[1000];
+new jumaveh;
 
 // pintu
 new bool:TdPintuShown[MAX_PLAYERS];

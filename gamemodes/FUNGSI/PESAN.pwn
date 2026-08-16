@@ -46,6 +46,8 @@ public OnPlayerText(playerid, text[])
   foreach(new i : Player)
   {
     if(!IsPlayerConnected(i)) continue;
+    if(GetPlayerInterior(playerid) != i) continue;
+    if(GetPlayerVirtualWorld(playerid) != i) continue;
 
     new Float:dist = GetPlayerDistanceFromPoint(i, px, py, pz);
     new color;

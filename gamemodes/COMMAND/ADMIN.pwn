@@ -188,9 +188,6 @@ CMD:getplayermoney(playerid, params[]) {
   return 1;
 }
 
-new aveh[1001];
-new jumaveh;
-
 CMD:spawnaveh(playerid, params[]) {
   if(Admin[playerid] < 1) {
     SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");

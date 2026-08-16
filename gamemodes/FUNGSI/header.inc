@@ -11,3 +11,4 @@
 #include "FUNGSI/OTOT.pwn"
 #include "FUNGSI/HBE.pwn"
 #include "FUNGSI/SPEEDO.pwn"
+#include "FUNGSI/UPDATE.pwn"

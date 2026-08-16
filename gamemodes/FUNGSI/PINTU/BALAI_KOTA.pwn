@@ -27,34 +27,6 @@ stock DeteksiPintuBalaiKota(playerid) {
   return 0;
 }
 
-public OnPlayerUpdate(playerid) {
-  if(IsPlayerInAnyVehicle(playerid)) {
-    if(TdPintuShown[playerid]) {
-      TextDrawHideForPlayer(playerid, TD_PINTU[0]);
-      TextDrawHideForPlayer(playerid, TD_PINTU[1]);
-      TdPintuShown[playerid] = false;
-    }
-    return 1;
-  }
-  
-  new bool:dekatPintu = (
-    GetPlayerDistanceFromPoint(playerid, EXT_BALAI_KOTA_x, EXT_BALAI_KOTA_y, EXT_BALAI_KOTA_z) <= 2 ||
-    GetPlayerDistanceFromPoint(playerid, INT_BALAI_KOTA_x, INT_BALAI_KOTA_y, INT_BALAI_KOTA_z) <= 2
-  );
-  
-  if(dekatPintu && !TdPintuShown[playerid]) {
-    TextDrawShowForPlayer(playerid, TD_PINTU[0]);
-    TextDrawShowForPlayer(playerid, TD_PINTU[1]);
-    TdPintuShown[playerid] = true;
-  }
-  else if(!dekatPintu && TdPintuShown[playerid]) {
-    TextDrawHideForPlayer(playerid, TD_PINTU[0]);
-    TextDrawHideForPlayer(playerid, TD_PINTU[1]);
-    TdPintuShown[playerid] = false;
-  }
-  return 1;
-}
-
 stock TanggalLahirValid(playerid, const date[]) {
   new day, month[16], year;
   new maxday;
@@ -100,7 +72,12 @@ stock TanggalLahirValid(playerid, const date[]) {
     Dialog_Show(playerid, DL_BALKOT_KTP_DATE, DIALOG_STYLE_INPUT, "Detroit City Hall", "Masukkan tanggal lahir\nContoh : 10 Oktober 2007", "Kirim", "Batal");
     return 0;
   }
-
+  
+  if(year < 0) {
+    SendMessageError(playerid, "Tahun tidak valid!");
+    Dialog_Show(playerid, DL_BALKOT_KTP_DATE, DIALOG_STYLE_INPUT, "Detroit City Hall", "Masukkan tanggal lahir\nContoh : 10 Oktober 2007", "Kirim", "Batal");
+    return 0;
+  }
   return 1;
 }
 
