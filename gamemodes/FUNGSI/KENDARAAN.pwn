@@ -172,7 +172,7 @@ Fungsi: BerikanKendaraan(playerid, model, color) {
   GetPlayerPos(playerid, x, y, z);
   
   new query[512];
-  mysql_format(g_SQL, query, sizeof(query), "INSERT INTO Kendaraan (pid, model, color1, color2, fuel, x, y, z) VALUES ('%d', '%d', '%d', %d', '%d', '%.4f', '%.4f', '%.4f')", playerid, model, color, color, 100, x + 2, y, z);
+  mysql_format(g_SQL, query, sizeof(query), "INSERT INTO Kendaraan (pid, model, color1, color2, fuel, x, y, z) VALUES ('%d', '%d', '%d', '%d', '%d', '%.4f', '%.4f', '%.4f')", Pemain[playerid][pId], model, color, color, 100, x + 2, y, z);
   mysql_query(g_SQL, query);
   
   JumVeh[playerid] = 0;
