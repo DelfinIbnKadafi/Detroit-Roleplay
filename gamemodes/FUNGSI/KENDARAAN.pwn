@@ -163,3 +163,20 @@ Fungsi: HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati) {
   }
   return 1;
 }
+
+Fungsi: BerikanKendaraan(playerid, model, color) {
+  if(JumVeh[playerid] >= 5) return 0;
+  SaveDataKendaraan(playerid);
+  
+  new Float:x, Float:y, Float:z;
+  GetPlayerPos(playerid, x, y, z);
+  
+  new query[512];
+  mysql_format(g_SQL, query, sizeof(query), "INSERT INTO Kendaraan (pid, model, color1, color2, fuel, x, y, z) VALUES ('%d', '%d', '%d', %d', '%d', '%.4f', '%.4f', '%.4f')", playerid, model, color, color, 100, x + 2, y, z);
+  mysql_query(g_SQL, query);
+  
+  JumVeh[playerid] = 0;
+  MuatDataKendaraan(playerid);
+  
+  return 1;
+}

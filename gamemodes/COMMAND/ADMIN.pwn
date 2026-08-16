@@ -4,7 +4,29 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh", "keluar", " ");
+  
+  return 1;
+}
+
+CMD:giveveh(playerid, params[]) {
+  if(Admin[playerid] < 2) {
+    SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+    return 1;
+  }
+  new target, model, color;
+  if(sscanf(params, "iii", target)) {
+    SendClientMessage(playerid, -1, "Gunakan: /giveveh <playerid> <modelid> <colorid>");
+    return 1;
+  }
+  
+  if(BerikanKendaraan(playerid, model, color) == 0) {
+    SendMessageError(playerid, "Player sudah memiliki 5 kendaraan!");
+    return 0;
+  }
+  else {
+    SendMessageInfo(playerid, "Berhasil memberi kendaraan ke player");
+  }
   
   return 1;
 }
