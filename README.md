@@ -51,4 +51,4 @@ buat perubahan, lalu kirimkan Pull Request.
 Gamemode ini bersifat terbuka. Anda bebas menggunakan, memodifikasi, dan membagikan
 gamemode ini sesuai dengan kebutuhan Anda. Terima kasih telah menggunakan Detroit Roleplay.
 
-**Delfin Ganteng**
+**MIT LICENSE**
