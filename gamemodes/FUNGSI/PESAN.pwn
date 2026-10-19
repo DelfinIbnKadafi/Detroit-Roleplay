@@ -19,21 +19,67 @@ stock ShowGreetings(playerid)
 	return 1;
 }
 
-public OnPlayerText(playerid, text[])
+stock bool:CanSendChat(playerid)
 {
   if(!StatusLogin[playerid]) {
     SendMessageError(playerid, "Kamu harus login agar bisa mengirim pesan!");
-    return 0;
+    return false;
   }
-
   if(Mute[playerid]) {
     SendMessageError(playerid, "Kamu sedang dibisukan!");
-    return 0;
+    return false;
   }
 
+  new now = GetTickCount();
+  if(now - ChatWindowStart[playerid] > 5000) {
+    JumlahSpam[playerid] = 0;
+    ChatWindowStart[playerid] = now;
+  }
+
+  if(++JumlahSpam[playerid] >= 3) {
+    Mute[playerid] = true;
+    SendMessageWarning(playerid, "Kamu dibisukan karena spam!");
+    TimerUnMute[playerid] = SetTimerEx("AutoUnMute", 10000, false, "ii", playerid, PlayerSession[playerid]);
+    return false;
+  }
+  return true;
+}
+
+stock SendProximityMessage(playerid, Float:radius, color, const message[])
+{
+  new Float:px, Float:py, Float:pz;
+  GetPlayerPos(playerid, px, py, pz);
+
+  foreach(new i : Player) {
+    if(!StatusLogin[i]) continue;
+    if(GetPlayerInterior(i) != GetPlayerInterior(playerid)) continue;
+    if(GetPlayerVirtualWorld(i) != GetPlayerVirtualWorld(playerid)) continue;
+    if(GetPlayerDistanceFromPoint(i, px, py, pz) <= radius) {
+      SendClientMessage(i, color, message);
+    }
+  }
+  return 1;
+}
+
+stock GetRoleplayName(playerid, name[], size)
+{
+  format(name, size, "%s", Pemain[playerid][pNama]);
+  for(new i = 0; name[i] != '\0'; i++) {
+    if(name[i] == '_') name[i] = ' ';
+  }
+  return 1;
+}
+
+public OnPlayerText(playerid, text[])
+{
   if(isnull(text) || strlen(text) < 1) {
     return 0;
   }
+  if(strlen(text) > 100) {
+    SendMessageError(playerid, "Pesan terlalu panjang (maksimal 100 karakter).");
+    return 0;
+  }
+  if(!CanSendChat(playerid)) return 0;
 
   new Float:px, Float:py, Float:pz;
   GetPlayerPos(playerid, px, py, pz);
@@ -45,9 +91,9 @@ public OnPlayerText(playerid, text[])
 
   foreach(new i : Player)
   {
-    if(!IsPlayerConnected(i)) continue;
-    if(GetPlayerInterior(playerid) != i) continue;
-    if(GetPlayerVirtualWorld(playerid) != i) continue;
+    if(!StatusLogin[i]) continue;
+    if(GetPlayerInterior(i) != GetPlayerInterior(playerid)) continue;
+    if(GetPlayerVirtualWorld(i) != GetPlayerVirtualWorld(playerid)) continue;
 
     new Float:dist = GetPlayerDistanceFromPoint(i, px, py, pz);
     new color;
@@ -64,27 +110,6 @@ public OnPlayerText(playerid, text[])
     else continue;
 
     SendClientMessage(i, color, msg);
-  }
-
-  // reset spam kalau player diam
-  new now = GetTickCount();
-
-  if(now - LastChatTime[playerid] > 5000) {
-    JumlahSpam[playerid] = 0;
-  }
-
-  LastChatTime[playerid] = now;
-
-  if(!Mute[playerid]) {
-    JumlahSpam[playerid]++;
-
-    if(JumlahSpam[playerid] >= 3)
-    {
-      Mute[playerid] = true;
-      SendMessageWarning(playerid, "Kamu dibisukan karena spam!");
-
-      SetTimerEx("AutoUnMute", 10000, false, "i", playerid);
-    }
   }
 
   return 0;

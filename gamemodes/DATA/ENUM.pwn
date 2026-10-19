@@ -2,7 +2,7 @@
 // Data player
 enum DATA_PEMAIN 
 {
-  pNama[MAX_PLAYER_NAME],
+  pNama[MAX_PLAYER_NAME + 1],
   pId,
   pVerified,
   pKode,
@@ -17,7 +17,7 @@ enum DATA_PEMAIN
   pNorek,
   pPhone,
   pPhoneStatus,
-  pNohp,
+  pNohp[16],
   pKtp,
   pDateBirth[64],
   pJob,

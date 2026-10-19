@@ -23,21 +23,23 @@ stock HandleRegister(playerid)
   mysql_format(
     g_SQL, query, 
     sizeof(query), 
-    "UPDATE Pemain SET verified=1, sandi='%e', gender='%d' WHERE id='%d'",
+    "UPDATE Pemain SET verified=1, kode=NULL, sandi='%e', gender='%d' WHERE id='%d'",
     Pemain[playerid][pPassword], Pemain[playerid][pGender], Pemain[playerid][pId]
   );
 
 
-  if(mysql_tquery(g_SQL, query))
-  {
-    SpawnPemainEx(playerid, .new_player = true);
+  mysql_tquery(g_SQL, query, "OnRegisterComplete", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
+  return 1;
+}
+
+Fungsi:OnRegisterComplete(playerid, sessionid, const expectedName[])
+{
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+  if(cache_affected_rows() != 1) {
+    SendMessageError(playerid, "Data registrasi gagal disimpan. Silakan hubungi admin.");
+    return DelayedKick(playerid);
   }
-  else 
-  {
-    // error, cek (OnQueryError)...
-    SendMessageInfo(playerid, "Kesalahan tidak terduga. (check: OnQueryError)");
-    DelayedKick(playerid);
-  }
+  SpawnPemainEx(playerid, .new_player = true);
   return 1;
 }
 
@@ -61,8 +63,11 @@ Dialog:DL_REGISTER_GENDER(playerid, response, listitem, const inputtext[])
 	return 1;
 }
 
-Fungsi: OnHashPassword(playerid)
+Fungsi: OnHashPassword(playerid, hashid, sessionid, const expectedName[])
 {
+  #pragma unused hashid
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+
   Pemain[playerid][pPassword] = 0; // sm kayak EOS atau '\0'
   bcrypt_get_hash(Pemain[playerid][pPassword]);
   ShowRegisterDialog(playerid);
@@ -80,7 +85,7 @@ stock ShowCreatePasswordDialog(playerid)
     ""E_WHITE"Silahkan buat password akun kamu dibawah ini dengan mengikuti format berikut:\n\
     - Panjang password harus 8-32 karakter"
   );
-  Dialog_Show(playerid, DL_CREATE_PW, DIALOG_STYLE_INPUT, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Buat Passsword", body, "Buat", "Batal");
+  Dialog_Show(playerid, DL_CREATE_PW, DIALOG_STYLE_INPUT, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Buat Password", body, "Buat", "Batal");
   return 1;
 }
 
@@ -97,20 +102,33 @@ Dialog:DL_VERIFY_CODE(playerid, response, listitem, const inputtext[])
   ;
   if(sscanf(inputtext, "d", code))
   {
+    new attempts = GetPVarInt(playerid, "verify_attempts") + 1;
+    SetPVarInt(playerid, "verify_attempts", attempts);
     SendMessageError(playerid, "Input harus berupa angka");
+    if(attempts >= MAX_VERIFY_ATTEMPTS) {
+      SendMessageError(playerid, "Batas percobaan kode verifikasi tercapai.");
+      return DelayedKick(playerid);
+    }
     format(tmp, sizeof tmp, ""E_WHITE"Akun kamu belum terverifikasi oleh sistem.\nSilahkan masukan kode verifikasi 6 digit yang diberikan oleh bot.");
     Dialog_Show(playerid, DL_VERIFY_CODE, DIALOG_STYLE_INPUT, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Verifikasi Kode", tmp, "Verifikasi", "Batal");
   }
   else
   {
-    if(code == Pemain[playerid][pKode])
+    if(Pemain[playerid][pKode] > 0 && code == Pemain[playerid][pKode])
     {
-        SendMessageServer(playerid, "Kode verifikasi benar, silahkan buat password anda!");
-        ShowCreatePasswordDialog(playerid);
+      DeletePVar(playerid, "verify_attempts");
+      SendMessageServer(playerid, "Kode verifikasi benar, silahkan buat password anda!");
+      ShowCreatePasswordDialog(playerid);
     }
     else
     {
+      new attempts = GetPVarInt(playerid, "verify_attempts") + 1;
+      SetPVarInt(playerid, "verify_attempts", attempts);
       SendMessageError(playerid, "Kode yang kamu masukkan salah. Jika mengalami kendala silahkan hubungi admin.");
+      if(attempts >= MAX_VERIFY_ATTEMPTS) {
+        SendMessageError(playerid, "Batas percobaan kode verifikasi tercapai.");
+        return DelayedKick(playerid);
+      }
       format(tmp, sizeof tmp, ""E_WHITE"Akun kamu belum terverifikasi oleh sistem.\nSilahkan masukan kode verifikasi 6 digit yang diberikan oleh bot.");
       Dialog_Show(playerid, DL_VERIFY_CODE, DIALOG_STYLE_INPUT, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Verifikasi Kode", tmp, "Verifikasi", "Batal");
     }
@@ -128,6 +146,6 @@ Dialog:DL_CREATE_PW(playerid, response, listitem, const inputtext[])
     SendMessageError(playerid, "Panjang password tidak valid!");
     ShowCreatePasswordDialog(playerid);
   }
-  else bcrypt_hash(playerid, "OnHashPassword", inputtext, BCRYPT_COST);
+  else bcrypt_hash(playerid, "OnHashPassword", inputtext, BCRYPT_COST, "is", PlayerSession[playerid], Pemain[playerid][pNama]);
   return 1;
 }

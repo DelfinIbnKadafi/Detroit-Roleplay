@@ -31,7 +31,7 @@ stock TanggalLahirValid(playerid, const date[]) {
   new day, month[16], year;
   new maxday;
 
-  if(sscanf(date, "is[16]i", day, month, year)) {
+  if(strlen(date) > 32 || sscanf(date, "ds[16]d", day, month, year)) {
     SendMessageError(playerid, "Tanggal lahir tidak valid!");
     Dialog_Show(playerid, DL_BALKOT_KTP_DATE, DIALOG_STYLE_INPUT, "Detroit City Hall", "Masukkan tanggal lahir\nContoh : 10 Oktober 2007", "Kirim", "Batal");
     return 0;
@@ -59,7 +59,7 @@ stock TanggalLahirValid(playerid, const date[]) {
   else if(
     !strcmp(month, "Februari", true)
   ) {
-    maxday = 29;
+    maxday = (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)) ? 29 : 28;
   }
   else {
     SendMessageError(playerid, "Bulan tidak valid!");
@@ -73,15 +73,22 @@ stock TanggalLahirValid(playerid, const date[]) {
     return 0;
   }
   
-  if(year < 0) {
+  new currentYear, currentMonth, currentDay;
+  getdate(currentYear, currentMonth, currentDay);
+  if(year < 1900 || year > currentYear) {
     SendMessageError(playerid, "Tahun tidak valid!");
     Dialog_Show(playerid, DL_BALKOT_KTP_DATE, DIALOG_STYLE_INPUT, "Detroit City Hall", "Masukkan tanggal lahir\nContoh : 10 Oktober 2007", "Kirim", "Batal");
     return 0;
   }
+  format(Pemain[playerid][pDateBirth], 64, "%d %s %d", day, month, year);
   return 1;
 }
 
 stock ShowBalkotMenu(playerid) {
+  if(Pemain[playerid][pKtp]) {
+    SendMessageInfo(playerid, "Kamu sudah memiliki KTP.");
+    return 1;
+  }
   if(IsPlayerInRangeOfPoint(playerid, 2.0, BALAI_KOTA_X, BALAI_KOTA_Y, BALAI_KOTA_Z)) {
     new str[256];
 
@@ -89,6 +96,7 @@ stock ShowBalkotMenu(playerid) {
 
     Dialog_Show(playerid, DL_BALKOT_MENU, DIALOG_STYLE_LIST, "Detroit City Hall", str, "Pilih", "Batal");
   }
+  return 1;
 }
 
 Dialog:DL_BALKOT_MENU(playerid, response, listitem, const inputtext[]) {
@@ -105,6 +113,10 @@ Dialog:DL_BALKOT_MENU(playerid, response, listitem, const inputtext[]) {
 
 Dialog:DL_BALKOT_KTP_DATE(playerid, response, listitem, const inputtext[]) {
   if(!response) return 1;
+  if(Pemain[playerid][pKtp]) {
+    SendMessageInfo(playerid, "Kamu sudah memiliki KTP.");
+    return 1;
+  }
 
   if(!TanggalLahirValid(playerid, inputtext))
     return 1;
@@ -113,8 +125,6 @@ Dialog:DL_BALKOT_KTP_DATE(playerid, response, listitem, const inputtext[]) {
     SendMessageError(playerid, "Uang tidak cukup!");
     return 1;
   }
-
-  format(Pemain[playerid][pDateBirth], 64, "%s", inputtext);
 
   Pemain[playerid][pKtp] = 1;
 

@@ -23,13 +23,17 @@ CMD:pay(playerid, params[]) {
     return 1;
   }
   
-  new Float:x, Float:y, Float:z, Float:prabowo;
+  new Float:x, Float:y, Float:z;
   GetPlayerPos(playerid, x, y, z);
-  new nama_target[MAX_PLAYER_NAME];
-  GetPlayerName(targetid, nama_target, MAX_PLAYER_NAME);
+  new nama_target[MAX_PLAYER_NAME + 1];
+  GetPlayerName(targetid, nama_target, sizeof(nama_target));
   
   new Float:jarak = GetPlayerDistanceFromPoint(targetid, x, y, z);
   if(jarak <= 3.0) {
+    if(GetPlayerInterior(playerid) != GetPlayerInterior(targetid) || GetPlayerVirtualWorld(playerid) != GetPlayerVirtualWorld(targetid)) {
+      SendMessageError(playerid, "Pemain yang dituju tidak berada di dunia yang sama.");
+      return 1;
+    }
     GivePlayerMoney(playerid, -jumlah);
     GivePlayerMoney(targetid, jumlah);
     
@@ -37,15 +41,7 @@ CMD:pay(playerid, params[]) {
     ApplyAnimation(targetid, "DEALER", "DEALER_DEAL", 4.1, false, false, false, false, 3170);
     
     format(msg, sizeof(msg), "%s memberikan uang sebanyak %d rupiah kepada %s", Pemain[playerid][pNama], jumlah, nama_target);
-    SendClientMessage(playerid, 0x6B0E66FF, msg);
-    
-    foreach(new i:Player) {
-      if(!IsPlayerConnected(i) || i == playerid) continue;
-      prabowo = GetPlayerDistanceFromPoint(i, x, y, z);
-      if (prabowo <= 10.0) {
-        SendClientMessage(i, 0x6B0E66FF, msg);
-      }
-    }
+    SendProximityMessage(playerid, 10.0, 0x6B0E66FF, msg);
   }
   else {
     SendMessageError(playerid, "Pemain yang dituju tidak berada didekatmu!");
@@ -67,7 +63,7 @@ CMD:stats(playerid, params[])
     format(hpno, sizeof(hpno), "-");
   }
   else {
-    format(hpno, sizeof(hpno), "%d", Pemain[playerid][pNohp]);
+    format(hpno, sizeof(hpno), "%s", Pemain[playerid][pNohp]);
     if(Pemain[playerid][pPhoneStatus] == 0) {
       format(hpstr, sizeof(hpstr), "Tidak Aktif");
     }

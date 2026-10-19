@@ -15,17 +15,26 @@ CMD:giveveh(playerid, params[]) {
     return 1;
   }
   new target, model, color;
-  if(sscanf(params, "iii", target)) {
+  if(sscanf(params, "iii", target, model, color)) {
     SendClientMessage(playerid, -1, "Gunakan: /giveveh <playerid> <modelid> <colorid>");
     return 1;
   }
-  
-  if(BerikanKendaraan(playerid, model, color) == 0) {
-    SendMessageError(playerid, "Player sudah memiliki 5 kendaraan!");
-    return 0;
+
+  if(!IsPlayerConnected(target)) {
+    SendMessageError(playerid, "Player yang dituju sedang tidak online!");
+    return 1;
+  }
+  if(model < 400 || model > 611 || color < 0 || color > 255) {
+    SendMessageError(playerid, "Model kendaraan atau warna tidak valid!");
+    return 1;
+  }
+  if(BerikanKendaraan(target, model, color) == 0) {
+    SendMessageError(playerid, "Player sudah memiliki batas maksimal kendaraan!");
+    return 1;
   }
   else {
     SendMessageInfo(playerid, "Berhasil memberi kendaraan ke player");
+    SendMessageInfo(target, "Admin telah memberikan kendaraan kepadamu.");
   }
   
   return 1;
@@ -48,7 +57,7 @@ CMD:aduty(playerid, params[]) {
   }
   if(AdminDuty[playerid] == true) {
     AdminDuty[playerid] = false;
-    SendMessageInfo(playerid, "Kamu sudah of duty sebagai admin");
+    SendMessageInfo(playerid, "Kamu sudah off duty sebagai admin");
     SetPlayerColor(playerid, -1);
   }
   else {
@@ -119,6 +128,8 @@ CMD:gotoplayer(playerid, params[]) {
   }
   new Float:x, Float:y, Float:z;
   GetPlayerPos(target, x, y, z);
+  SetPlayerInterior(playerid, GetPlayerInterior(target));
+  SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(target));
   SetPlayerPos(playerid, x + 2.00, y, z);
   return 1;
 }
@@ -139,6 +150,8 @@ CMD:getplayer(playerid, params[]) {
   }
   new Float:x, Float:y, Float:z;
   GetPlayerPos(playerid, x, y, z);
+  SetPlayerInterior(target, GetPlayerInterior(playerid));
+  SetPlayerVirtualWorld(target, GetPlayerVirtualWorld(playerid));
   SetPlayerPos(target, x + 2.00, y, z);
   return 1;
 }
@@ -157,8 +170,8 @@ CMD:givemoney(playerid, params[]) {
     SendMessageError(playerid, "Player yang dituju sedang tidak online!");
     return 1;
   }
-  if(amount < 1) {
-    SendMessageError(playerid, "Tidak boleh kurang dari 0!");
+  if(amount < 1 || amount > 1000000 || amount > 2147483647 - GetPlayerMoney(target)) {
+    SendMessageError(playerid, "Jumlah uang tidak valid atau melebihi batas saldo!");
     return 1;
   }
   
@@ -180,6 +193,10 @@ CMD:getmoney(playerid, params[]) {
   }
   if(!IsPlayerConnected(target)) {
     SendMessageError(playerid, "Player yang dituju sedang tidak online!");
+    return 1;
+  }
+  if(amount <= 0 || amount > GetPlayerMoney(target)) {
+    SendMessageError(playerid, "Jumlah uang harus positif dan tidak boleh melebihi saldo pemain!");
     return 1;
   }
   GivePlayerMoney(target, -amount);
@@ -223,10 +240,28 @@ CMD:spawnaveh(playerid, params[]) {
   new Float:x, Float:y, Float:z, Float:a;
   GetPlayerPos(playerid, x, y, z);
   GetPlayerFacingAngle(playerid, a);
-  
+
+  if(id < 400 || id > 611 || color < 0 || color > 255) {
+    SendMessageError(playerid, "Model kendaraan atau warna tidak valid!");
+    return 1;
+  }
+  if(jumaveh >= sizeof(aveh)) {
+    SendMessageError(playerid, "Batas kendaraan admin telah tercapai!");
+    return 1;
+  }
+
+  new vehicleid = CreateVehicle(id, x + 3.00, y, z, a, color, color, -1, false);
+  if(vehicleid == INVALID_VEHICLE_ID) {
+    SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
+    return 1;
+  }
+  aveh[jumaveh] = vehicleid;
+  avehOwner[jumaveh] = playerid;
   jumaveh++;
-  aveh[jumaveh] = CreateVehicle(id, x + 3.00, y, z, a, color, color, -1, false);
-  SetVehicleParamsEx(aveh[jumaveh], true);
+  VehOwner[vehicleid] = -1;
+  VehSlot[vehicleid] = -1;
+  MesinVeh[vehicleid] = false;
+  SetVehicleParamsEx(vehicleid, true, false, false, false, false, false, false);
   SendMessageInfo(playerid, "Berhasil spawn veh");
   return 1;
 }
@@ -236,9 +271,7 @@ CMD:destroyaveh(playerid, params[]) {
     SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
     return 1;
   }
-  for(new i = 1; i <= jumaveh; i++) {
-    DestroyVehicle(aveh[i]);
-  }
-  jumaveh = 0;
+  DestroyAdminVehicles(playerid);
+  SendMessageInfo(playerid, "Semua kendaraan admin milikmu telah dihancurkan.");
   return 1;
 }

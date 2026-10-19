@@ -1,5 +1,6 @@
 Dialog:DL_VEHLIST(playerid, response, listitem, inputtext[]) {
   if(!response) return 1;
+  if(listitem < 0 || listitem >= JumVeh[playerid]) return 1;
 
   new judul[64], pilihan[128];
   new vnama[32];
@@ -16,16 +17,16 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
   if(!response) return 1;
 
   new idp = PilihanVeh[playerid];
+  if(idp < 0 || idp >= JumVeh[playerid]) return 1;
 
   switch(listitem) {
     case 0: {
       // spawn veh
-      if(VehicleIsSpawn[playerid][idp] == true) {
+      if(VehicleIsSpawn[playerid][idp] && IsValidVehicle(PlayerVehID[playerid][idp])) {
         SendMessageError(playerid, "Kendaraan tersebut telah di spawn");
         return 1;
       }
       
-      new dbid = PVeh[playerid][idp][vId];
       new vehicleid = CreateVehicle(
        PVeh[playerid][idp][vModel],
        PVeh[playerid][idp][vX],
@@ -36,20 +37,22 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
        PVeh[playerid][idp][vColor2],
        -1
       );
-      
+      if(vehicleid == INVALID_VEHICLE_ID) {
+        SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
+        return 1;
+      }
+
       VehicleIsSpawn[playerid][idp] = true;
-      
-      VehID[dbid] = vehicleid;
-      
+      PlayerVehID[playerid][idp] = vehicleid;
       VehOwner[vehicleid] = playerid;
       VehSlot[vehicleid] = idp;
       
       MesinVeh[vehicleid] = false;
       
       SetVehicleHealth(vehicleid, PVeh[playerid][idp][vHealth]);
-      SetVehicleParamsEx(vehicleid, 0, 0, 0, PVeh[playerid][idp][vKunci], 0, 0, 0);
+      SetVehicleEngineAndLock(vehicleid, false, PVeh[playerid][idp][vKunci] != 0);
       
-      SendMessageInfo(playerid, "Kendaran telah di spawn");
+      SendMessageInfo(playerid, "Kendaraan telah di-spawn.");
       return 1;
     }
     case 1: {
@@ -60,7 +63,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
       return 1;
     }
     case 2: {
-      new vehicleid = VehID[PVeh[playerid][idp][vId]];
+      new vehicleid = PlayerVehID[playerid][idp];
       
       if(!IsValidVehicle(vehicleid)) {
         SendMessageError(playerid, "Kendaraan belum di-spawn.");
@@ -81,13 +84,13 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
       if(PVeh[playerid][idp][vKunci] == 0) {
         PVeh[playerid][idp][vKunci] = 1;
         
-        SetVehicleParamsEx(vehicleid, MesinVeh[vehicleid], 0, 0, 1, 0, 0, 0);
+        SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], true);
         
         SendMessageInfo(playerid, "Kendaraan berhasil dikunci.");
       }
       else {
         PVeh[playerid][idp][vKunci] = 0;
-        SetVehicleParamsEx(vehicleid, MesinVeh[vehicleid], 0, 0, 0, 0, 0, 0);
+        SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], false);
         
         SendMessageInfo(playerid, "Kunci kendaraan berhasil dibuka.");
       }
@@ -95,7 +98,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
     }
     case 3: {
       // track
-      new vehicleid = VehID[PVeh[playerid][idp][vId]];
+      new vehicleid = PlayerVehID[playerid][idp];
       
       if(IsValidVehicle(vehicleid)) {
         GetVehiclePos(vehicleid,
@@ -111,9 +114,15 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
        PVeh[playerid][idp][vZ],
        2.0
       );
-      SendMessageInfo(playerid, "Chekpoint menuju kendaraan telah dibuat!");
+      SendMessageInfo(playerid, "Checkpoint menuju kendaraan telah dibuat!");
       return 1;
     }
   }
+  return 1;
+}
+
+public OnPlayerEnterCheckpoint(playerid) {
+  DisablePlayerCheckpoint(playerid);
+  SendMessageInfo(playerid, "Kamu telah mencapai lokasi kendaraan.");
   return 1;
 }

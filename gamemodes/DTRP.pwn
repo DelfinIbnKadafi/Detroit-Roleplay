@@ -45,6 +45,9 @@ public OnGameModeInit()
 // connect/disconnect
 public OnPlayerConnect(playerid) 
 {
+  PlayerSession[playerid]++;
+  if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
+  ResetDataPemain(playerid);
   for(new i = 0; i < 3; i++) {
     TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);
   }
@@ -53,7 +56,7 @@ public OnPlayerConnect(playerid)
   
   SetPlayerColor(playerid, 0xFFFFFFFF);
   LoadPlayerTextdraw(playerid);
-  GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME);
+  GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME + 1);
   SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay.");
   SendMessageServer(playerid, "Akun kamu sedang kami proses");
   
@@ -65,24 +68,40 @@ public OnPlayerConnect(playerid)
     "SELECT * FROM Pemain WHERE nama='%e'",
     Pemain[playerid][pNama]
   );
-  mysql_pquery(g_SQL, query, "CekAkunPemain", "i", playerid);
+  mysql_pquery(g_SQL, query, "CekAkunPemain", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
+  return 1;
+}
+
+public OnGameModeExit()
+{
+  foreach(new playerid : Player) {
+    if(!StatusLogin[playerid]) continue;
+    SimpanDataPemain(playerid);
+    SaveDataKendaraan(playerid);
+  }
   return 1;
 }
 
 public OnPlayerDisconnect(playerid, reason) 
 {
+  new bool:wasLoggedIn = StatusLogin[playerid];
+  StatusLogin[playerid] = false;
+  PlayerSession[playerid]++;
   TdPintuShown[playerid] = false;
-  
-  if(StatusLogin[playerid] == false) return 1;
-  
+
   KillTimer(TimerLapar[playerid]);
   KillTimer(TimerHaus[playerid]);
   KillTimer(TimerHBE[playerid]);
   KillTimer(TimerSpedo[playerid]);
-  
-  SimpanDataPemain(playerid);
-  SaveDataKendaraan(playerid);
-  HancurkanKendaraanPlayer(playerid);
+  KillTimer(TimerUnMute[playerid]);
+  KillTimer(TimerAutoSave[playerid]);
+  DestroyAdminVehicles(playerid);
+
+  if(wasLoggedIn) {
+    SimpanDataPemain(playerid);
+    SaveDataKendaraan(playerid);
+    HancurkanKendaraanPlayer(playerid);
+  }
   ResetDataPemain(playerid);
   return 1;
 }

@@ -1,14 +1,16 @@
-Fungsi: OnVerifyPassword(playerid, bool:success)
+Fungsi: OnVerifyPassword(playerid, bool:success, sessionid, const expectedName[])
 {
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+
   new 
     attempts = GetPVarInt(playerid, "login_attempts")
   ;
   if(!success)
   {
-    if(++attempts > MAX_LOGIN_ATTEMPTS) 
+    if(++attempts >= MAX_LOGIN_ATTEMPTS)
     {
       SendMessageServer(playerid, "Kamu telah login dengan password yang salah sebanyak "#MAX_LOGIN_ATTEMPTS" kali.");
-      SendMessageServer(playerid, "Jika mengalami lupa passsword silahkan laporkan kepada admin.");
+      SendMessageServer(playerid, "Jika mengalami lupa password silahkan laporkan kepada admin.");
       DelayedKick(playerid);
     }
     else
@@ -29,12 +31,12 @@ Fungsi: OnVerifyPassword(playerid, bool:success)
   else
   {
     new 
-      query[32]
+      query[256]
     ;
 
     DeletePVar(playerid, "login_attempts");
     mysql_format(g_SQL, query, sizeof query, "SELECT * FROM Pemain where id=%d", Pemain[playerid][pId]);
-    mysql_tquery(g_SQL, query, "MuatDataPemain", "d", playerid);
+    mysql_tquery(g_SQL, query, "MuatDataPemain", "iis", playerid, sessionid, expectedName);
   }
   return 1;
 }
@@ -54,6 +56,6 @@ Dialog:DL_LOGIN(playerid, response, listitem, const inputtext[])
     );
     Dialog_Show(playerid, DL_LOGIN, DIALOG_STYLE_PASSWORD, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Login", tmp, "Login", "Batal");
   }
-  else bcrypt_verify(playerid, "OnVerifyPassword", inputtext, Pemain[playerid][pPassword]);
+  else bcrypt_verify(playerid, "OnVerifyPassword", inputtext, Pemain[playerid][pPassword], "is", PlayerSession[playerid], Pemain[playerid][pNama]);
   return 1;
 }

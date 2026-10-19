@@ -31,7 +31,7 @@ stock ShowHideHbeTextdraw(playerid, bool:showorhide) {
     KillTimer(TimerLapar[playerid]);
     KillTimer(TimerHaus[playerid]);
     
-    TimerHBE[playerid] = SetTimerEx("UpdateTextdrawHbe", 500, true, "i", playerid);
+    TimerHBE[playerid] = SetTimerEx("UpdateTextdrawHbe", 5000, true, "i", playerid);
     TimerLapar[playerid] = SetTimerEx("KurangiLapar", 180000, true, "i", playerid);
     TimerHaus[playerid] = SetTimerEx("KurangiHaus", 120000, true, "i", playerid);
   }

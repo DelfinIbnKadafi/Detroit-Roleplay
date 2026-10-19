@@ -117,7 +117,7 @@
     "rcon": {
         "allow_teleport": false,
         "enable": false,
-        "password": "dtr@#!%^XXa.-(*7$p"
+        "password": ""
     },
     "sleep": 5.0,
     "use_dyn_ticks": true,

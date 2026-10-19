@@ -7,6 +7,7 @@
 
 // stuff
 #define MAX_LOGIN_ATTEMPTS		3
+#define MAX_VERIFY_ATTEMPTS		5
 
 #define DEFAULT_MALE_SKIN		59
 #define DEFAULT_FEMALE_SKIN		141
@@ -16,5 +17,5 @@
 #define DEFAULT_POS_A   		3.34
 
 // veh 
-#define MAX_VEHICLES_SERVER 1000
+#define MAX_VEHICLES_SERVER MAX_VEHICLES
 #define MAX_KENDARAAN 5

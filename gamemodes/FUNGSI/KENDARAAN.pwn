@@ -4,8 +4,12 @@ stock MuatDataKendaraan(playerid) {
   mysql_format(g_SQL, query, sizeof(query),
    "SELECT * FROM `Kendaraan` WHERE `pid` = %d", Pemain[playerid][pId]);
 
-  new Cache:result = mysql_query(g_SQL, query);
+  mysql_tquery(g_SQL, query, "OnVehiclesLoaded", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
+  return 1;
+}
 
+Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || !StatusLogin[playerid]) return 1;
   JumVeh[playerid] = 0;
 
   new rows = cache_num_rows();
@@ -29,7 +33,17 @@ stock MuatDataKendaraan(playerid) {
     JumVeh[playerid]++;
   }
 
-  cache_delete(result);
+  return 1;
+}
+
+Fungsi:OnVehicleGranted(playerid, sessionid, const expectedName[]) {
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+  if(PendingVehicleGrants[playerid] > 0) PendingVehicleGrants[playerid]--;
+  if(cache_affected_rows() != 1) {
+    SendMessageError(playerid, "Kendaraan gagal disimpan ke database.");
+    return 1;
+  }
+  MuatDataKendaraan(playerid);
   return 1;
 }
 
@@ -39,8 +53,8 @@ stock SaveDataKendaraan(playerid) {
   }
     
   for(new i = 0; i < JumVeh[playerid]; i++) {
-    new vehicleid = VehID[PVeh[playerid][i][vId]];
-    if(IsValidVehicle(vehicleid)) {
+    new vehicleid = PlayerVehID[playerid][i];
+    if(IsValidVehicle(vehicleid) && VehOwner[vehicleid] == playerid && VehSlot[vehicleid] == i) {
       GetVehicleHealth(vehicleid, PVeh[playerid][i][vHealth]);
       GetVehiclePos(vehicleid,
        PVeh[playerid][i][vX],
@@ -69,16 +83,25 @@ stock SaveDataKendaraan(playerid) {
 
 stock HancurkanKendaraanPlayer(playerid) {
   for(new i = 0; i < JumVeh[playerid]; i++) {
-    if(!IsValidVehicle(VehID[PVeh[playerid][i][vId]])) continue;
-    VehicleIsSpawn[playerid][VehSlot[VehID[PVeh[playerid][i][vId]]]] = false;
-    DestroyVehicle(VehID[PVeh[playerid][i][vId]]);
+    new vehicleid = PlayerVehID[playerid][i];
+    if(!IsValidVehicle(vehicleid) || VehOwner[vehicleid] != playerid || VehSlot[vehicleid] != i) {
+      PlayerVehID[playerid][i] = INVALID_VEHICLE_ID;
+      VehicleIsSpawn[playerid][i] = false;
+      continue;
+    }
+    VehicleIsSpawn[playerid][i] = false;
+    VehOwner[vehicleid] = -1;
+    VehSlot[vehicleid] = -1;
+    MesinVeh[vehicleid] = false;
+    PlayerVehID[playerid][i] = INVALID_VEHICLE_ID;
+    DestroyVehicle(vehicleid);
   }
   return 1;
 }
 
 stock GetVehicleModelName(modelid, name[], len) {
-  new const vehicleNames[][] = {
-    "Landstalker", "Bravura", "Buffano", "Linerunner", "Perennial", "Sentinel", "Dumper", "Firetruck", "Trashmaster", "Stretch",
+  static const vehicleNames[][] = {
+    "Landstalker", "Bravura", "Buffalo", "Linerunner", "Perennial", "Sentinel", "Dumper", "Firetruck", "Trashmaster", "Stretch",
     "Manana", "Infernus", "Voodoo", "Pony", "Mule", "Cheetah", "Ambulance", "Leviathan", "Moonbeam", "Esperanto",
     "Taxi", "Washington", "Bobcat", "Mr Whoopee", "BF Injection", "Hunter", "Premier", "Enforcer", "Securicar", "Banshee",
     "Predator", "Bus", "Rhino", "Barracks", "Hotknife", "Trailer 1", "Previon", "Coach", "Cabbie", "Stallion",
@@ -94,7 +117,7 @@ stock GetVehicleModelName(modelid, name[], len) {
     "Forklift", "Tractor", "Combine", "Feltzer", "Remington", "Slamvan", "Blade", "Freight", "Streak", "Vortex",
     "Vincent", "Bullet", "Clover", "Sadler", "Firetruck LA", "Hustler", "Intruder", "Primo", "Cargobob", "Tampa",
     "Sunrise", "Merit", "Utility", "Nevada", "Yosemite", "Windsor", "Monster A", "Monster B", "Uranus", "Jester",
-    "Sultan", "Stratum", "Elegy", "Raindance", "RC Tiger", "Flash", "Kendrick", "Savanna", "Bandito", "Freight Flat",
+    "Sultan", "Stratum", "Elegy", "Raindance", "RC Tiger", "Flash", "Tahoma", "Savanna", "Bandito", "Freight Flat",
     "Streak Carriage", "Kart", "Mower", "Duneride", "Sweeper", "Broadway", "Tornado", "AT-400", "DFT-30",
     "Huntley", "Stafford", "BF-400", "News Van", "Tug", "Trailer", "Emperor", "Wayfarer", "Euros", "Hotdog",
     "Club", "Freight Box", "Trailer", "Andromada", "Dodo", "RC Cam", "Launch", "Police LS", "Police SF", "Police LV",
@@ -109,26 +132,79 @@ stock GetVehicleModelName(modelid, name[], len) {
   return 0;
 }
 
-public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
+stock bool:IsPlayerOwnedVehicle(vehicleid) {
+  if(vehicleid < 0 || vehicleid >= MAX_VEHICLES_SERVER) return false;
+
   new owner = VehOwner[vehicleid];
   new slot  = VehSlot[vehicleid];
-  
-  if(owner < 0 || owner >= MAX_PLAYERS) return 1;
-  if(slot < 0 || slot >= MAX_KENDARAAN) return 1;
-  
-  if(PVeh[owner][slot][vKunci] == 1) {
-    SendMessageError(playerid, "Kendaraan ini terkunci!");
-    return 0;
-  }
-  
-  ShowHideSpeedo(playerid, true);
-  SendMessageInfo(playerid, "Gunakan /en atau tombol N untuk menghidupkan mesin kendaran.");
-  
+
+  if(owner < 0 || owner >= MAX_PLAYERS || slot < 0 || slot >= MAX_KENDARAAN) return false;
+  return PlayerVehID[owner][slot] == vehicleid;
+}
+
+stock SetVehicleEngineAndLock(vehicleid, bool:engine, bool:locked) {
+  new currentEngine, lights, alarm, doors, bonnet, boot, objective;
+  GetVehicleParamsEx(vehicleid, currentEngine, lights, alarm, doors, bonnet, boot, objective);
+  SetVehicleParamsEx(vehicleid, engine, lights, alarm, locked, bonnet, boot, objective);
   return 1;
 }
 
-public OnPlayerExitVehicle(playerid, vehicleid) {
-  ShowHideSpeedo(playerid, false);
+stock bool:IsAdminVehicle(vehicleid) {
+  for(new i = 0; i < jumaveh && i < MAX_VEHICLES_SERVER; i++) {
+    if(aveh[i] == vehicleid) return true;
+  }
+  return false;
+}
+
+stock RemoveAdminVehicle(vehicleid) {
+  for(new i = 0; i < jumaveh; i++) {
+    if(aveh[i] != vehicleid) continue;
+    jumaveh--;
+    aveh[i] = aveh[jumaveh];
+    avehOwner[i] = avehOwner[jumaveh];
+    return 1;
+  }
+  return 1;
+}
+
+stock DestroyAdminVehicles(playerid) {
+  for(new i = 0; i < jumaveh;) {
+    if(avehOwner[i] != playerid) {
+      i++;
+      continue;
+    }
+    if(IsValidVehicle(aveh[i])) DestroyVehicle(aveh[i]);
+    VehOwner[aveh[i]] = -1;
+    VehSlot[aveh[i]] = -1;
+    MesinVeh[aveh[i]] = false;
+    jumaveh--;
+    aveh[i] = aveh[jumaveh];
+    avehOwner[i] = avehOwner[jumaveh];
+  }
+  return 1;
+}
+
+public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
+  #pragma unused ispassenger
+  if(IsPlayerOwnedVehicle(vehicleid)) {
+    new owner = VehOwner[vehicleid];
+    new slot = VehSlot[vehicleid];
+    if(PVeh[owner][slot][vKunci] == 1) {
+      SendMessageError(playerid, "Kendaraan ini terkunci!");
+    }
+    SendMessageInfo(playerid, "Gunakan /en atau tombol N untuk menghidupkan mesin kendaraan.");
+  }
+  return 1;
+}
+
+public OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate) {
+  if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER) {
+    ShowHideSpeedo(playerid, false);
+  }
+  if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) {
+    new vehicleid = GetPlayerVehicleID(playerid);
+    ShowHideSpeedo(playerid, IsPlayerOwnedVehicle(vehicleid));
+  }
   return 1;
 }
 
@@ -144,28 +220,59 @@ stock GetVehicleSpeed(vehicleid) {
   return Speed;
 }
 
-Fungsi: HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati) {
-  for(new i = 0; i < 1001; i++) {
-    if(vehicleid == aveh[i]) {
-      return 0;
-    }
+Fungsi: HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati, sessionid) {
+  if(!IsPlayerConnected(playerid) || PlayerSession[playerid] != sessionid) return 1;
+  if(!IsPlayerConnected(playerid) || !IsValidVehicle(vehicleid)) return 1;
+  if(!IsPlayerOwnedVehicle(vehicleid) || IsAdminVehicle(vehicleid)) {
+    TextDrawHideForPlayer(playerid, MENGHIDUPKAN_MESIN_KENDARAAN[0]);
+    TextDrawHideForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
+    return 1;
+  }
+  if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || GetPlayerVehicleID(playerid) != vehicleid) {
+    TextDrawHideForPlayer(playerid, MENGHIDUPKAN_MESIN_KENDARAAN[0]);
+    TextDrawHideForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
+    return 1;
   }
   
   if(hidupormati == true) {
-    SetVehicleParamsEx(vehicleid, 1, 0, 0, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci], 0, 0, 0);
+    SetVehicleEngineAndLock(vehicleid, true, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci] != 0);
     MesinVeh[vehicleid] = true;
     TextDrawHideForPlayer(playerid, MENGHIDUPKAN_MESIN_KENDARAAN[0]);
   }
   else {
-    SetVehicleParamsEx(vehicleid, 0, 0, 0, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci], 0, 0, 0);
+    SetVehicleEngineAndLock(vehicleid, false, PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vKunci] != 0);
     MesinVeh[vehicleid] = false;
     TextDrawHideForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
   }
   return 1;
 }
 
+public OnVehicleDeath(vehicleid, killerid) {
+  #pragma unused killerid
+  if(vehicleid < 0 || vehicleid >= MAX_VEHICLES_SERVER) return 1;
+
+  if(IsPlayerOwnedVehicle(vehicleid)) {
+    new owner = VehOwner[vehicleid];
+    new slot = VehSlot[vehicleid];
+    PlayerVehID[owner][slot] = INVALID_VEHICLE_ID;
+    VehicleIsSpawn[owner][slot] = false;
+    PVeh[owner][slot][vHealth] = 1000.0;
+  }
+  RemoveAdminVehicle(vehicleid);
+  VehOwner[vehicleid] = -1;
+  VehSlot[vehicleid] = -1;
+  MesinVeh[vehicleid] = false;
+
+  foreach(new playerid : Player) {
+    if(GetPlayerVehicleID(playerid) == vehicleid) ShowHideSpeedo(playerid, false);
+  }
+  return 1;
+}
+
 Fungsi: BerikanKendaraan(playerid, model, color) {
-  if(JumVeh[playerid] >= 5) return 0;
+  if(!IsPlayerConnected(playerid) || !StatusLogin[playerid]) return 0;
+  if(JumVeh[playerid] + PendingVehicleGrants[playerid] >= MAX_KENDARAAN) return 0;
+  if(model < 400 || model > 611 || color < 0 || color > 255) return 0;
   SaveDataKendaraan(playerid);
   
   new Float:x, Float:y, Float:z;
@@ -173,10 +280,7 @@ Fungsi: BerikanKendaraan(playerid, model, color) {
   
   new query[512];
   mysql_format(g_SQL, query, sizeof(query), "INSERT INTO Kendaraan (pid, model, color1, color2, fuel, x, y, z) VALUES ('%d', '%d', '%d', '%d', '%d', '%.4f', '%.4f', '%.4f')", Pemain[playerid][pId], model, color, color, 100, x + 2, y, z);
-  mysql_query(g_SQL, query);
-  
-  JumVeh[playerid] = 0;
-  MuatDataKendaraan(playerid);
-  
+  PendingVehicleGrants[playerid]++;
+  mysql_tquery(g_SQL, query, "OnVehicleGranted", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
   return 1;
 }
