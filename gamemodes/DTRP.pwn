@@ -35,6 +35,12 @@ public OnGameModeInit()
     
     LoadMapping();
     LoadTextdraw();
+
+    // pikirkan secara logika
+    // bagaimana caranya membuat sebuah sistem, jadi bakal ambil semua data dalam tabel tertentu di sebuah tabel
+    // lalu mengambil data kedalam fungsi LoadAtm()
+    mysql_tquery(g_SQL, "SELECT * FROM `atm`", "LoadAtm", "");
+
     DisableInteriorEnterExits();
     
     ShowNameTags(true);

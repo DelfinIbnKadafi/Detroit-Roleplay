@@ -232,8 +232,8 @@ CMD:spawnaveh(playerid, params[]) {
     SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
     return 1;
   }
-  new id, color;
-  if(sscanf(params, "ii", id, color)) {
+  new vehhhid, color;
+  if(sscanf(params, "ii", vehhhid, color)) {
     SendClientMessage(playerid, -1, "Gunakan: /spawnaveh <vehid> <color>");
     return 1;
   }
@@ -241,7 +241,7 @@ CMD:spawnaveh(playerid, params[]) {
   GetPlayerPos(playerid, x, y, z);
   GetPlayerFacingAngle(playerid, a);
 
-  if(id < 400 || id > 611 || color < 0 || color > 255) {
+  if(vehhhid < 400 || vehhhid > 611 || color < 0 || color > 255) {
     SendMessageError(playerid, "Model kendaraan atau warna tidak valid!");
     return 1;
   }
@@ -250,7 +250,7 @@ CMD:spawnaveh(playerid, params[]) {
     return 1;
   }
 
-  new vehicleid = CreateVehicle(id, x + 3.00, y, z, a, color, color, -1, false);
+  new vehicleid = CreateVehicle(vehhhid, x + 3.00, y, z, a, color, color, -1, false);
   if(vehicleid == INVALID_VEHICLE_ID) {
     SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
     return 1;

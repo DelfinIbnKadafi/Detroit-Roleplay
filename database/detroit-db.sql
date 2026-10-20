@@ -67,3 +67,13 @@ ALTER TABLE `Kendaraan`
 ALTER TABLE `Kendaraan`
   MODIFY `vid` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+CREATE TABLE `atm` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `posx` float NOT NULL,
+  `posy` float NOT NULL,
+  `posz` float NOT NULL,
+  `angle` float NOT NULL,
+  `cadangan` int DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

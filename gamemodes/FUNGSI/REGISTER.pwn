@@ -23,7 +23,7 @@ stock HandleRegister(playerid)
   mysql_format(
     g_SQL, query, 
     sizeof(query), 
-    "UPDATE Pemain SET verified=1, kode=NULL, sandi='%e', gender='%d' WHERE id='%d'",
+    "UPDATE Pemain SET verified=1, sandi='%e', gender='%d' WHERE id='%d'",
     Pemain[playerid][pPassword], Pemain[playerid][pGender], Pemain[playerid][pId]
   );
 
@@ -63,13 +63,12 @@ Dialog:DL_REGISTER_GENDER(playerid, response, listitem, const inputtext[])
 	return 1;
 }
 
-Fungsi: OnHashPassword(playerid, hashid, sessionid, const expectedName[])
+Fungsi: OnHashPassword(playerid, hashid)
 {
-  #pragma unused hashid
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
 
   Pemain[playerid][pPassword] = 0; // sm kayak EOS atau '\0'
   bcrypt_get_hash(Pemain[playerid][pPassword]);
+  printf("Succesfully hash password register!");
   ShowRegisterDialog(playerid);
   return 1;
 }
@@ -146,6 +145,6 @@ Dialog:DL_CREATE_PW(playerid, response, listitem, const inputtext[])
     SendMessageError(playerid, "Panjang password tidak valid!");
     ShowCreatePasswordDialog(playerid);
   }
-  else bcrypt_hash(playerid, "OnHashPassword", inputtext, BCRYPT_COST, "is", PlayerSession[playerid], Pemain[playerid][pNama]);
+  else bcrypt_hash(playerid, "OnHashPassword", inputtext, BCRYPT_COST);
   return 1;
 }
