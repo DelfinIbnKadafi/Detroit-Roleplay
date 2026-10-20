@@ -5,3 +5,10 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
   }
   return 1;
 }
+
+public OnPlayerCommandPerformed(playerid, cmdtext[], success) {
+  if(!success) {
+    SendMessageError(playerid, "Command tidak dikenal.");
+  }
+  return 1;
+}

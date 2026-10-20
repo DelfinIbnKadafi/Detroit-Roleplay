@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm", "keluar", " ");
   
   return 1;
 }
@@ -273,5 +273,41 @@ CMD:destroyaveh(playerid, params[]) {
   }
   DestroyAdminVehicles(playerid);
   SendMessageInfo(playerid, "Semua kendaraan admin milikmu telah dihancurkan.");
+  return 1;
+}
+
+CMD:createatm(playerid, params[]) {
+  if(Admin[playerid] < 1) {
+    SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+    return 1;
+  }
+
+  new Float:x, Float:y, Float:z, Float:a;
+  GetPlayerPos(playerid, x, y, z);
+  GetPlayerFacingAngle(playerid, a);
+  if(!CreateAtm(x, y, z, a)) {
+    SendMessageError(playerid, "ATM gagal dibuat. Periksa batas object atau text label.");
+    return 1;
+  }
+  SendMessageInfo(playerid, "Berhasil membuat atm.");
+
+  return 1;
+}
+
+CMD:editatm(playerid, params[]) {
+  if(Admin[playerid] < 1) {
+    SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+    return 1;
+  }
+
+  new atm_id;
+  if(sscanf(params, "i", atm_id)) {
+    SendClientMessage(playerid, -1, "Gunakan: /editatm <atmid>");
+    return 1;
+  }
+
+  if(!EditAtm(playerid, atm_id)) {
+    SendMessageError(playerid, "ATM tidak ditemukan atau gagal dimulai untuk diedit.");
+  }
   return 1;
 }

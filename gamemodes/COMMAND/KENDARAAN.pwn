@@ -12,7 +12,7 @@ CMD:myveh(playerid, params[]) {
     format(line, sizeof(line), "%d\t%s\n", PVeh[playerid][i][vId], vnama);
     strcat(liststr, line, sizeof(liststr));
   }
-  Dialog_Show(playerid, DL_VEHLIST, DIALOG_STYLE_TABLIST_HEADERS, "Id\tModel", liststr, "Pilih", "Batal");
+  Dialog_Show(playerid, DL_VEHLIST, DIALOG_STYLE_TABLIST, "Id\tModel", liststr, "Pilih", "Batal");
   return 1;
 }
 

@@ -1,6 +1,6 @@
 // rp cmd
 CMD:s(playerid, params[]) {
-  new text[144];
+  new message[144];
 
   if (isnull(params)) {
     SendClientMessage(playerid, -1, "Gunakan: /s <text>");
@@ -14,14 +14,14 @@ CMD:s(playerid, params[]) {
 
   new name[MAX_PLAYER_NAME + 1];
   GetRoleplayName(playerid, name, sizeof(name));
-  format(text, sizeof(text), "[TERIAK] %s %s", name, params);
-  SendProximityMessage(playerid, 30.0, 0xFFFFFFFF, text);
+  format(message, sizeof(message), "[TERIAK] %s %s", name, params);
+  SendProximityMessage(playerid, 30.0, 0xFFFFFFFF, message);
   
   return 1;
 }
 
 CMD:l(playerid, params[]) {
-  new text[144];
+  new message[144];
   
   if (isnull(params)) {
     SendClientMessage(playerid, -1, "Gunakan: /l <text>");
@@ -34,14 +34,14 @@ CMD:l(playerid, params[]) {
   if(!CanSendChat(playerid)) return 1;
   new name[MAX_PLAYER_NAME + 1];
   GetRoleplayName(playerid, name, sizeof(name));
-  format(text, sizeof(text), "[KECIL] %s %s", name, params);
-  SendProximityMessage(playerid, 10.0, 0xFFFFFFFF, text);
+  format(message, sizeof(message), "[KECIL] %s %s", name, params);
+  SendProximityMessage(playerid, 10.0, 0xFFFFFFFF, message);
   
   return 1;
 }
 
 CMD:do(playerid, params[]) {
-  new text[144];
+  new message[144];
 
   if (isnull(params)) {
     SendClientMessage(playerid, -1, "Gunakan: /do <text>");
@@ -55,14 +55,14 @@ CMD:do(playerid, params[]) {
 
   new name[MAX_PLAYER_NAME + 1];
   GetRoleplayName(playerid, name, sizeof(name));
-  format(text, sizeof(text), "(%s) %s", params, name);
-  SendProximityMessage(playerid, 20.0, 0xb600c4FF, text);
+  format(message, sizeof(message), "(%s) %s", params, name);
+  SendProximityMessage(playerid, 20.0, 0xb600c4FF, message);
 
   return 1;
 }
 
 CMD:me(playerid, params[]) {
-  new text[144];
+  new message[144];
 
   if (isnull(params)) {
     SendClientMessage(playerid, -1, "Gunakan: /me <text>");
@@ -76,9 +76,8 @@ CMD:me(playerid, params[]) {
 
   new name[MAX_PLAYER_NAME + 1];
   GetRoleplayName(playerid, name, sizeof(name));
-  format(text, sizeof(text), "%s %s", name, params);
-  SendProximityMessage(playerid, 20.0, 0xb600c4FF, text);
+  format(message, sizeof(message), "%s %s", name, params);
+  SendProximityMessage(playerid, 20.0, 0xb600c4FF, message);
 
   return 1;
 }
-

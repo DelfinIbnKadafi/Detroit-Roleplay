@@ -53,6 +53,7 @@ public OnPlayerConnect(playerid)
 {
   PlayerSession[playerid]++;
   if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
+  ResetAtmEdit(playerid);
   ResetDataPemain(playerid);
   for(new i = 0; i < 3; i++) {
     TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);

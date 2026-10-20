@@ -71,12 +71,15 @@ CMD:stats(playerid, params[])
       format(hpstr, sizeof(hpstr), "Aktif");
     }
   }
+
+  new moneystring[128];
+  FormatUang(money, moneystring);
   
   format(stats, sizeof(stats),
-    "Nama : %s | Gender : %s | Uang : %d | Uang Bank : %d | Norek : %d | Tanggal Lahir : %s | Pekerjaan : %s\nPonsel : %s | No Telepon : %s",
+    "Nama : %s | Gender : %s | Uang : %s | Uang Bank : %d | Norek : %d | Tanggal Lahir : %s | Pekerjaan : %s\nPonsel : %s | No Telepon : %s",
     Pemain[playerid][pNama],
     GetGender[Pemain[playerid][pGender]],
-    money,
+    moneystring,
     Pemain[playerid][pBank],
     Pemain[playerid][pNorek],
     Pemain[playerid][pDateBirth],
@@ -104,5 +107,11 @@ CMD:enter(playerid, params[]) {
 
 CMD:balkot(playerid, params[]) {
   ShowBalkotMenu(playerid);
+  return 1;
+}
+
+CMD:atm(playerid, params[]) {
+  if(!IsPlayerSpawned(playerid)) return 1;
+  PlayerUseAtm(playerid);
   return 1;
 }
