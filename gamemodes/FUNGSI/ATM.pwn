@@ -164,6 +164,14 @@ public OnPlayerEditObject(playerid, playerobject, objectid, EDIT_RESPONSE:respon
     return 1;
 }
 
+Fungsi: EditTextAtm(theatmid) {
+    new msg[256], money[128];
+    FormatUang(atm[theatmid][cadangan], money);
+    format(msg, sizeof(msg), "[%d]\n{55ff62}[ATM]{ffffff}\nUse /atm or ALT to use atm\n{1ed030}$%s", atm[theatmid][id], money);
+    Update3DTextLabelText(atm[theatmid][label], -1, msg);
+    return 1;
+}
+
 Fungsi: PlayerUseAtm(playerid) {
     for(new i = 0; i < atmcount; i++) {
         if(IsPlayerInRangeOfPoint(playerid, 3.0, atm[i][posx], atm[i][posy], atm[i][posz])) {
@@ -238,6 +246,8 @@ Dialog:DepositATM(playerid, response, listitem, inputtext[]) {
 
     atm[idatmplayeruse[playerid]][cadangan] += jumlah;
 
+    EditTextAtm(idatmplayeruse[playerid]);
+
     SendMessageInfo(playerid, "Sukses mendepositkan uang!");
 
     return 1;
@@ -288,6 +298,8 @@ Dialog:WithdrawATM(playerid, response, listitem, inputtext[]) {
     SimpanDataPemain(playerid);
 
     atm[idatmplayeruse[playerid]][cadangan] -= jumlah;
+
+    EditTextAtm(idatmplayeruse[playerid]);
 
     SendMessageInfo(playerid, "Sukses menarik uang dari bank!");
 
