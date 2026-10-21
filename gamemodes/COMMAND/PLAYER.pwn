@@ -72,15 +72,16 @@ CMD:stats(playerid, params[])
     }
   }
 
-  new moneystring[128];
+  new moneystring[128], bankstring[128];
   FormatUang(money, moneystring);
+  FormatUang(money, bankstring);
   
   format(stats, sizeof(stats),
-    "Nama : %s | Gender : %s | Uang : %s | Uang Bank : %d | Norek : %d | Tanggal Lahir : %s | Pekerjaan : %s\nPonsel : %s | No Telepon : %s",
+    "Nama : %s | Gender : %s | Uang : %s | Saldo Bank : %s | Norek : %d | Tanggal Lahir : %s | Pekerjaan : %s\nPonsel : %s | No Telepon : %s",
     Pemain[playerid][pNama],
     GetGender[Pemain[playerid][pGender]],
     moneystring,
-    Pemain[playerid][pBank],
+    bankstring,
     Pemain[playerid][pNorek],
     Pemain[playerid][pDateBirth],
     job,

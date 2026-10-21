@@ -37,16 +37,20 @@ Fungsi: LoadAtm() {
         cache_get_value_name_int(i, "cadangan", atm[index][cadangan]);
 
         atm[index][object] = CreateObject(19324, atm[index][posx], atm[index][posy], atm[index][posz], 0.0, 0.0, atm[index][angle]);
-        if(atm[index][object] == INVALID_OBJECT_ID) {
-            printf("[ATM] Failed to create object for ATM ID %d.", atm[index][id]);
-            continue;
+
+        // coba print debug atm yang jelas
+        printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
+
+        if (!IsValidObject(atm[index][object])) {
+            printf("[ATM] Gagal membuat object untuk ATM ID %d. Periksa batas object server.", atm[index][id]);
         }
-        if(!CreateAtmLabel(index)) {
-            printf("[ATM] Failed to create 3D label for ATM ID %d.", atm[index][id]);
+        if (!CreateAtmLabel(index)) {
+            printf("[ATM] Gagal membuat 3D text label untuk ATM ID %d.", atm[index][id]);
         }
         atmcount++;
     }
 
+    printf("[ATM] Berhasil memuat %d ATM dari database.", atmcount);
     return 1;
 }
 
@@ -82,6 +86,18 @@ Fungsi: CreateAtm(Float:x, Float:y, Float:z, Float:a) {
     mysql_tquery(g_SQL, query);
 
     atmcount++;
+
+    // lakukan hal yang sama untuk debug atm
+    printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
+
+    return 1;
+}
+
+Fungsi: SaveDataAtm(the_atm_index) {
+    new query[512];
+    mysql_format(g_SQL, query, sizeof(query), "UPDATE `atm` SET posx='%f', posy='%f', posz='%f', angle='%f', cadangan='%d' WHERE id ='%d'", atm[the_atm_index][posx], atm[the_atm_index][posy], atm[the_atm_index][posz], atm[the_atm_index][angle], atm[the_atm_index][cadangan], atm[the_atm_index][id]);
+    mysql_query(g_SQL, query);
+
     return 1;
 }
 
@@ -203,6 +219,12 @@ Dialog:ATMDialog(playerid, response, listitem, inputtext[]) {
         return 1;
     }
 
+    // transfer
+    if(listitem == 2) {
+        Dialog_Show(playerid, Transfer_NO_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan nomor rekening tujuan.", "Enter", "Batal");
+        return 1;
+    }
+
     return 1;
 }
 
@@ -247,6 +269,8 @@ Dialog:DepositATM(playerid, response, listitem, inputtext[]) {
     atm[idatmplayeruse[playerid]][cadangan] += jumlah;
 
     EditTextAtm(idatmplayeruse[playerid]);
+
+    SaveDataAtm(idatmplayeruse[playerid]);
 
     SendMessageInfo(playerid, "Sukses mendepositkan uang!");
 
@@ -301,7 +325,63 @@ Dialog:WithdrawATM(playerid, response, listitem, inputtext[]) {
 
     EditTextAtm(idatmplayeruse[playerid]);
 
+    SaveDataAtm(idatmplayeruse[playerid]);
+
     SendMessageInfo(playerid, "Sukses menarik uang dari bank!");
+
+    return 1;
+}
+
+new norek_atm_masukkan[MAX_PLAYERS];
+
+Dialog:Transfer_NO_ATM(playerid, response, listitem, inputtext[]) {
+    if(response == 0) {
+        return 1;
+    }
+
+    new length = strlen(inputtext);
+
+    if(length < 1) {
+        SendMessageError(playerid, "Input harus lebih dari 0 karakter!");
+        Dialog_Show(playerid, Transfer_NO_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan nomor rekening tujuan.", "Enter", "Batal");
+        return 1;
+    }
+
+    for(new i = 0; i < length; i++) {
+        if(inputtext[i] < '0' || inputtext[i] > '9') {
+            SendMessageError(playerid, "Input harus berupa angka!");
+            Dialog_Show(playerid, Transfer_NO_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan nomor rekening tujuan.", "Enter", "Batal");
+            return 1;
+        }
+    }
+
+    norek_atm_masukkan[playerid] = strval(inputtext);
+
+    Dialog_Show(playerid, Transfer_Jum_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan jumlah uang yang ingin ditransfer.", "Enter", "Batal");
+
+    return 1;
+}
+
+Dialog:Transfer_Jum_ATM(playerid, response, listitem, inputtext[]) {
+    if(response == 0) {
+        return 1;
+    }
+
+    new length = strlen(inputtext);
+
+    if(length < 1) {
+        SendMessageError(playerid, "Input harus lebih dari 0 karakter!");
+        Dialog_Show(playerid, Transfer_Jum_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan jumlah uang yang ingin ditransfer.", "Enter", "Batal");
+        return 1;
+    }
+
+    for(new i = 0; i < length; i++) {
+        if(inputtext[i] < '0' || inputtext[i] > '9') {
+            SendMessageError(playerid, "Input harus berupa angka!");
+            Dialog_Show(playerid, Transfer_Jum_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan jumlah uang yang ingin ditransfer.", "Enter", "Batal");
+            return 1;
+        }
+    }
 
     return 1;
 }

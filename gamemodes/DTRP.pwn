@@ -19,6 +19,11 @@
 
 main(){}
 
+Fungsi: StartToLoadAtm() {
+    mysql_tquery(g_SQL, "SELECT * FROM `atm`", "LoadAtm", "");
+    return true;
+}
+
 public OnGameModeInit() 
 {
     g_SQL = mysql_connect_file();
@@ -31,7 +36,10 @@ public OnGameModeInit()
 
     printf("[MySQL] Koneksi mysql berhasil terhubung dengan baik.");
     mysql_set_charset("utf8mb4", g_SQL);
-    SetGameModeText(SERVER_VERSION);
+    
+    new srvrver[64];
+    format(srvrver, sizeof srvrver, "DTRP %s", SERVER_VERSION);
+    SetGameModeText(srvrver);
     
     LoadMapping();
     LoadTextdraw();
@@ -39,7 +47,9 @@ public OnGameModeInit()
     // pikirkan secara logika
     // bagaimana caranya membuat sebuah sistem, jadi bakal ambil semua data dalam tabel tertentu di sebuah tabel
     // lalu mengambil data kedalam fungsi LoadAtm()
-    mysql_tquery(g_SQL, "SELECT * FROM `atm`", "LoadAtm", "");
+    
+    // untuk meminimalisir gagal load object, berikan jeda waktu sekitar 5 detik saat server dijalankan baru load atm
+    SetTimerEx("StartToLoadAtm", 5000, false, "");
 
     DisableInteriorEnterExits();
     
@@ -60,6 +70,8 @@ public OnPlayerConnect(playerid)
   }
   
   StatusLogin[playerid] = false;
+
+  norek_atm_masukkan[playerid] = -1;
   
   SetPlayerColor(playerid, 0xFFFFFFFF);
   LoadPlayerTextdraw(playerid);
