@@ -357,6 +357,12 @@ Dialog:Transfer_NO_ATM(playerid, response, listitem, inputtext[]) {
 
     norek_atm_masukkan[playerid] = strval(inputtext);
 
+    if(norek_atm_masukkan[playerid] == Pemain[playerid][pNorek]) {
+        SendMessageError(playerid, "Tidak bisa transfer ke rekening sendiri!");
+        Dialog_Show(playerid, Transfer_NO_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan nomor rekening tujuan.", "Enter", "Batal");
+        return 1;
+    }
+
     Dialog_Show(playerid, Transfer_Jum_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan jumlah uang yang ingin ditransfer.", "Enter", "Batal");
 
     return 1;
@@ -380,6 +386,23 @@ Dialog:Transfer_Jum_ATM(playerid, response, listitem, inputtext[]) {
             SendMessageError(playerid, "Input harus berupa angka!");
             Dialog_Show(playerid, Transfer_Jum_ATM, DIALOG_STYLE_INPUT, "Transfer", "Masukkan jumlah uang yang ingin ditransfer.", "Enter", "Batal");
             return 1;
+        }
+    }
+
+    new jumlah = strval(inputtext);
+
+    if(jumlah > Pemain[playerid][pBank]) return SendMessageError(playerid, "Uang di rekening mu tidak cukup!");
+    if(jumlah < 1) return SendMessageError(playerid, "Jumlah tidak boleh kurang dari 0!");
+
+    foreach(new i : Player) {
+        if(Pemain[i][pNorek] == norek_atm_masukkan[playerid]) {
+            Pemain[i][pBank] += jumlah;
+            Pemain[playerid][pBank] -= jumlah;
+            new msg[256], jumlahstring[128];
+            FormatUang(jumlah, jumlahstring);
+            format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} %s telah mentransfer $%s ke rekening mu.", Pemain[playerid][pNama], jumlahstring);
+            SendClientMessage(i, -1, msg);
+            break;
         }
     }
 
