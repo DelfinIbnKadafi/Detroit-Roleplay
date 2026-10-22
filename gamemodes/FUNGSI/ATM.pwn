@@ -1,5 +1,5 @@
 enum atmdata {
-    object,
+    STREAMER_TAG_OBJECT:object,
     Text3D:label,
     id,
     Float:posx,
@@ -36,12 +36,12 @@ Fungsi: LoadAtm() {
         cache_get_value_name_float(i, "angle", atm[index][angle]);
         cache_get_value_name_int(i, "cadangan", atm[index][cadangan]);
 
-        atm[index][object] = CreateObject(19324, atm[index][posx], atm[index][posy], atm[index][posz], 0.0, 0.0, atm[index][angle]);
+        atm[index][object] = CreateDynamicObject(19324, atm[index][posx], atm[index][posy], atm[index][posz], 0.0, 0.0, atm[index][angle], -1, 0, -1);
 
         // coba print debug atm yang jelas
-        printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
+        printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidDynamicObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
 
-        if (!IsValidObject(atm[index][object])) {
+        if (!IsValidDynamicObject(atm[index][object])) {
             printf("[ATM] Gagal membuat object untuk ATM ID %d. Periksa batas object server.", atm[index][id]);
         }
         if (!CreateAtmLabel(index)) {
@@ -72,10 +72,11 @@ Fungsi: CreateAtm(Float:x, Float:y, Float:z, Float:a) {
     atm[index][angle] = a;
     atm[index][cadangan] = 1000000;
 
-    atm[index][object] = CreateObject(19324, x, y, z, 0.0, 0.0, a);
-    if(atm[index][object] == INVALID_OBJECT_ID) return 0;
+    atm[index][object] = CreateDynamicObject(19324, x, y, z, 0.0, 0.0, a, -1, 0, -1);
+
+    if(!IsValidDynamicObject(atm[index][object])) return 0;
     if(!CreateAtmLabel(index)) {
-        DestroyObject(atm[index][object]);
+        DestroyDynamicObject(atm[index][object]);
         return 0;
     }
 
@@ -88,7 +89,7 @@ Fungsi: CreateAtm(Float:x, Float:y, Float:z, Float:a) {
     atmcount++;
 
     // lakukan hal yang sama untuk debug atm
-    printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
+    printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidDynamicObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
 
     return 1;
 }
@@ -102,7 +103,7 @@ Fungsi: SaveDataAtm(the_atm_index) {
 }
 
 enum atmedited {
-    objid,
+    STREAMER_TAG_OBJECT:objid,
     edit_atm_id,
     bool:active
 }
@@ -111,7 +112,7 @@ new playereditatm[MAX_PLAYERS][atmedited];
 new idatmplayeruse[MAX_PLAYERS]; // id is atm[the_id]
 
 Fungsi:ResetAtmEdit(playerid) {
-    playereditatm[playerid][objid] = INVALID_OBJECT_ID;
+    playereditatm[playerid][objid] = INVALID_STREAMER_ID;
     playereditatm[playerid][edit_atm_id] = 0;
     playereditatm[playerid][active] = false;
     return 1;
@@ -120,7 +121,7 @@ Fungsi:ResetAtmEdit(playerid) {
 Fungsi: EditAtm(playerid, ATMid) {
     for(new i = 0; i < atmcount; i++) {
         if(atm[i][id] == ATMid) {
-            if(!EditObject(playerid, atm[i][object])) return 0;
+            if(!EditDynamicObject(playerid, atm[i][object])) return 0;
             playereditatm[playerid][objid] = atm[i][object];
             playereditatm[playerid][edit_atm_id] = atm[i][id];
             playereditatm[playerid][active] = true;
@@ -144,8 +145,8 @@ Fungsi: SaveEditAtm(ATMid, Float:x, Float:y, Float:z, Float:facingAngle) {
     atm[index][posy] = y;
     atm[index][posz] = z;
     atm[index][angle] = facingAngle;
-    SetObjectPos(atm[index][object], x, y, z);
-    SetObjectRot(atm[index][object], 0.0, 0.0, facingAngle);
+    SetDynamicObjectPos(atm[index][object], x, y, z);
+    SetDynamicObjectRot(atm[index][object], 0.0, 0.0, facingAngle);
 
     Delete3DTextLabel(atm[index][label]);
     if(!CreateAtmLabel(index)) {
@@ -160,18 +161,18 @@ Fungsi: SaveEditAtm(ATMid, Float:x, Float:y, Float:z, Float:facingAngle) {
     return 1;
 }
 
-public OnPlayerEditObject(playerid, playerobject, objectid, EDIT_RESPONSE:response, Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ) {
-    if(playerobject || !playereditatm[playerid][active] || playereditatm[playerid][objid] != objectid) return 1;
+public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
+    if(!playereditatm[playerid][active] || playereditatm[playerid][objid] != objectid) return 1;
 
-    if(response == EDIT_RESPONSE_FINAL) {
-        SaveEditAtm(playereditatm[playerid][edit_atm_id], fX, fY, fZ, fRotZ);
+    if(response == _:EDIT_RESPONSE_FINAL) {
+        SaveEditAtm(playereditatm[playerid][edit_atm_id], x, y, z, rz);
         ResetAtmEdit(playerid);
     }
-    else if(response == EDIT_RESPONSE_CANCEL) {
+    else if(response == _:EDIT_RESPONSE_CANCEL) {
         for(new i = 0; i < atmcount; i++) {
             if(atm[i][object] == objectid) {
-                SetObjectPos(objectid, atm[i][posx], atm[i][posy], atm[i][posz]);
-                SetObjectRot(objectid, 0.0, 0.0, atm[i][angle]);
+                SetDynamicObjectPos(objectid, atm[i][posx], atm[i][posy], atm[i][posz]);
+                SetDynamicObjectRot(objectid, 0.0, 0.0, atm[i][angle]);
                 break;
             }
         }
