@@ -4,8 +4,24 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm", "keluar", " ");
   
+  return 1;
+}
+
+CMD:tp(playerid, params[]) {
+  if(Admin[playerid] < 1) {
+    SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+    return 1;
+  }
+  new Float:x, Float:y, Float:z;
+  if(sscanf(params, "fff", x, y, z)) {
+    SendClientMessage(playerid, -1, "Gunakan: /tp x y z");
+    return 1;
+  }
+
+  SetPlayerPos(playerid, x, y, z);
+
   return 1;
 }
 

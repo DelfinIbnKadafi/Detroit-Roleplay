@@ -12,7 +12,7 @@ new PlayerText:VEHSPEED[MAX_PLAYERS][3]; // 0 = kerusakan , 1 = fuel, 3 = speed
 // info td 
 new Text:MENGHIDUPKAN_MESIN_KENDARAAN[1];
 new Text:MEMATIKAN_MESIN_KENDARAAN[1];
-new Text:TD_PINTU[2];
+new Text:TD_PINTU;
 
 stock LoadPlayerTextdraw(playerid) {
   // speedo value
@@ -200,25 +200,18 @@ stock LoadTextdraw() {
   TextDrawFont(MEMATIKAN_MESIN_KENDARAAN[0], TEXT_DRAW_FONT_1);
   TextDrawSetProportional(MEMATIKAN_MESIN_KENDARAAN[0], true);
   
-  TD_PINTU[0] = TextDrawCreate(216.000, 80.000, "Tekan tombol    untuk masuk/keluar pintu");
-  TextDrawLetterSize(TD_PINTU[0], 0.359, 3.299);
-  TextDrawAlignment(TD_PINTU[0], TEXT_DRAW_ALIGN_LEFT);
-  TextDrawColour(TD_PINTU[0], -1);
-  TextDrawSetShadow(TD_PINTU[0], 1);
-  TextDrawSetOutline(TD_PINTU[0], 1);
-  TextDrawBackgroundColour(TD_PINTU[0], 150);
-  TextDrawFont(TD_PINTU[0], TEXT_DRAW_FONT_1);
-  TextDrawSetProportional(TD_PINTU[0], true);
-  
-  TD_PINTU[1] = TextDrawCreate(291.000, 81.000, "F");
-  TextDrawLetterSize(TD_PINTU[1], 0.359, 3.299);
-  TextDrawAlignment(TD_PINTU[1], TEXT_DRAW_ALIGN_LEFT);
-  TextDrawColour(TD_PINTU[1], -16776961);
-  TextDrawSetShadow(TD_PINTU[1], 1);
-  TextDrawSetOutline(TD_PINTU[1], 1);
-  TextDrawBackgroundColour(TD_PINTU[1], 255);
-  TextDrawFont(TD_PINTU[1], TEXT_DRAW_FONT_1);
-  TextDrawSetProportional(TD_PINTU[1], true);
+  TD_PINTU = TextDrawCreate(315, 45.733333, "Tekan F atau gunakan /enter untuk masuk ke bangunan ini");
+  TextDrawLetterSize(TD_PINTU, 1, 3.5);
+  TextDrawTextSize(TD_PINTU, 77.733333, 385);
+  TextDrawAlignment(TD_PINTU, TEXT_DRAW_ALIGN_CENTER);
+  TextDrawColour(TD_PINTU, 0xFFFFFFFF);
+  TextDrawUseBox(TD_PINTU, false);
+  TextDrawBoxColour(TD_PINTU, 0x000000AA);
+  TextDrawSetShadow(TD_PINTU, 0);
+  TextDrawSetOutline(TD_PINTU, 1);
+  TextDrawBackgroundColour(TD_PINTU, 0x000000FF);
+  TextDrawFont(TD_PINTU, TEXT_DRAW_FONT_1);
+  TextDrawSetProportional(TD_PINTU, true);
   /////////////////////////////////////////////////////////////// 
   
   return 1;

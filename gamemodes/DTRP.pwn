@@ -61,6 +61,11 @@ public OnGameModeInit()
 // connect/disconnect
 public OnPlayerConnect(playerid) 
 {
+
+  // mapping
+  RemoveBuildCityHall(playerid);
+  ///////////////////////////
+
   PlayerSession[playerid]++;
   if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
   ResetAtmEdit(playerid);

@@ -85,10 +85,6 @@ stock TanggalLahirValid(playerid, const date[]) {
 }
 
 stock ShowBalkotMenu(playerid) {
-  if(Pemain[playerid][pKtp]) {
-    SendMessageInfo(playerid, "Kamu sudah memiliki KTP.");
-    return 1;
-  }
   if(IsPlayerInRangeOfPoint(playerid, 2.0, BALAI_KOTA_X, BALAI_KOTA_Y, BALAI_KOTA_Z)) {
     new str[256];
 

@@ -1,8 +1,7 @@
 public OnPlayerUpdate(playerid) {
   if(IsPlayerInAnyVehicle(playerid)) {
     if(TdPintuShown[playerid]) {
-      TextDrawHideForPlayer(playerid, TD_PINTU[0]);
-      TextDrawHideForPlayer(playerid, TD_PINTU[1]);
+      TextDrawHideForPlayer(playerid, TD_PINTU);
       TdPintuShown[playerid] = false;
     }
     return 1;
@@ -18,13 +17,11 @@ public OnPlayerUpdate(playerid) {
   }
   
   if(dekatPintu && !TdPintuShown[playerid]) {
-    TextDrawShowForPlayer(playerid, TD_PINTU[0]);
-    TextDrawShowForPlayer(playerid, TD_PINTU[1]);
+    TextDrawShowForPlayer(playerid, TD_PINTU);
     TdPintuShown[playerid] = true;
   }
   else if(!dekatPintu && TdPintuShown[playerid]) {
-    TextDrawHideForPlayer(playerid, TD_PINTU[0]);
-    TextDrawHideForPlayer(playerid, TD_PINTU[1]);
+    TextDrawHideForPlayer(playerid, TD_PINTU);
     TdPintuShown[playerid] = false;
   }
   return 1;
