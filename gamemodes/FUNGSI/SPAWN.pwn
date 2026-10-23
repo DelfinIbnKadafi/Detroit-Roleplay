@@ -1,10 +1,4 @@
-stock TerapkanStatusDown(playerid)
-{
-  TogglePlayerControllable(playerid, false);
-  SetPlayerHealth(playerid, 100.0);
-  ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.1, true, true, true, true, 1);
-  return 1;
-}
+
 
 stock SpawnPemainEx(playerid, bool:new_player = false) 
 {
