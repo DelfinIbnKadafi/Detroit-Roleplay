@@ -22,4 +22,6 @@ stock MapText(objectid, const text[], materialindex, materialsize, const fontfac
 
 #include "ASET/MAPPING/City_Hall.pwn"
 
+#include "ASET/MAPPING/Hospital.pwn"
+
 #include "ASET/MAPPING/Main.pwn"

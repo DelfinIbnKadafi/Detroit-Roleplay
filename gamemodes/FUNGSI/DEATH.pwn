@@ -1,9 +1,17 @@
-Fungsi: TerapkanStatusDown(playerid)
-{
+Fungsi: TerapkanStatusDown(playerid) {
   TogglePlayerControllable(playerid, false);
   SetPlayerHealth(playerid, 100.0);
-  ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.1, true, true, true, true, 1);
+  ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.1, false, true, true, true, 1);
   return 1;
+}
+
+Fungsi: RevivePlayer(playerid, Float:x, Float:y, Float:z) {
+    TogglePlayerControllable(playerid, true);
+    SetPlayerHealth(playerid, 100.0);
+    SetPlayerPos(playerid, x, y, z);
+    PlayerDeath[playerid] = false;
+    ClearAnimations(playerid);
+    return 1;
 }
 
 public OnPlayerDeath(playerid, killerid, WEAPON:reason) {
@@ -22,6 +30,7 @@ public OnPlayerDeath(playerid, killerid, WEAPON:reason) {
     SetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ]);
     SetPlayerFacingAngle(playerid, PosisiPemain[playerid][pAngle]);
     SetCameraBehindPlayer(playerid);
+    TogglePlayerControllable(playerid, false);
     SetTimerEx("TerapkanStatusDown", 500, false, "i", playerid);
     SimpanDataPemain(playerid);
     return 1;

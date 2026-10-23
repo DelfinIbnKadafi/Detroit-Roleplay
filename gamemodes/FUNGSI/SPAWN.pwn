@@ -64,7 +64,8 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
   ShowGreetings(playerid);
   SpawnPlayer(playerid);
   if(PlayerDeath[playerid]) {
-    SetTimerEx("TerapkanStatusDown", 1000, false, "i", playerid);
+    TogglePlayerControllable(playerid, false);
+    SetTimerEx("TerapkanStatusDown", 1800, false, "i", playerid);
     SendMessageInfo(playerid, "Terakhir kali kamu login adalah saat kamu sedang sekarat.");
   }
 

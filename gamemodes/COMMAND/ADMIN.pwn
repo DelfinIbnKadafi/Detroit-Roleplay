@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive", "keluar", " ");
   
   return 1;
 }
@@ -325,5 +325,35 @@ CMD:editatm(playerid, params[]) {
   if(!EditAtm(playerid, atm_id)) {
     SendMessageError(playerid, "ATM tidak ditemukan atau gagal dimulai untuk diedit.");
   }
+  return 1;
+}
+
+CMD:revive(playerid, params[]) {
+  if(Admin[playerid] < 1) {
+    SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+    return 1;
+  }
+  new targetid;
+  if(sscanf(params, "i", targetid)) {
+    SendClientMessage(playerid, -1, "Gunakan: /revive <targetid>");
+    return 1;
+  }
+
+  if(!IsPlayerConnected(targetid)) {
+    return SendMessageError(playerid, "Player tersebut tidak online!");
+  }
+
+  if(!PlayerDeath[targetid]) {
+    return SendMessageError(playerid, "Target tersebut sedang tidak injure.");
+  }
+
+  new Float:x, Float:y, Float:z;
+
+  GetPlayerPos(targetid, x, y, z);
+
+  RevivePlayer(targetid, x, y, z);
+
+  SendMessageInfo(targetid, "Admin telah merevive kamu!");
+
   return 1;
 }
