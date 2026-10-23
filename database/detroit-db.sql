@@ -30,7 +30,8 @@ CREATE TABLE `Pemain` (
   `job` int DEFAULT '0',
   `lapar` int DEFAULT '100',
   `haus` int DEFAULT '100',
-  `tanggallahir` varchar(64) NOT NULL DEFAULT 'None'
+  `tanggallahir` varchar(64) NOT NULL DEFAULT 'None',
+  `death` boolean NOT NULL DEFAULT FALSE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `Pemain`

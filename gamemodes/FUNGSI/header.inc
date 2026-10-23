@@ -13,3 +13,4 @@
 #include "FUNGSI/SPEEDO.pwn"
 #include "FUNGSI/UPDATE.pwn"
 #include "FUNGSI/ATM.pwn"
+#include "FUNGSI/DEATH.pwn"

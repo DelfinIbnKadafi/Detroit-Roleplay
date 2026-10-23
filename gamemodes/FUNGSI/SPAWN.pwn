@@ -4,6 +4,7 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
   {
     SetPlayerScore(playerid, Pemain[playerid][pLevel]);
     GivePlayerMoney(playerid, Pemain[playerid][pUang]);
+
     SetSpawnInfo(
       playerid,
       NO_TEAM,
@@ -60,6 +61,13 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
 
   ShowGreetings(playerid);
   SpawnPlayer(playerid);
+
+  if(PlayerDeath[playerid]) {
+    TogglePlayerControllable(playerid, false);
+    SendMessageInfo(playerid, "Terakhir kali kamu login adalah saat kamu sedang sekarat.");
+    ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.1, true, true, true, true, 1);
+  }
+
   if(Admin[playerid] > 0) {
     SendMessageServer(playerid, "Kamu memiliki akses sebagai admin, gunakan /ahelp untuk daftar command admin.");
   }

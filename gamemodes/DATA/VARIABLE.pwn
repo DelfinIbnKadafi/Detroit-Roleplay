@@ -5,6 +5,8 @@ new bool:StatusLogin[MAX_PLAYERS];
 new bool:NewPlayerPendingSave[MAX_PLAYERS];
 new PlayerSession[MAX_PLAYERS];
 
+new PlayerDeath[MAX_PLAYERS] = false;
+
 // mute
 new JumlahSpam[MAX_PLAYERS];
 new bool:Mute[MAX_PLAYERS];

@@ -45,6 +45,7 @@ Fungsi: MuatDataPemain(playerid, sessionid, const expectedName[])
   cache_get_value_int(0, "job", Pemain[playerid][pJob]);
   cache_get_value_int(0, "haus", Pemain[playerid][pHaus]);
   cache_get_value_int(0, "lapar", Pemain[playerid][pLapar]);
+  cache_get_value_bool(0, "death", PlayerDeath[playerid]);
   SpawnPemainEx(playerid);
   return 1;
 }
@@ -69,7 +70,7 @@ Fungsi: SimpanDataPemain(playerid)
   
   new query[512];
   mysql_format(g_SQL, query, sizeof(query),
-    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%e', ktp='%d', tanggallahir='%e', job='%d', haus='%d', lapar='%d', admin='%d' WHERE id='%d'",
+    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%e', ktp='%d', tanggallahir='%e', job='%d', haus='%d', lapar='%d', admin='%d', death='%d' WHERE id='%d'",
     PosisiPemain[playerid][pX],
     PosisiPemain[playerid][pY],
     PosisiPemain[playerid][pZ],
@@ -99,6 +100,8 @@ Fungsi: SimpanDataPemain(playerid)
     Pemain[playerid][pLapar],
     
     Admin[playerid],
+
+    PlayerDeath[playerid],
     
     Pemain[playerid][pId]
   );

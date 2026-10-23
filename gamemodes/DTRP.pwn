@@ -76,6 +76,8 @@ public OnPlayerConnect(playerid)
   
   StatusLogin[playerid] = false;
 
+  PlayerDeath[playerid] = false;
+
   norek_atm_masukkan[playerid] = -1;
   
   SetPlayerColor(playerid, 0xFFFFFFFF);
