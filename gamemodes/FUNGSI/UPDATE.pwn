@@ -7,20 +7,20 @@ public OnPlayerUpdate(playerid) {
     return 1;
   }
   
-  new bool:dekatPintu = false;
+  dekatPintu[playerid] = false;
   
   if(GetPlayerDistanceFromPoint(playerid, EXT_BALAI_KOTA_x, EXT_BALAI_KOTA_y, EXT_BALAI_KOTA_z) <= 2 || GetPlayerDistanceFromPoint(playerid, INT_BALAI_KOTA_x, INT_BALAI_KOTA_y, INT_BALAI_KOTA_z) <= 2) {
-    dekatPintu = true;
+    dekatPintu[playerid] = true;
   }
-  else {
-    dekatPintu = false;
+  if(GetPlayerDistanceFromPoint(playerid, EXT_HOSPITAL_X, EXT_HOSPITAL_Y, EXT_HOSPITAL_Z) <= 2 || GetPlayerDistanceFromPoint(playerid, INT_HOSPITAL_X, INT_HOSPITAL_Y, INT_HOSPITAL_Z) <= 2) {
+    dekatPintu[playerid] = true;
   }
   
-  if(dekatPintu && !TdPintuShown[playerid]) {
+  if(dekatPintu[playerid] && !TdPintuShown[playerid]) {
     TextDrawShowForPlayer(playerid, TD_PINTU);
     TdPintuShown[playerid] = true;
   }
-  else if(!dekatPintu && TdPintuShown[playerid]) {
+  else if(!dekatPintu[playerid] && TdPintuShown[playerid]) {
     TextDrawHideForPlayer(playerid, TD_PINTU);
     TdPintuShown[playerid] = false;
   }

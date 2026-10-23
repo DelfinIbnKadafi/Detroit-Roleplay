@@ -3,7 +3,7 @@
 #include <sscanf2>
 #include <streamer>
 #include <easyDialog>
-#include <a_mysql>
+#include <a_mysql>c
 #include <strlib>
 #include <samp_bcrypt>
 #include <zcmd>
