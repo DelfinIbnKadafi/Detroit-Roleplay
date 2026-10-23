@@ -22,7 +22,7 @@ public OnPlayerDeath(playerid, killerid, WEAPON:reason) {
     SetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ]);
     SetPlayerFacingAngle(playerid, PosisiPemain[playerid][pAngle]);
     SetCameraBehindPlayer(playerid);
-    TerapkanStatusDown(playerid);
+    SetTimerEx("TerapkanStatusDown", 2000, false, "i", playerid);
     SimpanDataPemain(playerid);
     return 1;
 }
