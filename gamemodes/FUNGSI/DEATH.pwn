@@ -1,4 +1,4 @@
-stock TerapkanStatusDown(playerid)
+Fungsi: TerapkanStatusDown(playerid)
 {
   TogglePlayerControllable(playerid, false);
   SetPlayerHealth(playerid, 100.0);
@@ -22,7 +22,7 @@ public OnPlayerDeath(playerid, killerid, WEAPON:reason) {
     SetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ]);
     SetPlayerFacingAngle(playerid, PosisiPemain[playerid][pAngle]);
     SetCameraBehindPlayer(playerid);
-    SetTimerEx("TerapkanStatusDown", 2000, false, "i", playerid);
+    SetTimerEx("TerapkanStatusDown", 500, false, "i", playerid);
     SimpanDataPemain(playerid);
     return 1;
 }
