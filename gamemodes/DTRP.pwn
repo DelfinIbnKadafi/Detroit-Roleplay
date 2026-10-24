@@ -3,7 +3,7 @@
 #include <sscanf2>
 #include <streamer>
 #include <easyDialog>
-#include <a_mysql>c
+#include <a_mysql>
 #include <strlib>
 #include <samp_bcrypt>
 #include <zcmd>
@@ -64,6 +64,7 @@ public OnPlayerConnect(playerid)
 
   // mapping
   RemoveBuildCityHall(playerid);
+  RemoveBuildHospital(playerid);
   ///////////////////////////
 
   PlayerSession[playerid]++;
