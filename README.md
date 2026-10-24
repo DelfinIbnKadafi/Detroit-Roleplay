@@ -32,6 +32,13 @@ Compile terlebih dahulu file gamemode utama menggunakan compiler Pawn pilihan An
 Buat terlebih dahulu file ``mysql.ini`` kemudian isi credentials nya.
 Silahkan lihat dokumentasi dari ``mysql_connect_file`` disini [docs](https://sampwiki.blast.hk/wiki/MySQL#mysql_connect_file)
 
+Contoh :
+
+    hostname = localhost
+    username = root
+    password = ujang
+    database = dtrp
+
 3. Jalankan Server
 
 Anda dapat menjalankan server ini di local host maupun cloud hosting dengan mengeksekusi
