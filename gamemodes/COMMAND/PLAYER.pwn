@@ -116,3 +116,13 @@ CMD:atm(playerid, params[]) {
   PlayerUseAtm(playerid);
   return 1;
 }
+
+CMD:death(playerid, params[]) {
+  if(PlayerDeath[playerid]) {
+    RespawnPlayerHospital(playerid);
+  }
+  else {
+    SendMessageError(playerid, "Kamu sedang tidak sekarat/down.");
+  }
+  return 1;
+}

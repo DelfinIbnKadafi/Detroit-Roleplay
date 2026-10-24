@@ -2,15 +2,25 @@ Fungsi: TerapkanStatusDown(playerid) {
   TogglePlayerControllable(playerid, false);
   SetPlayerHealth(playerid, 100.0);
   ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.1, false, true, true, true, 1);
+  SendMessageInfo(playerid, "Gunakan /death untuk respawn di hospital.");
   return 1;
 }
 
 Fungsi: RevivePlayer(playerid, Float:x, Float:y, Float:z) {
+    ClearAnimations(playerid);
     TogglePlayerControllable(playerid, true);
     SetPlayerHealth(playerid, 100.0);
     SetPlayerPos(playerid, x, y, z);
     PlayerDeath[playerid] = false;
-    ClearAnimations(playerid);
+    return 1;
+}
+
+stock RespawnPlayerHospital(playerid) {
+    RevivePlayer(playerid, 1380.94, -41.82, 1001.07);
+    SetPlayerFacingAngle(playerid, 0.7);
+    GivePlayerMoney(playerid, -100000);
+    SendMessageInfo(playerid, "Paramedis telah menemukan dirimu yang sekarat, dan kamu telah di respawn di rumah sakit.");
+    SendMessageInfo(playerid, "Bayaran untuk rumah sakit adalah 100.000");
     return 1;
 }
 
