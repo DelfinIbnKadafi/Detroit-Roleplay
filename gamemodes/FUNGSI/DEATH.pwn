@@ -1,7 +1,7 @@
 Fungsi: TerapkanStatusDown(playerid) {
   TogglePlayerControllable(playerid, false);
   SetPlayerHealth(playerid, 100.0);
-  ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.1, false, true, true, true, 1);
+  ApplyAnimationEx(playerid, "SWAT", "gnstwall_injurd", 4.1, false, true, true, true, 0);
   SendMessageInfo(playerid, "Gunakan /death untuk respawn di hospital.");
   return 1;
 }
@@ -12,6 +12,7 @@ Fungsi: RevivePlayer(playerid, Float:x, Float:y, Float:z) {
     SetPlayerHealth(playerid, 100.0);
     SetPlayerPos(playerid, x, y, z);
     PlayerDeath[playerid] = false;
+    GetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pX]);
     return 1;
 }
 
@@ -27,21 +28,21 @@ stock RespawnPlayerHospital(playerid) {
 public OnPlayerDeath(playerid, killerid, WEAPON:reason) {
     if(!PlayerDeath[playerid]) {
         PlayerDeath[playerid] = true;
-        GetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ]);
-        GetPlayerFacingAngle(playerid, PosisiPemain[playerid][pAngle]);
-        PosisiPemain[playerid][pInt] = GetPlayerInterior(playerid);
-        PosisiPemain[playerid][pVW] = GetPlayerVirtualWorld(playerid);
         SendMessageInfo(playerid, "Kamu sedang sekarat.");
     }
 
+    GetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ]);
+    GetPlayerFacingAngle(playerid, PosisiPemain[playerid][pAngle]);
+    PosisiPemain[playerid][pInt] = GetPlayerInterior(playerid);
+    PosisiPemain[playerid][pVW] = GetPlayerVirtualWorld(playerid);
     SpawnPlayer(playerid);
     SetPlayerInterior(playerid, PosisiPemain[playerid][pInt]);
     SetPlayerVirtualWorld(playerid, PosisiPemain[playerid][pVW]);
     SetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ]);
     SetPlayerFacingAngle(playerid, PosisiPemain[playerid][pAngle]);
     SetCameraBehindPlayer(playerid);
-    TogglePlayerControllable(playerid, false);
-    SetTimerEx("TerapkanStatusDown", 500, false, "i", playerid);
+    SetTimerEx("TogglePlayerControllable", 1000, false, "ii", playerid, 0);
+    SetTimerEx("TerapkanStatusDown", 1000, false, "i", playerid);
     SimpanDataPemain(playerid);
     return 1;
 }

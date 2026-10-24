@@ -28,3 +28,10 @@ FormatUang(jumlah, output[]) {
     output[pos] = EOS;
     return 1;
 }
+
+stock ApplyAnimationEx(playerid, const library[], const anim[], Float:fDelta, bool:loop, bool:lockx, bool:locky, bool:freeze, time) {
+    ApplyAnimation(playerid, library, "null", fDelta, loop, lockx, locky, freeze, time, SYNC_NONE);
+    new ret = 0;
+    ret = ApplyAnimation(playerid, library, anim, fDelta, loop, lockx, locky, freeze, time, SYNC_NONE);
+    return ret;
+}

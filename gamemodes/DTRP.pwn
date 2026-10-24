@@ -62,41 +62,41 @@ public OnGameModeInit()
 public OnPlayerConnect(playerid) 
 {
 
-  // mapping
-  RemoveBuildCityHall(playerid);
-  RemoveBuildHospital(playerid);
-  ///////////////////////////
+    // mapping
+    RemoveBuildCityHall(playerid);
+    RemoveBuildHospital(playerid);
+    ///////////////////////////
 
-  PlayerSession[playerid]++;
-  if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
-  ResetAtmEdit(playerid);
-  ResetDataPemain(playerid);
-  for(new i = 0; i < 3; i++) {
-    TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);
-  }
-  
-  StatusLogin[playerid] = false;
+    PlayerSession[playerid]++;
+    if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
+    ResetAtmEdit(playerid);
+    ResetDataPemain(playerid);
+    for(new i = 0; i < 3; i++) {
+      TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);
+    }
+    
+    StatusLogin[playerid] = false;
 
-  PlayerDeath[playerid] = false;
+    PlayerDeath[playerid] = false;
 
-  norek_atm_masukkan[playerid] = -1;
-  
-  SetPlayerColor(playerid, 0xFFFFFFFF);
-  LoadPlayerTextdraw(playerid);
-  GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME + 1);
-  SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay.");
-  SendMessageServer(playerid, "Akun kamu sedang kami proses");
-  
-  // cek akun player
-  new query[256];
-  mysql_format(
-    g_SQL, 
-    query, sizeof(query),
-    "SELECT * FROM Pemain WHERE nama='%e'",
-    Pemain[playerid][pNama]
-  );
-  mysql_pquery(g_SQL, query, "CekAkunPemain", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
-  return 1;
+    norek_atm_masukkan[playerid] = -1;
+    
+    SetPlayerColor(playerid, 0xFFFFFFFF);
+    LoadPlayerTextdraw(playerid);
+    GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME + 1);
+    SendMessageServer(playerid, "Selamat datang di server Detroit Roleplay.");
+    SendMessageServer(playerid, "Akun kamu sedang kami proses");
+    
+    // cek akun player
+    new query[256];
+    mysql_format(
+      g_SQL, 
+      query, sizeof(query),
+      "SELECT * FROM Pemain WHERE nama='%e'",
+      Pemain[playerid][pNama]
+    );
+    mysql_pquery(g_SQL, query, "CekAkunPemain", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
+    return 1;
 }
 
 public OnGameModeExit()
