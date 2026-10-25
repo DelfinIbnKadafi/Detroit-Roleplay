@@ -27,36 +27,21 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
         return 1;
       }
       
-      new vehicleid = CreateVehicle(
-       PVeh[playerid][idp][vModel],
-       PVeh[playerid][idp][vX],
-       PVeh[playerid][idp][vY],
-       PVeh[playerid][idp][vZ],
-       PVeh[playerid][idp][vAngel],
-       PVeh[playerid][idp][vColor1],
-       PVeh[playerid][idp][vColor2],
-       -1
-      );
-      if(vehicleid == INVALID_VEHICLE_ID) {
+      if(TimerRespawnVeh[playerid][idp] != 0) {
+        SendMessageError(playerid, "Kendaraan sedang diproses setelah hancur.");
+        return 1;
+      }
+      if(SpawnKendaraanPlayer(playerid, idp) == INVALID_VEHICLE_ID) {
         SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
         return 1;
       }
 
-      VehicleIsSpawn[playerid][idp] = true;
-      PlayerVehID[playerid][idp] = vehicleid;
-      VehOwner[vehicleid] = playerid;
-      VehSlot[vehicleid] = idp;
-      
-      MesinVeh[vehicleid] = false;
-      
-      SetVehicleHealth(vehicleid, PVeh[playerid][idp][vHealth]);
-      SetVehicleEngineAndLock(vehicleid, false, PVeh[playerid][idp][vKunci] != 0);
-      
       SendMessageInfo(playerid, "Kendaraan telah di-spawn.");
       return 1;
     }
     case 1: {
       new vnama[32], str[128];
+      if(PVeh[playerid][idp][vDeath] != 0) PVeh[playerid][idp][vHealth] = 0.0;
       GetVehicleModelName(PVeh[playerid][idp][vModel], vnama, sizeof(vnama));
       format(str, sizeof(str), "Model Kendaraan: %s\n\nId Kendaraan: %d\n\nKondisi: %.1f",vnama, PVeh[playerid][idp][vId], PVeh[playerid][idp][vHealth]);
       Dialog_Show(playerid, DL_INFOVEH, DIALOG_STYLE_MSGBOX, "Info Kendaraan", str, "Kembali", " ");

@@ -52,6 +52,8 @@ public OnGameModeInit()
     SetTimerEx("StartToLoadAtm", 5000, false, "");
 
     DisableInteriorEnterExits();
+    ManualVehicleEngineAndLights();
+    TimerDeadVehicle = SetTimerEx("JagaKendaraanMati", 500, true, "");
     
     ShowNameTags(true);
     
@@ -101,6 +103,7 @@ public OnPlayerConnect(playerid)
 
 public OnGameModeExit()
 {
+  KillTimer(TimerDeadVehicle);
   foreach(new playerid : Player) {
     if(!StatusLogin[playerid]) continue;
     SimpanDataPemain(playerid);
@@ -122,6 +125,7 @@ public OnPlayerDisconnect(playerid, reason)
   KillTimer(TimerSpedo[playerid]);
   KillTimer(TimerUnMute[playerid]);
   KillTimer(TimerAutoSave[playerid]);
+  BatalkanTimerMesin(playerid);
   DestroyAdminVehicles(playerid);
 
   if(wasLoggedIn) {

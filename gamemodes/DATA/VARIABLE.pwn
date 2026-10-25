@@ -23,6 +23,9 @@ new VehOwner[MAX_VEHICLES_SERVER] = {-1, ...};
 new VehSlot[MAX_VEHICLES_SERVER] = {-1, ...};
 new bool:MesinVeh[MAX_VEHICLES_SERVER];
 new bool:VehicleIsSpawn[MAX_PLAYERS][MAX_KENDARAAN];
+new VehicleGeneration[MAX_VEHICLES_SERVER];
+new TimerRespawnVeh[MAX_PLAYERS][MAX_KENDARAAN];
+new TimerDeadVehicle;
 
 // timer 
 new TimerLapar[MAX_PLAYERS];
@@ -30,6 +33,7 @@ new TimerHaus[MAX_PLAYERS];
 new TimerHBE[MAX_PLAYERS];
 new TimerSpedo[MAX_PLAYERS];
 new TimerAutoSave[MAX_PLAYERS];
+new TimerMesin[MAX_PLAYERS];
 
 // gender 
 new const GetGender[][] = {

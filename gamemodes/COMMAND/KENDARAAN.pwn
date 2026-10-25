@@ -17,35 +17,7 @@ CMD:myveh(playerid, params[]) {
 }
 
 CMD:en(playerid, params[]) {
-  if(!IsPlayerInAnyVehicle(playerid)) {
-    SendMessageError(playerid, "Kamu tidak berada di kendaraan manapun");
-    return 1;
-  }
-  else {
-    new vehicleid;
-    vehicleid = GetPlayerVehicleID(playerid);
-    if(!IsPlayerOwnedVehicle(vehicleid)) {
-      SendMessageError(playerid, "Mesin manual hanya tersedia untuk kendaraan milik pemain.");
-      return 1;
-    }
-    if(GetVehicleDriver(vehicleid) != playerid) return 1;
-    if(PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel] == 0) {
-      SendMessageError(playerid, "Bahan bakar kendaraan ini sudah habis!");
-      return 1;
-    }
-    
-    if(MesinVeh[vehicleid] == false) {
-      SendMessageInfo(playerid, "Menghidupkan mesin kendaraan....");
-      SetTimerEx("HidupMatiMesinVeh", 2000, false, "iiii", playerid, vehicleid, true, PlayerSession[playerid]);
-      TextDrawShowForPlayer(playerid, MENGHIDUPKAN_MESIN_KENDARAAN[0]);
-    }
-    else {
-      SendMessageInfo(playerid, "Mematikan mesin kendaraan....");
-      SetTimerEx("HidupMatiMesinVeh", 2000, false, "iiii", playerid, vehicleid, false, PlayerSession[playerid]);
-      TextDrawShowForPlayer(playerid, MEMATIKAN_MESIN_KENDARAAN[0]);
-    }
-  }
-  return 1;
+  return ToggleMesinKendaraan(playerid);
 }
 
 CMD:lockveh(playerid, params[]) {
