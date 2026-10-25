@@ -6,4 +6,7 @@ LoadMapping() {
     // hospital
     LoadHospital();
 
+    // Dekorasi
+    LoadDekorasi();
+
 }

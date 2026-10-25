@@ -58,7 +58,8 @@ CREATE TABLE `Kendaraan` (
   `z` float DEFAULT '0.0',
   `angel` float DEFAULT '0.0',
   `fuel` int DEFAULT '0',
-  `kunci` int DEFAULT '0'
+  `kunci` int DEFAULT '0',
+  `death` tinyint DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `Kendaraan`

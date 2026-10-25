@@ -30,6 +30,8 @@ Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
     cache_get_value_name_int(i, "fuel", PVeh[playerid][i][vFuel]);
     cache_get_value_name_int(i, "kunci", PVeh[playerid][i][vKunci]);
 
+    cache_get_value_name_int(i, "death", PVeh[playerid][i][vDeath]);
+
     JumVeh[playerid]++;
   }
 
@@ -66,7 +68,7 @@ stock SaveDataKendaraan(playerid) {
       
     new query[256];
     mysql_format(g_SQL, query, sizeof(query),
-     "UPDATE Kendaraan SET health='%.1f', x='%.4f', y='%.4f', z='%.4f', angel='%.4f', fuel=%d, kunci=%d WHERE vid='%d'",
+     "UPDATE Kendaraan SET health='%.1f', x='%.4f', y='%.4f', z='%.4f', angel='%.4f', fuel=%d, kunci=%d, death=%d WHERE vid='%d'",
      PVeh[playerid][i][vHealth],
      PVeh[playerid][i][vX],
      PVeh[playerid][i][vY],
@@ -74,6 +76,7 @@ stock SaveDataKendaraan(playerid) {
      PVeh[playerid][i][vAngel],
      PVeh[playerid][i][vFuel],
      PVeh[playerid][i][vKunci],
+     PVeh[playerid][i][vDeath],
      PVeh[playerid][i][vId]
     );
     mysql_tquery(g_SQL, query);
@@ -247,28 +250,6 @@ Fungsi: HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati, sessionid) {
   return 1;
 }
 
-public OnVehicleDeath(vehicleid, killerid) {
-  #pragma unused killerid
-  if(vehicleid < 0 || vehicleid >= MAX_VEHICLES_SERVER) return 1;
-
-  if(IsPlayerOwnedVehicle(vehicleid)) {
-    new owner = VehOwner[vehicleid];
-    new slot = VehSlot[vehicleid];
-    PlayerVehID[owner][slot] = INVALID_VEHICLE_ID;
-    VehicleIsSpawn[owner][slot] = false;
-    PVeh[owner][slot][vHealth] = 1000.0;
-  }
-  RemoveAdminVehicle(vehicleid);
-  VehOwner[vehicleid] = -1;
-  VehSlot[vehicleid] = -1;
-  MesinVeh[vehicleid] = false;
-
-  foreach(new playerid : Player) {
-    if(GetPlayerVehicleID(playerid) == vehicleid) ShowHideSpeedo(playerid, false);
-  }
-  return 1;
-}
-
 Fungsi: BerikanKendaraan(playerid, model, color) {
   if(!IsPlayerConnected(playerid) || !StatusLogin[playerid]) return 0;
   if(JumVeh[playerid] + PendingVehicleGrants[playerid] >= MAX_KENDARAAN) return 0;
@@ -282,5 +263,38 @@ Fungsi: BerikanKendaraan(playerid, model, color) {
   mysql_format(g_SQL, query, sizeof(query), "INSERT INTO Kendaraan (pid, model, color1, color2, fuel, x, y, z) VALUES ('%d', '%d', '%d', '%d', '%d', '%.4f', '%.4f', '%.4f')", Pemain[playerid][pId], model, color, color, 100, x + 2, y, z);
   PendingVehicleGrants[playerid]++;
   mysql_tquery(g_SQL, query, "OnVehicleGranted", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
+  return 1;
+}
+
+// vehicle hancur
+public OnVehicleDeath(vehicleid, killerid) {
+
+  // hancurkan vehicle yang respawn
+  DestroyVehicle(vehicleid);
+
+  foreach(new i : Player) {
+    for(new a = 0; a < JumVeh[i]; i++) {
+      if(vehicleid == PlayerVehID[i][a]) {
+        GetVehiclePos(vehicleid, PVeh[i][a][vX], PVeh[i][a][vY], PVeh[i][a][vZ]);
+        GetVehicleZAngle(vehicleid, PVeh[i][a][vAngel]);
+        new idp = a;
+        PlayerVehID[i][a] = CreateVehicle(
+          PVeh[i][idp][vModel],
+          PVeh[i][idp][vX],
+          PVeh[i][idp][vY],
+          PVeh[i][idp][vZ],
+          PVeh[i][idp][vAngel],
+          PVeh[i][idp][vColor1],
+          PVeh[i][idp][vColor2],
+          -1
+        );
+        SetVehicleHealth(PlayerVehID[i][a], 999999.0);
+        PVeh[i][a][vDeath] = 1;
+
+        break;
+      }
+      continue;
+    }
+  }
   return 1;
 }
