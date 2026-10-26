@@ -28,6 +28,7 @@ CMD:lockveh(playerid, params[]) {
       SendMessageError(playerid, "Ini bukan kendaraan milikmu!");
       return 1;
     }
+    if(!IsVehicleInPlayerWorld(playerid, vehicleid)) return SendMessageError(playerid, "Kamu terlalu jauh dari kendaraan ini.");
     new Float:vx, Float:vy, Float:vz;
     GetVehiclePos(vehicleid, vx, vy, vz);
     if(IsPlayerInRangeOfPoint(playerid, 4.0, vx, vy, vz)) {
@@ -53,9 +54,9 @@ CMD:lockveh(playerid, params[]) {
   
   for(new i = 0; i < JumVeh[playerid]; i++) {
     new Float:vx, Float:vy, Float:vz;
-    new vehicleid = PlayerVehID[playerid][i];
+    new vehicleid = GetOwnedVehicleInSlot(playerid, i);
     
-    if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid)) {
+    if(!IsVehicleInPlayerWorld(playerid, vehicleid)) {
       continue;
     }
     

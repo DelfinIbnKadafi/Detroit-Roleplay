@@ -14,6 +14,21 @@ stock bool:IsDeadPlayerVehicle(vehicleid) {
   return PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vDeath] != 0;
 }
 
+stock GetOwnedVehicleInSlot(playerid, slot) {
+  if(playerid < 0 || playerid >= MAX_PLAYERS || slot < 0 || slot >= MAX_KENDARAAN || slot >= JumVeh[playerid]) return INVALID_VEHICLE_ID;
+  new vehicleid = PlayerVehID[playerid][slot];
+  if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid) || VehOwner[vehicleid] != playerid || VehSlot[vehicleid] != slot) return INVALID_VEHICLE_ID;
+  return vehicleid;
+}
+
+stock bool:IsVehicleInPlayerWorld(playerid, vehicleid) {
+  return IsPlayerConnected(playerid) && IsValidVehicle(vehicleid) && GetPlayerVirtualWorld(playerid) == GetVehicleVirtualWorld(vehicleid) && GetPlayerInterior(playerid) == GetVehicleInterior(vehicleid);
+}
+
+stock bool:IsSupportedVehicleModel(model) {
+  return model >= 400 && model <= 611 && model != 449 && model != 537 && model != 538;
+}
+
 stock MuatDataKendaraan(playerid) {
   VehiclesLoaded[playerid] = false;
   new query[128];
@@ -68,17 +83,20 @@ Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
 }
 
 stock SaveSatuKendaraan(playerid, slot, bool:ambilposisi = true) {
-  if(slot < 0 || slot >= JumVeh[playerid]) return 0;
-  new vehicleid = PlayerVehID[playerid][slot];
+  if(playerid < 0 || playerid >= MAX_PLAYERS || slot < 0 || slot >= MAX_KENDARAAN || slot >= JumVeh[playerid]) return 0;
+  if(PVeh[playerid][slot][vId] <= 0 || Pemain[playerid][pId] <= 0) return 0;
+  new vehicleid = GetOwnedVehicleInSlot(playerid, slot);
   if(ambilposisi && PVeh[playerid][slot][vDeath] == 0 && CekKondisiKendaraan(vehicleid)) return 1;
   if(PVeh[playerid][slot][vDeath] != 0) PVeh[playerid][slot][vHealth] = 0.0;
   if(ambilposisi && IsValidVehicle(vehicleid) && IsPlayerOwnedVehicle(vehicleid) && VehOwner[vehicleid] == playerid && VehSlot[vehicleid] == slot) {
     if(PVeh[playerid][slot][vDeath] == 0) GetVehicleHealth(vehicleid, PVeh[playerid][slot][vHealth]);
     GetVehiclePos(vehicleid, PVeh[playerid][slot][vX], PVeh[playerid][slot][vY], PVeh[playerid][slot][vZ]);
     GetVehicleZAngle(vehicleid, PVeh[playerid][slot][vAngel]);
+    PVeh[playerid][slot][vWorld] = GetVehicleVirtualWorld(vehicleid);
+    PVeh[playerid][slot][vInterior] = GetVehicleInterior(vehicleid);
   }
   new query[384];
-  mysql_format(g_SQL, query, sizeof(query), "UPDATE Kendaraan SET health='%.1f', x='%.4f', y='%.4f', z='%.4f', angel='%.4f', fuel=%d, kunci=%d, death=%d WHERE vid='%d'", PVeh[playerid][slot][vHealth], PVeh[playerid][slot][vX], PVeh[playerid][slot][vY], PVeh[playerid][slot][vZ], PVeh[playerid][slot][vAngel], PVeh[playerid][slot][vFuel], PVeh[playerid][slot][vKunci], PVeh[playerid][slot][vDeath], PVeh[playerid][slot][vId]);
+  mysql_format(g_SQL, query, sizeof(query), "UPDATE Kendaraan SET health='%.1f', x='%.4f', y='%.4f', z='%.4f', angel='%.4f', fuel=%d, kunci=%d, death=%d WHERE vid='%d' AND pid=%d", PVeh[playerid][slot][vHealth], PVeh[playerid][slot][vX], PVeh[playerid][slot][vY], PVeh[playerid][slot][vZ], PVeh[playerid][slot][vAngel], PVeh[playerid][slot][vFuel], PVeh[playerid][slot][vKunci], PVeh[playerid][slot][vDeath], PVeh[playerid][slot][vId], Pemain[playerid][pId]);
   mysql_tquery(g_SQL, query);
   return 1;
 }
@@ -183,21 +201,22 @@ stock TerapkanKendaraanMati(vehicleid) {
 
 stock SpawnKendaraanPlayer(playerid, slot, world = -1, interior = -1) {
   if(playerid < 0 || playerid >= MAX_PLAYERS) return INVALID_VEHICLE_ID;
-  if(slot < 0 || slot >= JumVeh[playerid]) return INVALID_VEHICLE_ID;
+  if(slot < 0 || slot >= MAX_KENDARAAN || slot >= JumVeh[playerid]) return INVALID_VEHICLE_ID;
   if(world < 0) world = PVeh[playerid][slot][vWorld];
   if(interior < 0) interior = PVeh[playerid][slot][vInterior];
-  new vehicleid = PlayerVehID[playerid][slot];
-  if(IsValidVehicle(vehicleid) && IsPlayerOwnedVehicle(vehicleid) && VehOwner[vehicleid] == playerid && VehSlot[vehicleid] == slot) {
+  new vehicleid = GetOwnedVehicleInSlot(playerid, slot);
+  if(vehicleid != INVALID_VEHICLE_ID) {
     CekKondisiKendaraan(vehicleid);
     return vehicleid;
   }
+  PlayerVehID[playerid][slot] = INVALID_VEHICLE_ID;
+  VehicleIsSpawn[playerid][slot] = false;
+  if(PVeh[playerid][slot][vId] <= 0 || !IsSupportedVehicleModel(PVeh[playerid][slot][vModel]) || !ValidWorldPosition(PVeh[playerid][slot][vX], PVeh[playerid][slot][vY], PVeh[playerid][slot][vZ]) || !(PVeh[playerid][slot][vAngel] >= -36000.0 && PVeh[playerid][slot][vAngel] <= 36000.0)) return INVALID_VEHICLE_ID;
   if(PVeh[playerid][slot][vDeath] == 0 && !(PVeh[playerid][slot][vHealth] > VEHICLE_CRITICAL_HEALTH)) {
     PVeh[playerid][slot][vDeath] = 1;
     PVeh[playerid][slot][vHealth] = 0.0;
     SaveSatuKendaraan(playerid, slot, false);
   }
-  PlayerVehID[playerid][slot] = INVALID_VEHICLE_ID;
-  VehicleIsSpawn[playerid][slot] = false;
   vehicleid = CreateVehicle(PVeh[playerid][slot][vModel], PVeh[playerid][slot][vX], PVeh[playerid][slot][vY], PVeh[playerid][slot][vZ], PVeh[playerid][slot][vAngel], PVeh[playerid][slot][vColor1], PVeh[playerid][slot][vColor2], -1);
   if(vehicleid == INVALID_VEHICLE_ID) return INVALID_VEHICLE_ID;
   RemoveAdminVehicle(vehicleid);
@@ -229,6 +248,7 @@ stock BatalkanTimerMesin(playerid) {
 }
 
 stock ToggleMesinKendaraan(playerid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return 1;
   if(!IsPlayerInAnyVehicle(playerid)) return SendMessageError(playerid, "Kamu tidak berada di kendaraan manapun.");
   new vehicleid = GetPlayerVehicleID(playerid);
   if(!IsPlayerOwnedVehicle(vehicleid)) return SendMessageError(playerid, "Mesin manual hanya tersedia untuk kendaraan milik pemain.");
@@ -335,7 +355,7 @@ stock GetVehicleSpeed(vehicleid) {
 }
 
 Fungsi:HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati, sessionid, generation) {
-  if(!IsPlayerConnected(playerid) || PlayerSession[playerid] != sessionid) return 1;
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || PlayerSession[playerid] != sessionid) return 1;
   if(vehicleid <= 0 || vehicleid >= MAX_VEHICLES_SERVER || VehicleGeneration[vehicleid] != generation) return 1;
   BatalkanTimerMesin(playerid);
   if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid) || IsAdminVehicle(vehicleid)) return 1;
@@ -353,11 +373,12 @@ Fungsi:HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati, sessionid, gener
 Fungsi: BerikanKendaraan(playerid, model, color) {
   if(!IsPlayerAccountReady(playerid) || !VehiclesLoaded[playerid]) return 0;
   if(JumVeh[playerid] >= MAX_KENDARAAN) return 0;
-  if(model < 400 || model > 611 || color < 0 || color > 255) return 0;
+  if(!IsSupportedVehicleModel(model) || color < 0 || color > 255) return 0;
   SaveDataKendaraan(playerid);
   
   new Float:x, Float:y, Float:z;
   GetPlayerPos(playerid, x, y, z);
+  if(!ValidWorldPosition(x + 2.0, y, z)) return 0;
   
   new query[512];
   mysql_format(g_SQL, query, sizeof(query), "INSERT INTO Kendaraan (pid, model, color1, color2, fuel, x, y, z) VALUES ('%d', '%d', '%d', '%d', '%d', '%.4f', '%.4f', '%.4f')", Pemain[playerid][pId], model, color, color, 100, x + 2, y, z);

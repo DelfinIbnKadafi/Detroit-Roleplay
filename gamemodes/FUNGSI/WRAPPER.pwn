@@ -33,6 +33,13 @@ stock bool:IsPlayerExterior(playerid) {
     return GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0;
 }
 
+stock bool:PindahkanPemain(playerid, Float:x, Float:y, Float:z) {
+    if(!IsPlayerConnected(playerid) || !ValidWorldPosition(x, y, z)) return false;
+    // Muat object tujuan sebelum player dipindahkan ke lantai mapping
+    Streamer_UpdateEx(playerid, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+    return SetPlayerPos(playerid, x, y, z);
+}
+
 FormatUang(jumlah, output[]) {
     new angka[32];
     valstr(angka, jumlah);

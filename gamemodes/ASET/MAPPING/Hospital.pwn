@@ -416,8 +416,6 @@ LoadHospital() {
     tmpobjid = CreateDynamicObject(808, 1233.888061, -1341.214843, 13.752599, 0.000000, 0.000000, 2312.000000, -1, -1, -1, 300.00, 300.00);
     tmpobjid = CreateDynamicObject(808, 1230.302856, -1347.361694, 13.752599, 0.000000, 0.000000, 211.000000, -1, -1, -1, 300.00, 300.00);
     tmpobjid = CreateDynamicObject(808, 1229.865234, -1362.239379, 13.752610, 0.000000, 0.000000, 347.663208, -1, -1, -1, 300.00, 300.00);
-    tmpobjid = CreateDynamicObject(3515, 1231.545654, -1322.288330, 13.132490, 0.000000, 0.000000, 0.000000, -1, -1, -1, 300.00, 300.00);
-    tmpobjid = CreateDynamicObject(3515, 1231.987182, -1356.481445, 13.132490, 0.000000, 0.000000, 0.000000, -1, -1, -1, 300.00, 300.00);
     tmpobjid = CreateDynamicObject(823, 1230.954833, -1348.817260, 11.685549, 0.000000, 0.000000, 1.799999, -1, -1, -1, 300.00, 300.00);
     tmpobjid = CreateDynamicObject(823, 1231.036743, -1349.404663, 11.685549, 0.000000, 0.000000, 1.799999, -1, -1, -1, 300.00, 300.00);
     tmpobjid = CreateDynamicObject(823, 1231.073730, -1360.405273, 11.685549, 0.000000, 0.000000, 1.799999, -1, -1, -1, 300.00, 300.00);
@@ -676,8 +674,6 @@ LoadHospital() {
     tmpobjid = CreateDynamicObject(1897, 1396.223388, -32.949741, 1002.064514, 0.000000, 0.000014, 179.999893, -1, -1, -1, 200.00, 200.00);
     SetDynamicObjectMaterial(tmpobjid, 0, 10765, "airportgnd_sfse", "ws_runwaytarmac", 0x00000000);
     tmpobjid = CreateDynamicObject(1897, 1396.123291, -32.949741, 1001.014587, 0.000000, 0.000014, 179.999893, -1, -1, -1, 200.00, 200.00);
-    SetDynamicObjectMaterial(tmpobjid, 0, 10765, "airportgnd_sfse", "ws_runwaytarmac", 0x00000000);
-    tmpobjid = CreateDynamicObject(1897, 1396.123291, -32.949741, 1002.064636, 0.000000, 0.000014, 179.999893, -1, -1, -1, 200.00, 200.00);
     SetDynamicObjectMaterial(tmpobjid, 0, 10765, "airportgnd_sfse", "ws_runwaytarmac", 0x00000000);
     tmpobjid = CreateDynamicObject(1897, 1396.123291, -32.949741, 1002.064636, 0.000000, 0.000014, 179.999893, -1, -1, -1, 200.00, 200.00);
     SetDynamicObjectMaterial(tmpobjid, 0, 10765, "airportgnd_sfse", "ws_runwaytarmac", 0x00000000);

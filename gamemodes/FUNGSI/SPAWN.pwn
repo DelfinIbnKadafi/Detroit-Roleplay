@@ -86,6 +86,7 @@ public OnPlayerSpawn(playerid)
   SetPlayerArmour(playerid, Pemain[playerid][pArmor]);
   SetPlayerInterior(playerid, PosisiPemain[playerid][pInt]);
   SetPlayerVirtualWorld(playerid, PosisiPemain[playerid][pVW]);
+  Streamer_UpdateEx(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ], PosisiPemain[playerid][pVW], PosisiPemain[playerid][pInt]);
   if(PlayerDeath[playerid]) JadwalkanStatusDown(playerid);
   else TogglePlayerControllable(playerid, true);
   if(NewPlayerPendingSave[playerid]) {

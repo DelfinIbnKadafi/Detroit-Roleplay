@@ -36,10 +36,11 @@ CMD:pay(playerid, params[]) {
       SendMessageError(playerid, "Pemain yang dituju tidak berada di dunia yang sama.");
       return 1;
     }
+    if(!SimpanTransferPemain(playerid, targetid, jumlah)) return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
     GivePlayerMoney(playerid, -jumlah);
     GivePlayerMoney(targetid, jumlah);
-    SimpanDataPemain(playerid);
-    SimpanDataPemain(targetid);
+    Pemain[playerid][pUang] = GetPlayerMoney(playerid);
+    Pemain[targetid][pUang] = GetPlayerMoney(targetid);
     
     ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, false, false, false, false, 4670);
     ApplyAnimation(targetid, "DEALER", "DEALER_DEAL", 4.1, false, false, false, false, 3170);

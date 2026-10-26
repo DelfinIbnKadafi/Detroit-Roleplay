@@ -1,5 +1,5 @@
 Dialog:DL_VEHLIST(playerid, response, listitem, inputtext[]) {
-  if(!response) return 1;
+  if(!response || !IsPlayerAccountReady(playerid)) return 1;
   if(listitem < 0 || listitem >= JumVeh[playerid]) return 1;
 
   new judul[64], pilihan[128];
@@ -14,7 +14,7 @@ Dialog:DL_VEHLIST(playerid, response, listitem, inputtext[]) {
 }
 
 Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
-  if(!response) return 1;
+  if(!response || !IsPlayerAccountReady(playerid)) return 1;
 
   new idp = PilihanVeh[playerid];
   if(idp < 0 || idp >= JumVeh[playerid]) return 1;
@@ -22,7 +22,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
   switch(listitem) {
     case 0: {
       // spawn veh
-      if(VehicleIsSpawn[playerid][idp] && IsValidVehicle(PlayerVehID[playerid][idp])) {
+      if(GetOwnedVehicleInSlot(playerid, idp) != INVALID_VEHICLE_ID) {
         SendMessageError(playerid, "Kendaraan tersebut telah di spawn");
         return 1;
       }
@@ -44,7 +44,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
       return 1;
     }
     case 2: {
-      new vehicleid = PlayerVehID[playerid][idp];
+      new vehicleid = GetOwnedVehicleInSlot(playerid, idp);
       
       if(!IsValidVehicle(vehicleid)) {
         SendMessageError(playerid, "Kendaraan belum di-spawn.");
@@ -57,7 +57,7 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
        PVeh[playerid][idp][vZ]
       );
       
-      if(!IsPlayerInRangeOfPoint(playerid, 4.0, PVeh[playerid][idp][vX], PVeh[playerid][idp][vY], PVeh[playerid][idp][vZ])) {
+      if(!IsVehicleInPlayerWorld(playerid, vehicleid) || !IsPlayerInRangeOfPoint(playerid, 4.0, PVeh[playerid][idp][vX], PVeh[playerid][idp][vY], PVeh[playerid][idp][vZ])) {
         SendMessageError(playerid, "Kamu terlalu jauh dari kendaraan ini.");
         return 1;
       }
@@ -79,16 +79,19 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
     }
     case 3: {
       // track
-      new vehicleid = PlayerVehID[playerid][idp];
+      new vehicleid = GetOwnedVehicleInSlot(playerid, idp);
       
       if(IsValidVehicle(vehicleid)) {
+        PVeh[playerid][idp][vWorld] = GetVehicleVirtualWorld(vehicleid);
+        PVeh[playerid][idp][vInterior] = GetVehicleInterior(vehicleid);
         GetVehiclePos(vehicleid,
          PVeh[playerid][idp][vX],
          PVeh[playerid][idp][vY],
          PVeh[playerid][idp][vZ]
         );
       }
-      
+      if(PVeh[playerid][idp][vWorld] != GetPlayerVirtualWorld(playerid) || PVeh[playerid][idp][vInterior] != GetPlayerInterior(playerid)) return SendMessageError(playerid, "Kendaraan berada di world atau interior yang berbeda.");
+
       SetPlayerCheckpoint(playerid,
        PVeh[playerid][idp][vX],
        PVeh[playerid][idp][vY],

@@ -21,7 +21,7 @@ CMD:tp(playerid, params[]) {
   }
   if(!ValidWorldPosition(x, y, z)) return SendMessageError(playerid, "Koordinat tidak valid!");
 
-  SetPlayerPos(playerid, x, y, z);
+  PindahkanPemain(playerid, x, y, z);
 
   return 1;
 }
@@ -41,7 +41,7 @@ CMD:giveveh(playerid, params[]) {
     SendMessageError(playerid, "Player yang dituju sedang tidak online!");
     return 1;
   }
-  if(model < 400 || model > 611 || color < 0 || color > 255) {
+  if(!IsSupportedVehicleModel(model) || color < 0 || color > 255) {
     SendMessageError(playerid, "Model kendaraan atau warna tidak valid!");
     return 1;
   }
@@ -145,9 +145,10 @@ CMD:gotoplayer(playerid, params[]) {
   }
   new Float:x, Float:y, Float:z;
   GetPlayerPos(target, x, y, z);
+  if(!ValidWorldPosition(x + 2.0, y, z)) return SendMessageError(playerid, "Koordinat tidak valid!");
   SetPlayerInterior(playerid, GetPlayerInterior(target));
   SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(target));
-  SetPlayerPos(playerid, x + 2.00, y, z);
+  PindahkanPemain(playerid, x + 2.00, y, z);
   return 1;
 }
 
@@ -167,9 +168,10 @@ CMD:getplayer(playerid, params[]) {
   }
   new Float:x, Float:y, Float:z;
   GetPlayerPos(playerid, x, y, z);
+  if(!ValidWorldPosition(x + 2.0, y, z)) return SendMessageError(playerid, "Koordinat tidak valid!");
   SetPlayerInterior(target, GetPlayerInterior(playerid));
   SetPlayerVirtualWorld(target, GetPlayerVirtualWorld(playerid));
-  SetPlayerPos(target, x + 2.00, y, z);
+  PindahkanPemain(target, x + 2.00, y, z);
   return 1;
 }
 
@@ -262,7 +264,8 @@ CMD:spawnaveh(playerid, params[]) {
   GetPlayerPos(playerid, x, y, z);
   GetPlayerFacingAngle(playerid, a);
 
-  if(vehhhid < 400 || vehhhid > 611 || color < 0 || color > 255) {
+  if(!ValidWorldPosition(x + 3.0, y, z)) return SendMessageError(playerid, "Koordinat tidak valid!");
+  if(!IsSupportedVehicleModel(vehhhid) || color < 0 || color > 255) {
     SendMessageError(playerid, "Model kendaraan atau warna tidak valid!");
     return 1;
   }
@@ -353,6 +356,7 @@ CMD:revive(playerid, params[]) {
   if(!IsPlayerConnected(targetid)) {
     return SendMessageError(playerid, "Player tersebut tidak online!");
   }
+  if(!IsPlayerAccountReady(targetid)) return SendMessageError(playerid, "Player yang dituju belum login!");
 
   if(!PlayerDeath[targetid]) {
     return SendMessageError(playerid, "Target tersebut sedang tidak injure.");
@@ -362,7 +366,7 @@ CMD:revive(playerid, params[]) {
 
   GetPlayerPos(targetid, x, y, z);
 
-  RevivePlayer(targetid, x, y, z);
+  if(!RevivePlayer(targetid, x, y, z)) return SendMessageError(playerid, "Player gagal direvive!");
 
   SendMessageInfo(targetid, "Admin telah merevive kamu!");
 

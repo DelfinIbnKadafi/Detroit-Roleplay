@@ -14,6 +14,7 @@ stock ResetBussinesEdit(playerid) {
 }
 
 stock bool:EditBussines(playerid, index) {
+    if(!IsPlayerAccountReady(playerid) || Admin[playerid] < 1) return false;
     if(!ValidBussinesIndex(index) || !IsBussinesExterior(playerid)) return false;
     if(PlayerEditBussines[playerid] != -1 || playereditatm[playerid][active] || BussinesEditor[index] != INVALID_PLAYER_ID) return false;
     if(!IsPlayerInRangeOfPoint(playerid, 20.0, Bussines[index][bx], Bussines[index][by], Bussines[index][bz])) return false;
@@ -36,7 +37,7 @@ stock bool:EditBussines(playerid, index) {
 stock HandleBussinesEdit(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z) {
     new index = PlayerEditBussines[playerid];
     if(index == -1 || PlayerBussinesObject[playerid] != objectid) return 0;
-    if(!ValidBussinesIndex(index) || BussinesEditor[index] != playerid || !StatusLogin[playerid] || Admin[playerid] < 1 || !IsBussinesExterior(playerid)) {
+    if(!ValidBussinesIndex(index) || BussinesEditor[index] != playerid || !IsPlayerAccountReady(playerid) || Admin[playerid] < 1 || !IsBussinesExterior(playerid)) {
         ResetBussinesEdit(playerid);
         return 1;
     }

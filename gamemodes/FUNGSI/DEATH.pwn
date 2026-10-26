@@ -28,7 +28,7 @@ Fungsi: RevivePlayer(playerid, Float:x, Float:y, Float:z) {
     ClearAnimations(playerid);
     TogglePlayerControllable(playerid, true);
     SetPlayerHealth(playerid, 100.0);
-    SetPlayerPos(playerid, x, y, z);
+    PindahkanPemain(playerid, x, y, z);
     PlayerDeath[playerid] = false;
     Pemain[playerid][pDarah] = 100.0;
     GetPlayerPos(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ]);
@@ -40,10 +40,14 @@ stock RespawnPlayerHospital(playerid) {
     if(!IsPlayerAccountReady(playerid) || !PlayerDeath[playerid]) return 0;
     SetPlayerInterior(playerid, 0);
     SetPlayerVirtualWorld(playerid, 0);
-    RevivePlayer(playerid, 1380.94, -41.82, 1001.07);
     SetPlayerFacingAngle(playerid, 0.7);
-    GivePlayerMoney(playerid, -100000);
-    SimpanDataPemain(playerid);
+    // Biaya tetap menjadi utang, tetapi tidak boleh membalik saldo saat overflow
+    if(GetPlayerMoney(playerid) < cellmin + 100000) {
+        ResetPlayerMoney(playerid);
+        GivePlayerMoney(playerid, cellmin);
+    }
+    else GivePlayerMoney(playerid, -100000);
+    RevivePlayer(playerid, 1380.94, -41.82, 1001.07);
     SendMessageInfo(playerid, "Paramedis telah menemukan dirimu yang sekarat, dan kamu telah di respawn di rumah sakit.");
     SendMessageInfo(playerid, "Bayaran untuk rumah sakit adalah 100.000");
     return 1;

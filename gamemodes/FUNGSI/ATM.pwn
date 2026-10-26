@@ -58,7 +58,7 @@ Fungsi: LoadAtm() {
         cache_get_value_name_float(i, "posz", atm[index][posz]);
         cache_get_value_name_float(i, "angle", atm[index][angle]);
         cache_get_value_name_int(i, "cadangan", atm[index][cadangan]);
-        if(atm[index][id] <= 0 || GetAtmIndex(atm[index][id]) != -1 || !ValidWorldPosition(atm[index][posx], atm[index][posy], atm[index][posz]) || atm[index][cadangan] < 0) {
+        if(atm[index][id] <= 0 || GetAtmIndex(atm[index][id]) != -1 || !ValidWorldPosition(atm[index][posx], atm[index][posy], atm[index][posz]) || !(atm[index][angle] >= -36000.0 && atm[index][angle] <= 36000.0) || atm[index][cadangan] < 0) {
             ResetAtmSlot(index);
             continue;
         }
@@ -87,6 +87,24 @@ stock bool:ExecuteAtmWrite(const query[], &insertid, &affected) {
     }
     if(cache_is_valid(result)) cache_delete(result);
     return success;
+}
+
+stock bool:SimpanTransaksiAtm(playerid, index, jumlah, bool:deposit) {
+    if(!CanUseAtm(playerid) || index != idatmplayeruse[playerid] || jumlah <= 0 || Pemain[playerid][pId] <= 0) return false;
+    new uang = GetPlayerMoney(playerid), bank = Pemain[playerid][pBank], cadanganAtm = atm[index][cadangan];
+    if(deposit) {
+        if(uang < jumlah || bank > cellmax - jumlah || cadanganAtm > cellmax - jumlah) return false;
+    }
+    else if(bank < jumlah || cadanganAtm < jumlah || uang > cellmax - jumlah) return false;
+    if(!SimpanDataPemain(playerid)) return false;
+
+    new query[512], insertid, affected;
+    new uangBaru = deposit ? uang - jumlah : uang + jumlah;
+    new bankBaru = deposit ? bank + jumlah : bank - jumlah;
+    new cadanganBaru = deposit ? cadanganAtm + jumlah : cadanganAtm - jumlah;
+    // Saldo pemain dan cadangan ATM berubah bersama, bukan disimpan terpisah
+    mysql_format(g_SQL, query, sizeof query, "UPDATE Pemain AS p JOIN atm AS a ON a.id = %d SET p.uang = %d, p.bank = %d, a.cadangan = %d WHERE p.id = %d AND p.uang = %d AND p.bank = %d AND a.cadangan = %d", atm[index][id], uangBaru, bankBaru, cadanganBaru, Pemain[playerid][pId], uang, bank, cadanganAtm);
+    return ExecuteAtmWrite(query, insertid, affected) && affected == 2;
 }
 
 Fungsi: CreateAtm(Float:x, Float:y, Float:z, Float:a) {
@@ -311,17 +329,12 @@ Dialog:DepositATM(playerid, response, listitem, const inputtext[]) {
     if(jumlah > GetPlayerMoney(playerid)) return SendMessageError(playerid, "Uangmu tidak cukup!");
     new index = idatmplayeruse[playerid];
     if(Pemain[playerid][pBank] > 2147483647 - jumlah || atm[index][cadangan] > 2147483647 - jumlah) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
-    new previous = atm[index][cadangan];
+    if(!SimpanTransaksiAtm(playerid, index, jumlah, true)) return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
     atm[index][cadangan] += jumlah;
-    if(!SaveDataAtm(index)) {
-        atm[index][cadangan] = previous;
-        return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
-    }
 
     GivePlayerMoney(playerid, -jumlah);
+    Pemain[playerid][pUang] = GetPlayerMoney(playerid);
     Pemain[playerid][pBank] += jumlah;
-
-    SimpanDataPemain(playerid);
 
     EditTextAtm(idatmplayeruse[playerid]);
 
@@ -371,17 +384,13 @@ Dialog:WithdrawATM(playerid, response, listitem, const inputtext[]) {
         return 1;
     }
     if(GetPlayerMoney(playerid) > 2147483647 - jumlah) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
-    new index = idatmplayeruse[playerid], previous = atm[index][cadangan];
+    new index = idatmplayeruse[playerid];
+    if(!SimpanTransaksiAtm(playerid, index, jumlah, false)) return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
     atm[index][cadangan] -= jumlah;
-    if(!SaveDataAtm(index)) {
-        atm[index][cadangan] = previous;
-        return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
-    }
 
     Pemain[playerid][pBank] -= jumlah;
     GivePlayerMoney(playerid, jumlah);
-
-    SimpanDataPemain(playerid);
+    Pemain[playerid][pUang] = GetPlayerMoney(playerid);
 
     EditTextAtm(idatmplayeruse[playerid]);
 
@@ -465,10 +474,9 @@ Dialog:Transfer_Jum_ATM(playerid, response, listitem, const inputtext[]) {
     }
     if(target == INVALID_PLAYER_ID) return SendMessageError(playerid, "Rekening tujuan tidak ditemukan atau pemiliknya sedang offline.");
     if(Pemain[target][pBank] > 2147483647 - jumlah) return SendMessageError(playerid, "Saldo rekening tujuan melebihi batas!");
+    if(!SimpanTransferPemain(playerid, target, jumlah, true)) return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
     Pemain[target][pBank] += jumlah;
     Pemain[playerid][pBank] -= jumlah;
-    SimpanDataPemain(playerid);
-    SimpanDataPemain(target);
     new msg[256], jumlahstring[128];
     FormatUang(jumlah, jumlahstring);
     format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} %s telah mentransfer $%s ke rekening mu.", Pemain[playerid][pNama], jumlahstring);

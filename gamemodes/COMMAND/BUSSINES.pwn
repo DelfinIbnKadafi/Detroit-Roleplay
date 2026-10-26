@@ -79,9 +79,10 @@ CMD:gotobusiness(playerid, params[]) {
     new index = GetBussinesIndex(strval(params));
     if(index == -1) return SendMessageError(playerid, "Business tidak ditemukan!");
     if(IsPlayerInAnyVehicle(playerid)) return SendMessageError(playerid, "Turun dari kendaraan terlebih dahulu.");
+    if(!ValidBussinesPosition(Bussines[index][bx] + 1.0, Bussines[index][by], Bussines[index][bz])) return SendMessageError(playerid, "Koordinat tidak valid!");
     SetPlayerInterior(playerid, 0);
     SetPlayerVirtualWorld(playerid, 0);
-    SetPlayerPos(playerid, Bussines[index][bx] + 1.0, Bussines[index][by], Bussines[index][bz]);
+    PindahkanPemain(playerid, Bussines[index][bx] + 1.0, Bussines[index][by], Bussines[index][bz]);
     SendMessageInfo(playerid, "Berhasil teleport ke pintu business.");
     return 1;
 }

@@ -110,8 +110,34 @@ Fungsi: SimpanDataPemain(playerid)
     
     Pemain[playerid][pId]
   );
-  mysql_tquery(g_SQL, query);
+  // Tunggu hasil save agar data uang lama tidak menimpa transaksi berikutnya
+  new Cache:result = mysql_query(g_SQL, query);
+  new error = mysql_errno(g_SQL);
+  new bool:saved = error == 0 && cache_is_valid(result);
+  if(cache_is_valid(result)) cache_delete(result);
+  if(!saved) {
+    printf("[PEMAIN] Data akun ID %d gagal disimpan. (#%d)", Pemain[playerid][pId], error);
+    return 0;
+  }
   return 1;
+}
+
+stock bool:SimpanTransferPemain(playerid, targetid, jumlah, bool:bank = false) {
+  if(!IsPlayerAccountReady(playerid) || !IsPlayerAccountReady(targetid) || playerid == targetid || jumlah <= 0) return false;
+  if(Pemain[playerid][pId] <= 0 || Pemain[targetid][pId] <= 0 || Pemain[playerid][pId] == Pemain[targetid][pId]) return false;
+  new pengirim = bank ? Pemain[playerid][pBank] : GetPlayerMoney(playerid);
+  new penerima = bank ? Pemain[targetid][pBank] : GetPlayerMoney(targetid);
+  if(pengirim < jumlah || penerima > cellmax - jumlah) return false;
+  if(!SimpanDataPemain(playerid) || !SimpanDataPemain(targetid)) return false;
+
+  // Kedua saldo harus tersimpan dalam satu query sebelum uang di game berubah
+  new query[512], column[8];
+  format(column, sizeof column, "%s", bank ? "bank" : "uang");
+  mysql_format(g_SQL, query, sizeof query, "UPDATE Pemain AS pengirim JOIN Pemain AS penerima ON penerima.id = %d SET pengirim.%s = %d, penerima.%s = %d WHERE pengirim.id = %d AND pengirim.%s = %d AND penerima.%s = %d", Pemain[targetid][pId], column, pengirim - jumlah, column, penerima + jumlah, Pemain[playerid][pId], column, pengirim, column, penerima);
+  new Cache:result = mysql_query(g_SQL, query);
+  new bool:saved = mysql_errno(g_SQL) == 0 && cache_is_valid(result) && cache_affected_rows() == 2;
+  if(cache_is_valid(result)) cache_delete(result);
+  return saved;
 }
 
 stock ResetDataPemain(playerid)
