@@ -14,7 +14,3 @@ gamemodes/*.amx
 
 # database
 mysql.ini
-
-# discord bot
-Discord-Bot/node_modules/
-Discord-Bot/.env

@@ -4,7 +4,7 @@ SET time_zone = "+07:00";
 
 CREATE TABLE `Pemain` (
   `id` int(11) NOT NULL,
-  `discordid` int NOT NULL,
+  `discordid` varchar NOT NULL,
   `nama` varchar(24) NOT NULL,
   `verified` int(11) DEFAULT '0',
   `kode` int(11) DEFAULT NULL,
