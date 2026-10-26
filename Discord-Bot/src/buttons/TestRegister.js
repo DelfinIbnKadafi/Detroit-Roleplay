@@ -5,11 +5,21 @@ module.exports = {
     customId: "reg_btn",
     async run(client, interaction) {
         // Pengecekan apakah discordid sudah terdaftar
-        const [rows] = await mysql.execute("SELECT nama, kode, verified FROM Pemain WHERE discordid = ?", [interaction.user.id]);
+        let timeout;
+        let rows;
+        try {
+            // Modal tetap dibuka jika database lambat, pengecekan diulang saat submit
+            [rows] = await Promise.race([
+                mysql.execute("SELECT nama, kode, verified FROM Pemain WHERE discordid = ? LIMIT 1", [interaction.user.id]),
+                new Promise(resolve => { timeout = setTimeout(() => resolve([[]]), 1500); })
+            ]);
+        } finally {
+            clearTimeout(timeout);
+        }
         if (rows.length > 0) {
             const player = rows[0];
             return interaction.reply({
-                content: `❌ Kamu sudah terdaftar!\n• **Nama Karakter**: \`${player.nama}\`\n• **Kode Verifikasi**: \`${player.kode}\`\n• **Status**: ${player.verified ? "Sudah Terverifikasi" : "Belum Verifikasi di In-Game"}`,
+                content: `❌ Kamu sudah terdaftar!\n• **Nama Karakter**: \`${player.nama}\`\n• **Kode Verifikasi**: \`${player.kode}\`\n• **Status**: ${Number(player.verified) ? "Sudah Terverifikasi" : "Belum Verifikasi di In-Game"}`,
                 flags: MessageFlags.Ephemeral
             });
         }

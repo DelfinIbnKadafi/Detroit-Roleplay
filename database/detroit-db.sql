@@ -37,6 +37,7 @@ CREATE TABLE `Pemain` (
 
 ALTER TABLE `Pemain`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_pemain_discordid` (`discordid`),
   ADD UNIQUE KEY `uq_pemain_nama` (`nama`);
 
 ALTER TABLE `Pemain`
@@ -80,11 +81,12 @@ CREATE TABLE `atm` (
 
 CREATE TABLE `bussines` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar NOT NULL,
+  `name` varchar(128) NOT NULL,
   `ownerid` int(11) NOT NULL,
   `posx` float NOT NULL,
   `posy` float NOT NULL,
   `posz` float NOT NULL,
   `type` tinyint NOT NULL,
-  `stock` int DEFAULT 100
-)
+  `stock` int DEFAULT 100,
+  PRIMARY KEY (`id`)
+);
