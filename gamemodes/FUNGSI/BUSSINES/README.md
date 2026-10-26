@@ -13,10 +13,8 @@ Stock dan owner yang tersedia saat ini merupakan data business yang dapat diatur
 Compile kembali `gamemodes/DTRP.pwn` menggunakan compiler Pawn dan include yang tersedia
 pada repositori ini. Pastikan plugin MySQL dan Streamer dimuat saat server dijalankan.
 
-Tabel `bussines` sudah tersedia pada `database/detroit-db.sql` untuk instalasi baru.
-Jika database Anda belum memiliki tabel tersebut, pilih database yang digunakan oleh
-gamemode, lalu import `database/bussines.sql` dari folder root repositori.
-File tambahan tersebut hanya membuat tabel jika belum tersedia dan tidak menghapus data.
+Seluruh tabel, termasuk `bussines`, tersedia pada `database/detroit-db.sql`.
+Untuk instalasi baru, import file tersebut ke database kosong yang digunakan gamemode.
 Setelah tabel siap, jalankan atau restart server untuk memuat pintu business.
 
 Jika tabel business sudah dibuat sebelumnya, pastikan kolomnya sesuai dengan file SQL.

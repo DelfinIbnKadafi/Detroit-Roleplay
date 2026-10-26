@@ -72,7 +72,7 @@ async function startBot() {
     const [indexes] = await mysql.query("SHOW INDEX FROM Pemain");
     const uniqueIndexes = indexes.filter(index => Number(index.Non_unique) === 0);
     const hasDiscordIndex = uniqueIndexes.some(index => index.Column_name === "discordid" && uniqueIndexes.filter(key => key.Key_name === index.Key_name).length === 1);
-    if (!hasDiscordIndex) throw new Error("Index unik discordid belum tersedia. Jalankan database/discord-bot.sql terlebih dahulu.");
+    if (!hasDiscordIndex) throw new Error("Index unik discordid belum tersedia. Sesuaikan tabel Pemain dengan database/detroit-db.sql terlebih dahulu.");
 
     loadCommand(client);
     loadButton(client);

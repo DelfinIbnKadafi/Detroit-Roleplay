@@ -58,16 +58,12 @@ Contoh melalui MySQL client, dijalankan dari folder `Discord-Bot`:
     mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS dtrp CHARACTER SET utf8mb4;"
     mysql -u root -p dtrp < ../database/detroit-db.sql
 
-Jika Anda sudah memiliki database dari versi sebelumnya, jangan import ulang file
-tersebut ke database yang sedang dipakai. Backup database, lalu jalankan
-[`database/discord-bot.sql`](../database/discord-bot.sql) sekali untuk menambahkan
-index unik pada `discordid`:
-
-    mysql -u root -p dtrp < ../database/discord-bot.sql
-
-Instalasi baru sudah memiliki index ini, sehingga tidak perlu menjalankan file tambahan.
-Jika migrasi gagal karena Discord ID duplikat, periksa akun yang bersangkutan terlebih
-dahulu. Migrasi ini tidak menghapus atau menggabungkan akun pemain.
+Seluruh tabel untuk gamemode dan bot berada pada satu file `database/detroit-db.sql`.
+Jika Anda sudah memiliki database dari versi sebelumnya, backup terlebih dahulu dan
+gunakan file tersebut sebagai acuan untuk menyesuaikan struktur tabel yang sudah ada.
+Jangan import ulang seluruh tabel ke database yang sedang dipakai.
+Tabel `Pemain` harus memiliki primary key dengan auto increment pada `id`, serta
+index unik pada `nama` dan `discordid`. Periksa akun duplikat sebelum menambahkan index.
 
 Contoh untuk mencari Discord ID yang terdaftar lebih dari sekali:
 
@@ -167,9 +163,8 @@ user database memiliki akses ke database Detroit Roleplay. Error `Table ... does
 exist` biasanya terjadi karena database belum diimport atau `DB_NAME` menunjuk ke
 database yang berbeda. Nama tabel yang digunakan adalah `Pemain`, termasuk huruf kapitalnya.
 
-Jika muncul pesan index unik belum tersedia, jalankan migrasi untuk database lama
-seperti pada langkah instalasi. Error `Duplicate key name` saat menjalankan migrasi
-berarti index dengan nama tersebut sudah ada.
+Jika muncul pesan index unik belum tersedia, cocokkan struktur tabel `Pemain` dengan
+`database/detroit-db.sql` seperti pada langkah instalasi.
 
 ## Kontribusi
 
