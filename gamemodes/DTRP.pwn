@@ -51,6 +51,8 @@ public OnGameModeInit()
     // untuk meminimalisir gagal load object, berikan jeda waktu sekitar 5 detik saat server dijalankan baru load atm
     SetTimerEx("StartToLoadAtm", 5000, false, "");
 
+    mysql_tquery(g_SQL, "SELECT * FROM `bussines`", "LoadBussines", "");
+
     DisableInteriorEnterExits();
     ManualVehicleEngineAndLights();
     TimerDeadVehicle = SetTimerEx("JagaKendaraanMati", 500, true, "");
