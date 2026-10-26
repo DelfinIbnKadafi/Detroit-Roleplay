@@ -143,9 +143,6 @@ stock ResetDataPemain(playerid)
   DeletePVar(playerid, "login_attempts");
   DeletePVar(playerid, "verify_attempts");
   for(new i = 0; i < MAX_KENDARAAN; i++) {
-    KillTimer(TimerRespawnVeh[playerid][i]);
-    TimerRespawnVeh[playerid][i] = 0;
-    VehicleDeathGeneration[playerid][i]++;
     PVeh[playerid][i] = data_kendaraan;
     PlayerVehID[playerid][i] = INVALID_VEHICLE_ID;
     VehicleIsSpawn[playerid][i] = false;

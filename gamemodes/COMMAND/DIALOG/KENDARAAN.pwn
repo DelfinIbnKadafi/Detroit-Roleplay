@@ -27,10 +27,6 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
         return 1;
       }
       
-      if(TimerRespawnVeh[playerid][idp] != 0) {
-        SendMessageError(playerid, "Kendaraan sedang diproses setelah hancur.");
-        return 1;
-      }
       if(SpawnKendaraanPlayer(playerid, idp) == INVALID_VEHICLE_ID) {
         SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
         return 1;
