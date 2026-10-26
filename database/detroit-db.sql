@@ -4,6 +4,7 @@ SET time_zone = "+07:00";
 
 CREATE TABLE `Pemain` (
   `id` int(11) NOT NULL,
+  `discordid` int NOT NULL,
   `nama` varchar(24) NOT NULL,
   `verified` int(11) DEFAULT '0',
   `kode` int(11) DEFAULT NULL,
@@ -41,9 +42,6 @@ ALTER TABLE `Pemain`
 ALTER TABLE `Pemain`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
-
-INSERT INTO `Pemain` (`id`, `nama`, `verified`, `kode`, `sandi`, `gender`, `skin`, `posx`, `posy`, `posz`, `angle`, `interior`, `virtualworld`, `darah`, `armor`, `level`, `uang`, `bank`, `norek`, `ktp`, `job`, `lapar`, `haus`) VALUES
-(1, 'User', 0, 123456, NULL, 1, 59, 918.664, -1463.9, 2754.34, 164.395, 0, 0, 100, 0, 0, 100000, 0, 190921257, 0, 0, 57, 42);
 
 CREATE TABLE `Kendaraan` (
   `vid` int(11) NOT NULL,
