@@ -21,5 +21,5 @@
 #define MAX_KENDARAAN 5
 #define DEAD_VEHICLE_HEALTH 999999.0
 
-// atm
+// bussines
 #define MAX_BUSSINES 1000

@@ -119,6 +119,7 @@ Fungsi:ResetAtmEdit(playerid) {
 }
 
 Fungsi: EditAtm(playerid, ATMid) {
+    if(PlayerEditBussines[playerid] != -1 || playereditatm[playerid][active]) return 0;
     for(new i = 0; i < atmcount; i++) {
         if(atm[i][id] == ATMid) {
             if(!EditDynamicObject(playerid, atm[i][object])) return 0;
@@ -162,6 +163,7 @@ Fungsi: SaveEditAtm(ATMid, Float:x, Float:y, Float:z, Float:facingAngle) {
 }
 
 public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
+    if(HandleBussinesEdit(playerid, objectid, response, x, y, z)) return 1;
     if(!playereditatm[playerid][active] || playereditatm[playerid][objid] != objectid) return 1;
 
     if(response == _:EDIT_RESPONSE_FINAL) {

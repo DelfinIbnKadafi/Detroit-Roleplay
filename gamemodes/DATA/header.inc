@@ -2,3 +2,4 @@
 #include "DATA/VARIABLE.pwn"
 #include "DATA/ENUM.pwn"
 #include "DATA/COLOR.pwn"
+#include "FUNGSI/BUSSINES/DATA.pwn"

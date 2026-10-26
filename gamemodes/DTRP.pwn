@@ -51,7 +51,7 @@ public OnGameModeInit()
     // untuk meminimalisir gagal load object, berikan jeda waktu sekitar 5 detik saat server dijalankan baru load atm
     SetTimerEx("StartToLoadAtm", 5000, false, "");
 
-    mysql_tquery(g_SQL, "SELECT * FROM `bussines`", "LoadBussines", "");
+    mysql_tquery(g_SQL, "SELECT b.*, COALESCE(p.nama, CASE WHEN b.ownerid = 0 THEN 'None' ELSE 'Unknown' END) AS ownername FROM bussines b LEFT JOIN Pemain p ON p.id = b.ownerid ORDER BY b.id", "LoadBussines");
 
     DisableInteriorEnterExits();
     ManualVehicleEngineAndLights();
@@ -74,6 +74,8 @@ public OnPlayerConnect(playerid)
     PlayerSession[playerid]++;
     if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
     ResetAtmEdit(playerid);
+    ResetBussinesEdit(playerid);
+    PlayerDeleteBussines[playerid] = 0;
     ResetDataPemain(playerid);
     for(new i = 0; i < 3; i++) {
       TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);
@@ -106,6 +108,7 @@ public OnPlayerConnect(playerid)
 public OnGameModeExit()
 {
   KillTimer(TimerDeadVehicle);
+  DestroyAllBussines();
   foreach(new playerid : Player) {
     if(!StatusLogin[playerid]) continue;
     SimpanDataPemain(playerid);
@@ -120,6 +123,8 @@ public OnPlayerDisconnect(playerid, reason)
   StatusLogin[playerid] = false;
   PlayerSession[playerid]++;
   TdPintuShown[playerid] = false;
+  ResetBussinesEdit(playerid);
+  PlayerDeleteBussines[playerid] = 0;
 
   KillTimer(TimerLapar[playerid]);
   KillTimer(TimerHaus[playerid]);

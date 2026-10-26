@@ -1,2 +1,2 @@
 #include "FUNGSI/BUILDING/BALAI_KOTA.pwn"
-#include "FUNGSI/BUILDING/HOSPITAL.pwn"
+#include "FUNGSI/BUILDING/HOSPITAl.pwn"

@@ -56,20 +56,3 @@ enum DataVeh {
 };
 
 new PVeh[MAX_PLAYERS][MAX_KENDARAAN][DataVeh];
-
-// bussines data
-enum BussinesData {
-  bid,
-  bnames[64],
-  bpickup,
-  Text3D:blabel,
-  bownerid,
-  bownername[64],
-  Float:bx,
-  Float:by,
-  Float:bz,
-  btype,
-  bsisa
-}
-
-new Bussines[MAX_BUSSINES][BussinesData];
