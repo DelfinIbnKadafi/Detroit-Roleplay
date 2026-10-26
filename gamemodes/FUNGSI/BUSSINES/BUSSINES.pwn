@@ -28,17 +28,11 @@ stock bool:ValidBussinesName(const name[]) {
 }
 
 stock bool:ValidBussinesNumber(const value[]) {
-    new length = strlen(value);
-    if(length < 1 || length > 10) return false;
-    for(new i = 0; i < length; i++) {
-        if(value[i] < '0' || value[i] > '9') return false;
-    }
-    if(length == 10 && strcmp(value, "2147483647") > 0) return false;
-    return true;
+    return ValidUnsignedInteger(value);
 }
 
 stock bool:ValidBussinesPosition(Float:x, Float:y, Float:z) {
-    return x >= -20000.0 && x <= 20000.0 && y >= -20000.0 && y <= 20000.0 && z >= -1000.0 && z <= 20000.0;
+    return ValidWorldPosition(x, y, z);
 }
 
 stock GetBussinesTypeName(type, output[], size) {
@@ -101,7 +95,7 @@ stock ResetBussinesSlot(index) {
 }
 
 stock bool:CanManageBussines(playerid) {
-    if(!StatusLogin[playerid] || Admin[playerid] < 1) {
+    if(!IsPlayerAccountReady(playerid) || Admin[playerid] < 1) {
         SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
         return false;
     }
@@ -113,7 +107,7 @@ stock bool:CanManageBussines(playerid) {
 }
 
 stock bool:IsBussinesExterior(playerid) {
-    return GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0;
+    return IsPlayerExterior(playerid);
 }
 
 stock DestroyAllBussines() {

@@ -9,6 +9,7 @@
 #define INT_HOSPITAL_A 185.47
 
 stock DeteksiPintuHospital(playerid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return 0;
   if(GetPlayerDistanceFromPoint(playerid, EXT_HOSPITAL_X, EXT_HOSPITAL_Y, EXT_HOSPITAL_Z) <= 2) {
     SetPlayerPos(playerid, INT_HOSPITAL_X, INT_HOSPITAL_Y, INT_HOSPITAL_Z);
     SetPlayerFacingAngle(playerid, INT_HOSPITAL_A);

@@ -1,4 +1,9 @@
 public OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys) {
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return 1;
+  if((newkeys & KEY_WALK) && !(oldkeys & KEY_WALK) && !IsPlayerInAnyVehicle(playerid) && GetNearbyAtm(playerid) != -1) {
+    PlayerUseAtm(playerid);
+    return 1;
+  }
   if((newkeys & KEY_SECONDARY_ATTACK) && !(oldkeys & KEY_SECONDARY_ATTACK)) {
     if(IsPlayerInAnyVehicle(playerid)) return 1;
     if(DeteksiPintuBalaiKota(playerid)) return 1;

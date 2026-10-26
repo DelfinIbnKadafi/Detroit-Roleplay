@@ -1,8 +1,8 @@
 LoadHospital() {
     // pintu luar
-    CreatePickup(19130, 1, 1172.59, -1323.37, 15.40, -1);
+    CreatePickup(19130, 1, 1172.59, -1323.37, 15.40, 0);
     // pintu dalam
-    CreatePickup(19130, 1, 1402.58, -26.14, 1000.86, -1);
+    CreatePickup(19130, 1, 1402.58, -26.14, 1000.86, 0);
 
     new tmpobjid;
 

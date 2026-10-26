@@ -1,5 +1,5 @@
 public OnPlayerUpdate(playerid) {
-  if(IsPlayerInAnyVehicle(playerid)) {
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0 || IsPlayerInAnyVehicle(playerid)) {
     if(TdPintuShown[playerid]) {
       TextDrawHideForPlayer(playerid, TD_PINTU);
       TdPintuShown[playerid] = false;

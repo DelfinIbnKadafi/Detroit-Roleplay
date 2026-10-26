@@ -1,6 +1,6 @@
 stock bool:IsCurrentPlayerSession(playerid, sessionid, const expectedName[])
 {
-  return IsPlayerConnected(playerid)
+  return playerid >= 0 && playerid < MAX_PLAYERS && IsPlayerConnected(playerid)
     && PlayerSession[playerid] == sessionid
     && !strcmp(Pemain[playerid][pNama], expectedName, true);
 }
@@ -15,7 +15,7 @@ Fungsi:AutoSavePlayer(playerid, sessionid)
 
 Fungsi: MuatDataPemain(playerid, sessionid, const expectedName[])
 {
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_LOAD_DATA) return 1;
   if(cache_num_rows() != 1) {
     SendMessageError(playerid, "Data akun tidak dapat dimuat. Silakan masuk kembali.");
     DelayedKick(playerid);
@@ -46,12 +46,16 @@ Fungsi: MuatDataPemain(playerid, sessionid, const expectedName[])
   cache_get_value_int(0, "haus", Pemain[playerid][pHaus]);
   cache_get_value_int(0, "lapar", Pemain[playerid][pLapar]);
   cache_get_value_bool(0, "death", PlayerDeath[playerid]);
+  if(Pemain[playerid][pGender] < 0 || Pemain[playerid][pGender] >= sizeof GetGender) Pemain[playerid][pGender] = 0;
+  if(Pemain[playerid][pSkin] < 0 || Pemain[playerid][pSkin] > 311) Pemain[playerid][pSkin] = DEFAULT_MALE_SKIN;
+  if(PlayerDeath[playerid]) Pemain[playerid][pDarah] = 100.0;
   SpawnPemainEx(playerid);
   return 1;
 }
 
 Fungsi: SimpanDataPemain(playerid) 
 {
+  if(Pemain[playerid][pId] <= 0) return 0;
   if(!NewPlayerPendingSave[playerid]) {
     GetPlayerPos(
      playerid,
@@ -64,11 +68,12 @@ Fungsi: SimpanDataPemain(playerid)
     PosisiPemain[playerid][pVW] = GetPlayerVirtualWorld(playerid);
     Pemain[playerid][pSkin] = GetPlayerSkin(playerid);
     GetPlayerHealth(playerid, Pemain[playerid][pDarah]);
+    if(PlayerDeath[playerid]) Pemain[playerid][pDarah] = 100.0;
     GetPlayerArmour(playerid, Pemain[playerid][pArmor]);
     Pemain[playerid][pUang] = GetPlayerMoney(playerid);
   }
   
-  new query[512];
+  new query[1024];
   mysql_format(g_SQL, query, sizeof(query),
     "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%e', ktp='%d', tanggallahir='%e', job='%d', haus='%d', lapar='%d', admin='%d', death='%d' WHERE id='%d'",
     PosisiPemain[playerid][pX],
@@ -120,6 +125,9 @@ stock ResetDataPemain(playerid)
 
   StatusLogin[playerid] = false;
   NewPlayerPendingSave[playerid] = false;
+  PlayerKicking[playerid] = false;
+  PlayerLoginStep[playerid] = LOGIN_LOADING;
+  VehiclesLoaded[playerid] = false;
   Admin[playerid] = 0;
   AdminDuty[playerid] = false;
   Mute[playerid] = false;
@@ -127,9 +135,11 @@ stock ResetDataPemain(playerid)
   ChatWindowStart[playerid] = 0;
   TimerUnMute[playerid] = 0;
   JumVeh[playerid] = 0;
-  PendingVehicleGrants[playerid] = 0;
   PilihanVeh[playerid] = 0;
   TimerMesin[playerid] = 0;
+  KillTimer(TimerDown[playerid]);
+  TimerDown[playerid] = 0;
+  DownGeneration[playerid]++;
   DeletePVar(playerid, "login_attempts");
   DeletePVar(playerid, "verify_attempts");
   for(new i = 0; i < MAX_KENDARAAN; i++) {

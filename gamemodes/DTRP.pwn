@@ -20,6 +20,7 @@
 main(){}
 
 Fungsi: StartToLoadAtm() {
+    TimerLoadAtm = 0;
     mysql_tquery(g_SQL, "SELECT * FROM `atm`", "LoadAtm", "");
     return true;
 }
@@ -49,7 +50,7 @@ public OnGameModeInit()
     // lalu mengambil data kedalam fungsi LoadAtm()
     
     // untuk meminimalisir gagal load object, berikan jeda waktu sekitar 5 detik saat server dijalankan baru load atm
-    SetTimerEx("StartToLoadAtm", 5000, false, "");
+    TimerLoadAtm = SetTimerEx("StartToLoadAtm", 5000, false, "");
 
     mysql_tquery(g_SQL, "SELECT b.*, COALESCE(p.nama, CASE WHEN b.ownerid = 0 THEN 'None' ELSE 'Unknown' END) AS ownername FROM bussines b LEFT JOIN Pemain p ON p.id = b.ownerid ORDER BY b.id", "LoadBussines");
 
@@ -75,6 +76,7 @@ public OnPlayerConnect(playerid)
     if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
     ResetAtmEdit(playerid);
     ResetBussinesEdit(playerid);
+    idatmplayeruse[playerid] = -1;
     PlayerDeleteBussines[playerid] = 0;
     ResetDataPemain(playerid);
     for(new i = 0; i < 3; i++) {
@@ -108,12 +110,15 @@ public OnPlayerConnect(playerid)
 public OnGameModeExit()
 {
   KillTimer(TimerDeadVehicle);
+  KillTimer(TimerLoadAtm);
   DestroyAllBussines();
+  DestroyAllAtm();
   foreach(new playerid : Player) {
     if(!StatusLogin[playerid]) continue;
     SimpanDataPemain(playerid);
     SaveDataKendaraan(playerid);
   }
+  if(g_SQL != MYSQL_INVALID_HANDLE) mysql_close(g_SQL);
   return 1;
 }
 
@@ -124,6 +129,10 @@ public OnPlayerDisconnect(playerid, reason)
   PlayerSession[playerid]++;
   TdPintuShown[playerid] = false;
   ResetBussinesEdit(playerid);
+  ResetAtmEdit(playerid);
+  BatalkanStatusDown(playerid);
+  idatmplayeruse[playerid] = -1;
+  norek_atm_masukkan[playerid] = -1;
   PlayerDeleteBussines[playerid] = 0;
 
   KillTimer(TimerLapar[playerid]);

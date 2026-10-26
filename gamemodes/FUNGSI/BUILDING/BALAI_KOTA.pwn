@@ -13,6 +13,7 @@
 #define BALAI_KOTA_Z 2754.33
 
 stock DeteksiPintuBalaiKota(playerid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return 0;
   if(GetPlayerDistanceFromPoint(playerid, EXT_BALAI_KOTA_x, EXT_BALAI_KOTA_y, EXT_BALAI_KOTA_z) <= 2) {
     SetPlayerPos(playerid, INT_BALAI_KOTA_x, INT_BALAI_KOTA_y, INT_BALAI_KOTA_z);
     SetPlayerFacingAngle(playerid, INT_BALAI_KOTA_a);
@@ -29,12 +30,16 @@ stock DeteksiPintuBalaiKota(playerid) {
 
 stock TanggalLahirValid(playerid, const date[]) {
   new day, month[16], year;
-  new maxday;
+  new maxday, monthNumber;
+  new const months[][] = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
 
   if(strlen(date) > 32 || sscanf(date, "ds[16]d", day, month, year)) {
     SendMessageError(playerid, "Tanggal lahir tidak valid!");
     Dialog_Show(playerid, DL_BALKOT_KTP_DATE, DIALOG_STYLE_INPUT, "Detroit City Hall", "Masukkan tanggal lahir\nContoh : 10 Oktober 2007", "Kirim", "Batal");
     return 0;
+  }
+  for(new i = 0; i < sizeof months; i++) {
+    if(!strcmp(month, months[i], true)) monthNumber = i + 1;
   }
 
   if(
@@ -75,7 +80,7 @@ stock TanggalLahirValid(playerid, const date[]) {
   
   new currentYear, currentMonth, currentDay;
   getdate(currentYear, currentMonth, currentDay);
-  if(year < 1900 || year > currentYear) {
+  if(year < 1900 || year > currentYear || (year == currentYear && (monthNumber > currentMonth || (monthNumber == currentMonth && day > currentDay)))) {
     SendMessageError(playerid, "Tahun tidak valid!");
     Dialog_Show(playerid, DL_BALKOT_KTP_DATE, DIALOG_STYLE_INPUT, "Detroit City Hall", "Masukkan tanggal lahir\nContoh : 10 Oktober 2007", "Kirim", "Batal");
     return 0;
@@ -85,6 +90,7 @@ stock TanggalLahirValid(playerid, const date[]) {
 }
 
 stock ShowBalkotMenu(playerid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return 1;
   if(IsPlayerInRangeOfPoint(playerid, 2.0, BALAI_KOTA_X, BALAI_KOTA_Y, BALAI_KOTA_Z)) {
     new str[256];
 
@@ -97,6 +103,7 @@ stock ShowBalkotMenu(playerid) {
 
 Dialog:DL_BALKOT_MENU(playerid, response, listitem, const inputtext[]) {
   if(!response) return 1;
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0 || !IsPlayerInRangeOfPoint(playerid, 2.0, BALAI_KOTA_X, BALAI_KOTA_Y, BALAI_KOTA_Z)) return 1;
 
   switch(listitem) {
     case 0: {
@@ -109,22 +116,22 @@ Dialog:DL_BALKOT_MENU(playerid, response, listitem, const inputtext[]) {
 
 Dialog:DL_BALKOT_KTP_DATE(playerid, response, listitem, const inputtext[]) {
   if(!response) return 1;
+  if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0 || !IsPlayerInRangeOfPoint(playerid, 2.0, BALAI_KOTA_X, BALAI_KOTA_Y, BALAI_KOTA_Z)) return 1;
   if(Pemain[playerid][pKtp]) {
     SendMessageInfo(playerid, "Kamu sudah memiliki KTP.");
     return 1;
   }
 
-  if(!TanggalLahirValid(playerid, inputtext))
-    return 1;
-
   if(GetPlayerMoney(playerid) < 130000) {
     SendMessageError(playerid, "Uang tidak cukup!");
     return 1;
   }
+  if(!TanggalLahirValid(playerid, inputtext)) return 1;
 
   Pemain[playerid][pKtp] = 1;
 
   GivePlayerMoney(playerid, -130000);
+  SimpanDataPemain(playerid);
 
   SendMessageInfo(playerid, "Berhasil membuat KTP!");
 

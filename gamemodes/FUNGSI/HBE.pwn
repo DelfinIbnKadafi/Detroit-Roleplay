@@ -1,11 +1,13 @@
-Fungsi: KurangiLapar(playerid) {
+Fungsi: KurangiLapar(playerid, sessionid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerSession[playerid] != sessionid) return 1;
   if(Pemain[playerid][pLapar] > 0) {
     Pemain[playerid][pLapar] --;
   }
   return 1;
 }
 
-Fungsi: KurangiHaus(playerid) {
+Fungsi: KurangiHaus(playerid, sessionid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerSession[playerid] != sessionid) return 1;
   if(Pemain[playerid][pHaus] > 0) {
     Pemain[playerid][pHaus] --;
   }
@@ -31,9 +33,9 @@ stock ShowHideHbeTextdraw(playerid, bool:showorhide) {
     KillTimer(TimerLapar[playerid]);
     KillTimer(TimerHaus[playerid]);
     
-    TimerHBE[playerid] = SetTimerEx("UpdateTextdrawHbe", 5000, true, "i", playerid);
-    TimerLapar[playerid] = SetTimerEx("KurangiLapar", 180000, true, "i", playerid);
-    TimerHaus[playerid] = SetTimerEx("KurangiHaus", 120000, true, "i", playerid);
+    TimerHBE[playerid] = SetTimerEx("UpdateTextdrawHbe", 5000, true, "ii", playerid, PlayerSession[playerid]);
+    TimerLapar[playerid] = SetTimerEx("KurangiLapar", 180000, true, "ii", playerid, PlayerSession[playerid]);
+    TimerHaus[playerid] = SetTimerEx("KurangiHaus", 120000, true, "ii", playerid, PlayerSession[playerid]);
   }
   else {
     for(new i = 0; i < 3; i++) {
@@ -43,11 +45,17 @@ stock ShowHideHbeTextdraw(playerid, bool:showorhide) {
     PlayerTextDrawHide(playerid, STATS[playerid][1]);
     
     KillTimer(TimerHBE[playerid]);
+    KillTimer(TimerLapar[playerid]);
+    KillTimer(TimerHaus[playerid]);
+    TimerHBE[playerid] = 0;
+    TimerLapar[playerid] = 0;
+    TimerHaus[playerid] = 0;
   }
   return 1;
 }
 
-Fungsi: UpdateTextdrawHbe(playerid) {
+Fungsi: UpdateTextdrawHbe(playerid, sessionid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerSession[playerid] != sessionid) return 1;
   new str[16];
   format(str, sizeof(str), "%d", Pemain[playerid][pLapar]);
   PlayerTextDrawSetString(playerid, STATS[playerid][0], str);

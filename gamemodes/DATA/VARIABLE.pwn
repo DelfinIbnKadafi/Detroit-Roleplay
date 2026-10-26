@@ -4,8 +4,12 @@ new MySQL:g_SQL;
 new bool:StatusLogin[MAX_PLAYERS];
 new bool:NewPlayerPendingSave[MAX_PLAYERS];
 new PlayerSession[MAX_PLAYERS];
+new bool:PlayerKicking[MAX_PLAYERS];
+new bool:VehiclesLoaded[MAX_PLAYERS];
 
 new PlayerDeath[MAX_PLAYERS] = false;
+new TimerDown[MAX_PLAYERS];
+new DownGeneration[MAX_PLAYERS];
 
 // mute
 new JumlahSpam[MAX_PLAYERS];
@@ -15,7 +19,6 @@ new TimerUnMute[MAX_PLAYERS];
 
 // kendaraan
 new JumVeh[MAX_PLAYERS];
-new PendingVehicleGrants[MAX_PLAYERS];
 new PilihanVeh[MAX_PLAYERS];
 
 new PlayerVehID[MAX_PLAYERS][MAX_KENDARAAN];
@@ -26,6 +29,7 @@ new bool:VehicleIsSpawn[MAX_PLAYERS][MAX_KENDARAAN];
 new VehicleGeneration[MAX_VEHICLES_SERVER];
 new TimerRespawnVeh[MAX_PLAYERS][MAX_KENDARAAN];
 new TimerDeadVehicle;
+new TimerLoadAtm;
 
 // timer 
 new TimerLapar[MAX_PLAYERS];

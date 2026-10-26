@@ -15,6 +15,7 @@ stock bool:IsDeadPlayerVehicle(vehicleid) {
 }
 
 stock MuatDataKendaraan(playerid) {
+  VehiclesLoaded[playerid] = false;
   new query[128];
   mysql_format(g_SQL, query, sizeof(query), "SELECT * FROM `Kendaraan` WHERE `pid` = %d ORDER BY `vid`", Pemain[playerid][pId]);
 
@@ -23,7 +24,7 @@ stock MuatDataKendaraan(playerid) {
 }
 
 Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || !StatusLogin[playerid]) return 1;
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || !IsPlayerAccountReady(playerid) || VehiclesLoaded[playerid]) return 1;
   new rows = cache_num_rows();
   for(new i = 0; i < rows && i < MAX_KENDARAAN; i++) {
     new databaseid;
@@ -37,7 +38,7 @@ Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
     cache_get_value_name_int(i, "color1", PVeh[playerid][i][vColor1]);
     cache_get_value_name_int(i, "color2", PVeh[playerid][i][vColor2]);
     
-    cache_get_value_name(i, "plate", PVeh[playerid][i][vPlate], 16);
+    cache_get_value_name(i, "plate", PVeh[playerid][i][vPlate], 17);
     
     cache_get_value_name_float(i, "health", PVeh[playerid][i][vHealth]);
     cache_get_value_name_float(i, "x", PVeh[playerid][i][vX]);
@@ -55,17 +56,7 @@ Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
     }
   }
   JumVeh[playerid] = rows < MAX_KENDARAAN ? rows : MAX_KENDARAAN;
-  return 1;
-}
-
-Fungsi:OnVehicleGranted(playerid, sessionid, const expectedName[]) {
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
-  if(PendingVehicleGrants[playerid] > 0) PendingVehicleGrants[playerid]--;
-  if(cache_affected_rows() != 1) {
-    SendMessageError(playerid, "Kendaraan gagal disimpan ke database.");
-    return 1;
-  }
-  MuatDataKendaraan(playerid);
+  VehiclesLoaded[playerid] = true;
   return 1;
 }
 
@@ -139,6 +130,7 @@ stock GetVehicleModelName(modelid, name[], len) {
     format(name, len, "%s", vehicleNames[modelid - 400]);
     return 1;
   }
+  format(name, len, "Unknown");
   return 0;
 }
 
@@ -171,6 +163,7 @@ stock SpawnKendaraanPlayer(playerid, slot, world = 0, interior = 0) {
   VehicleIsSpawn[playerid][slot] = false;
   vehicleid = CreateVehicle(PVeh[playerid][slot][vModel], PVeh[playerid][slot][vX], PVeh[playerid][slot][vY], PVeh[playerid][slot][vZ], PVeh[playerid][slot][vAngel], PVeh[playerid][slot][vColor1], PVeh[playerid][slot][vColor2], -1);
   if(vehicleid == INVALID_VEHICLE_ID) return INVALID_VEHICLE_ID;
+  RemoveAdminVehicle(vehicleid);
   PlayerVehID[playerid][slot] = vehicleid;
   VehicleIsSpawn[playerid][slot] = true;
   VehOwner[vehicleid] = playerid;
@@ -311,8 +304,8 @@ Fungsi:HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati, sessionid, gener
 }
 
 Fungsi: BerikanKendaraan(playerid, model, color) {
-  if(!IsPlayerConnected(playerid) || !StatusLogin[playerid]) return 0;
-  if(JumVeh[playerid] + PendingVehicleGrants[playerid] >= MAX_KENDARAAN) return 0;
+  if(!IsPlayerAccountReady(playerid) || !VehiclesLoaded[playerid]) return 0;
+  if(JumVeh[playerid] >= MAX_KENDARAAN) return 0;
   if(model < 400 || model > 611 || color < 0 || color > 255) return 0;
   SaveDataKendaraan(playerid);
   
@@ -321,14 +314,38 @@ Fungsi: BerikanKendaraan(playerid, model, color) {
   
   new query[512];
   mysql_format(g_SQL, query, sizeof(query), "INSERT INTO Kendaraan (pid, model, color1, color2, fuel, x, y, z) VALUES ('%d', '%d', '%d', '%d', '%d', '%.4f', '%.4f', '%.4f')", Pemain[playerid][pId], model, color, color, 100, x + 2, y, z);
-  PendingVehicleGrants[playerid]++;
-  mysql_tquery(g_SQL, query, "OnVehicleGranted", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
+  new Cache:result = mysql_query(g_SQL, query);
+  new bool:saved = mysql_errno(g_SQL) == 0 && cache_is_valid(result) && cache_affected_rows() == 1;
+  new databaseid;
+  if(saved) databaseid = cache_insert_id();
+  if(cache_is_valid(result)) cache_delete(result);
+  if(!saved || databaseid <= 0) return 0;
+
+  new slot = JumVeh[playerid]++;
+  static const empty[DataVeh];
+  PVeh[playerid][slot] = empty;
+  PVeh[playerid][slot][vId] = databaseid;
+  PVeh[playerid][slot][vModel] = model;
+  PVeh[playerid][slot][vColor1] = color;
+  PVeh[playerid][slot][vColor2] = color;
+  PVeh[playerid][slot][vFuel] = 100;
+  PVeh[playerid][slot][vHealth] = 1000.0;
+  PVeh[playerid][slot][vX] = x + 2.0;
+  PVeh[playerid][slot][vY] = y;
+  PVeh[playerid][slot][vZ] = z;
+  PlayerVehID[playerid][slot] = INVALID_VEHICLE_ID;
+  VehicleIsSpawn[playerid][slot] = false;
   return 1;
 }
 
 // Recreate after the old death callback finishes, even if its vehicle ID is reused.
 public OnVehicleDeath(vehicleid, killerid) {
   #pragma unused killerid
+  if(IsValidVehicle(vehicleid) && IsAdminVehicle(vehicleid)) {
+    RemoveAdminVehicle(vehicleid);
+    DestroyVehicle(vehicleid);
+    return 1;
+  }
   if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid)) return 1;
   new owner = VehOwner[vehicleid], slot = VehSlot[vehicleid];
   new world = GetVehicleVirtualWorld(vehicleid), interior = GetVehicleInterior(vehicleid);

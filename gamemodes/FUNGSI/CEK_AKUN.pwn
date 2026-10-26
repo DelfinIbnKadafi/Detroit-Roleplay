@@ -1,12 +1,16 @@
 Fungsi: CekVerifikasiAkun(playerid, sessionid, const expectedName[])
 {
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_LOADING) return 1;
+  if(cache_num_rows() != 1) {
+    SendMessageError(playerid, "Data akun tidak dapat dimuat. Silakan masuk kembali.");
+    return DelayedKick(playerid);
+  }
 
   // ambil data akun
   cache_get_value_int(0, "id", Pemain[playerid][pId]);
   cache_get_value_int(0, "verified", Pemain[playerid][pVerified]);
   cache_get_value_int(0, "kode", Pemain[playerid][pKode]);
-  cache_get_value_name(0, "sandi", Pemain[playerid][pPassword]);
+  cache_get_value_name(0, "sandi", Pemain[playerid][pPassword], BCRYPT_HASH_LENGTH);
   
   // belum terverifikasi
   new
@@ -14,6 +18,7 @@ Fungsi: CekVerifikasiAkun(playerid, sessionid, const expectedName[])
   ;
   if(!Pemain[playerid][pVerified]) 
   {
+    PlayerLoginStep[playerid] = LOGIN_CODE;
     if(Pemain[playerid][pKode] <= 0) {
       SendMessageError(playerid, "Kode verifikasi tidak tersedia. Silakan hubungi admin.");
       DelayedKick(playerid);
@@ -25,6 +30,11 @@ Fungsi: CekVerifikasiAkun(playerid, sessionid, const expectedName[])
   }
   else 
   {
+    if(strlen(Pemain[playerid][pPassword]) != BCRYPT_HASH_LENGTH - 1) {
+      SendMessageError(playerid, "Data password akun tidak valid. Silakan hubungi admin.");
+      return DelayedKick(playerid);
+    }
+    PlayerLoginStep[playerid] = LOGIN_PASSWORD;
     format(
       tmp, sizeof(tmp),
      ""E_WHITE"Akun kamu sudah terverifikasi oleh sistem. Silahkan masukkan password kamu dibawah ini dengan benar."
@@ -43,7 +53,7 @@ Fungsi: CekAkunPemain(playerid, sessionid, const expectedName[])
     str[128]
   ;
 
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_LOADING) return 1;
 
   if(cache_num_rows() > 0) 
   {

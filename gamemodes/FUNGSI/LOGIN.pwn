@@ -1,6 +1,6 @@
 Fungsi: OnVerifyPassword(playerid, bool:success, sessionid, const expectedName[])
 {
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName)) return 1;
+  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_VERIFYING) return 1;
 
   new 
     attempts = GetPVarInt(playerid, "login_attempts")
@@ -15,6 +15,7 @@ Fungsi: OnVerifyPassword(playerid, bool:success, sessionid, const expectedName[]
     }
     else
     {
+      PlayerLoginStep[playerid] = LOGIN_PASSWORD;
       new err[128];
       format(err, sizeof(err), "{FF0000}[ERROR]{FFFFFF} Kamu memasukkan password yang salah. (attempts: %d/"#MAX_LOGIN_ATTEMPTS")", attempts);
       SendClientMessage(playerid, 0xFFFFFF, err);
@@ -35,6 +36,7 @@ Fungsi: OnVerifyPassword(playerid, bool:success, sessionid, const expectedName[]
     ;
 
     DeletePVar(playerid, "login_attempts");
+    PlayerLoginStep[playerid] = LOGIN_LOAD_DATA;
     mysql_format(g_SQL, query, sizeof query, "SELECT * FROM Pemain where id=%d", Pemain[playerid][pId]);
     mysql_tquery(g_SQL, query, "MuatDataPemain", "iis", playerid, sessionid, expectedName);
   }
@@ -43,6 +45,7 @@ Fungsi: OnVerifyPassword(playerid, bool:success, sessionid, const expectedName[]
 
 Dialog:DL_LOGIN(playerid, response, listitem, const inputtext[])
 {
+  if(PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_PASSWORD) return 1;
   if(!response)
     return DelayedKick(playerid);
 
@@ -56,6 +59,9 @@ Dialog:DL_LOGIN(playerid, response, listitem, const inputtext[])
     );
     Dialog_Show(playerid, DL_LOGIN, DIALOG_STYLE_PASSWORD, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Login", tmp, "Login", "Batal");
   }
-  else bcrypt_verify(playerid, "OnVerifyPassword", inputtext, Pemain[playerid][pPassword], "is", PlayerSession[playerid], Pemain[playerid][pNama]);
+  else {
+    PlayerLoginStep[playerid] = LOGIN_VERIFYING;
+    bcrypt_verify(playerid, "OnVerifyPassword", inputtext, Pemain[playerid][pPassword], "is", PlayerSession[playerid], Pemain[playerid][pNama]);
+  }
   return 1;
 }

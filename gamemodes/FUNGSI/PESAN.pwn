@@ -21,7 +21,7 @@ stock ShowGreetings(playerid)
 
 stock bool:CanSendChat(playerid)
 {
-  if(!StatusLogin[playerid]) {
+  if(!StatusLogin[playerid] || PlayerKicking[playerid]) {
     SendMessageError(playerid, "Kamu harus login agar bisa mengirim pesan!");
     return false;
   }

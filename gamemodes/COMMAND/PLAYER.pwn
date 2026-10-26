@@ -22,6 +22,8 @@ CMD:pay(playerid, params[]) {
     SendMessageError(playerid, "Pemain yang dituju tidak online!");
     return 1;
   }
+  if(!IsPlayerAccountReady(targetid)) return SendMessageError(playerid, "Pemain yang dituju belum login!");
+  if(GetPlayerMoney(targetid) > 2147483647 - jumlah) return SendMessageError(playerid, "Uang pemain yang dituju melebihi batas saldo!");
   
   new Float:x, Float:y, Float:z;
   GetPlayerPos(playerid, x, y, z);
@@ -36,6 +38,8 @@ CMD:pay(playerid, params[]) {
     }
     GivePlayerMoney(playerid, -jumlah);
     GivePlayerMoney(targetid, jumlah);
+    SimpanDataPemain(playerid);
+    SimpanDataPemain(targetid);
     
     ApplyAnimation(playerid, "DEALER", "shop_pay", 4.1, false, false, false, false, 4670);
     ApplyAnimation(targetid, "DEALER", "DEALER_DEAL", 4.1, false, false, false, false, 3170);
@@ -74,7 +78,7 @@ CMD:stats(playerid, params[])
 
   new moneystring[128], bankstring[128];
   FormatUang(money, moneystring);
-  FormatUang(money, bankstring);
+  FormatUang(Pemain[playerid][pBank], bankstring);
   
   format(stats, sizeof(stats),
     "Nama : %s | Gender : %s | Uang : %s | Saldo Bank : %s | Norek : %d | Tanggal Lahir : %s | Pekerjaan : %s\nPonsel : %s | No Telepon : %s",
@@ -103,6 +107,7 @@ CMD:enter(playerid, params[]) {
   if(IsPlayerInAnyVehicle(playerid)) return 1;
   
   if(DeteksiPintuBalaiKota(playerid)) return 1;
+  if(DeteksiPintuHospital(playerid)) return 1;
   return 1;
 }
 

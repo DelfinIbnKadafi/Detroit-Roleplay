@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm <atmid>\n/revive\n/createbusiness <type> <nama> (0 = Market)\n/editbusiness <id> pos (Editor posisi pintu)\n/editbusiness <id> here (Pindahkan ke posisi admin)\n/editbusiness <id> name <nama>\n/editbusiness <id> type <0-127>\n/editbusiness <id> stock <jumlah>\n/editbusiness <id> owner <id akun/0>\n/deletebusiness <id>\n/gotobusiness <id>\n/businesslist [halaman]\n/cancelbusinessedit", "keluar", " ");
   
   return 1;
 }
@@ -19,6 +19,7 @@ CMD:tp(playerid, params[]) {
     SendClientMessage(playerid, -1, "Gunakan: /tp x y z");
     return 1;
   }
+  if(!ValidWorldPosition(x, y, z)) return SendMessageError(playerid, "Koordinat tidak valid!");
 
   SetPlayerPos(playerid, x, y, z);
 
@@ -45,7 +46,7 @@ CMD:giveveh(playerid, params[]) {
     return 1;
   }
   if(BerikanKendaraan(target, model, color) == 0) {
-    SendMessageError(playerid, "Player sudah memiliki batas maksimal kendaraan!");
+    SendMessageError(playerid, "Kendaraan gagal diberikan. Periksa login player, data kendaraan, batas kendaraan, atau database.");
     return 1;
   }
   else {
@@ -186,12 +187,14 @@ CMD:givemoney(playerid, params[]) {
     SendMessageError(playerid, "Player yang dituju sedang tidak online!");
     return 1;
   }
-  if(amount < 1 || amount > 1000000 || amount > 2147483647 - GetPlayerMoney(target)) {
+  if(!IsPlayerAccountReady(target)) return SendMessageError(playerid, "Player yang dituju belum login!");
+  if(amount < 1 || amount > 1000000 || GetPlayerMoney(target) > 2147483647 - amount) {
     SendMessageError(playerid, "Jumlah uang tidak valid atau melebihi batas saldo!");
     return 1;
   }
   
   GivePlayerMoney(target, amount);
+  SimpanDataPemain(target);
   SendMessageInfo(target, "Kamu sudah diberi uang oleh admin!");
   SendMessageInfo(playerid, "Berhasil memberi uang ke player.");
   return 1;
@@ -215,7 +218,9 @@ CMD:getmoney(playerid, params[]) {
     SendMessageError(playerid, "Jumlah uang harus positif dan tidak boleh melebihi saldo pemain!");
     return 1;
   }
+  if(!IsPlayerAccountReady(target)) return SendMessageError(playerid, "Player yang dituju belum login!");
   GivePlayerMoney(target, -amount);
+  SimpanDataPemain(target);
   SendMessageInfo(target, "Uang kamu sudah diambil oleh admin!");
   SendMessageInfo(playerid, "Berhasil mengambil uang player.");
   return 1;
@@ -271,12 +276,16 @@ CMD:spawnaveh(playerid, params[]) {
     SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
     return 1;
   }
+  RemoveAdminVehicle(vehicleid);
+  VehicleGeneration[vehicleid]++;
+  SetVehicleVirtualWorld(vehicleid, GetPlayerVirtualWorld(playerid));
+  LinkVehicleToInterior(vehicleid, GetPlayerInterior(playerid));
   aveh[jumaveh] = vehicleid;
   avehOwner[jumaveh] = playerid;
   jumaveh++;
   VehOwner[vehicleid] = -1;
   VehSlot[vehicleid] = -1;
-  MesinVeh[vehicleid] = false;
+  MesinVeh[vehicleid] = true;
   SetVehicleParamsEx(vehicleid, true, false, false, false, false, false, false);
   SendMessageInfo(playerid, "Berhasil spawn veh");
   return 1;
@@ -297,6 +306,8 @@ CMD:createatm(playerid, params[]) {
     SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
     return 1;
   }
+  if(!AtmReady) return SendMessageError(playerid, "Data ATM belum selesai dimuat.");
+  if(!IsBussinesExterior(playerid)) return SendMessageError(playerid, "ATM hanya bisa dibuat di luar bangunan pada virtual world 0.");
 
   new Float:x, Float:y, Float:z, Float:a;
   GetPlayerPos(playerid, x, y, z);

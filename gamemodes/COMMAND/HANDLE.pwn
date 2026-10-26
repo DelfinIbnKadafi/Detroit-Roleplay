@@ -1,5 +1,5 @@
 public OnPlayerCommandReceived(playerid, cmdtext[]) {
-  if(StatusLogin[playerid] == false) {
+  if(!IsPlayerAccountReady(playerid)) {
     SendMessageError(playerid, "Kamu harus login agar bisa menggunakan command!");
     return 0;
   }

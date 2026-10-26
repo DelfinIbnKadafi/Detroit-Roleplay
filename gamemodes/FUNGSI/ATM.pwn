@@ -1,6 +1,6 @@
 enum atmdata {
     STREAMER_TAG_OBJECT:object,
-    Text3D:label,
+    STREAMER_TAG_3D_TEXT_LABEL:label,
     id,
     Float:posx,
     Float:posy,
@@ -12,95 +12,8 @@ enum atmdata {
 #define MAX_ATM 1000
 new atm[MAX_ATM][atmdata];
 new atmcount;
-
-Fungsi:CreateAtmLabel(index) {
-    new msg[256], money[128];
-    FormatUang(atm[index][cadangan], money);
-    format(msg, sizeof(msg), "[%d]\n{55ff62}[ATM]{ffffff}\nUse /atm or ALT to use atm\n{1ed030}$%s", atm[index][id], money);
-    atm[index][label] = Create3DTextLabel(msg, -1, atm[index][posx], atm[index][posy], atm[index][posz], 7.0, 0);
-    return atm[index][label] != INVALID_3DTEXT_ID;
-}
-
-Fungsi: LoadAtm() {
-    atmcount = 0;
-
-    new baris;
-    cache_get_row_count(baris);
-
-    for (new i = 0; i < baris && atmcount < MAX_ATM; i++) {
-        new index = atmcount;
-        cache_get_value_name_int(i, "id", atm[index][id]);
-        cache_get_value_name_float(i, "posx", atm[index][posx]);
-        cache_get_value_name_float(i, "posy", atm[index][posy]);
-        cache_get_value_name_float(i, "posz", atm[index][posz]);
-        cache_get_value_name_float(i, "angle", atm[index][angle]);
-        cache_get_value_name_int(i, "cadangan", atm[index][cadangan]);
-
-        atm[index][object] = CreateDynamicObject(19324, atm[index][posx], atm[index][posy], atm[index][posz], 0.0, 0.0, atm[index][angle], -1, 0, -1);
-
-        // coba print debug atm yang jelas
-        printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidDynamicObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
-
-        if (!IsValidDynamicObject(atm[index][object])) {
-            printf("[ATM] Gagal membuat object untuk ATM ID %d. Periksa batas object server.", atm[index][id]);
-        }
-        if (!CreateAtmLabel(index)) {
-            printf("[ATM] Gagal membuat 3D text label untuk ATM ID %d.", atm[index][id]);
-        }
-        atmcount++;
-    }
-
-    printf("[ATM] Berhasil memuat %d ATM dari database.", atmcount);
-    return 1;
-}
-
-Fungsi: CreateAtm(Float:x, Float:y, Float:z, Float:a) {
-    if (atmcount >= MAX_ATM) return 0;
-
-    new highestID = 0;
-    for (new i = 0; i < atmcount; i++) {
-        if (atm[i][id] > highestID) highestID = atm[i][id];
-    }
-
-    x += 2.0;
-
-    new index = atmcount;
-    atm[index][id] = highestID + 1;
-    atm[index][posx] = x;
-    atm[index][posy] = y;
-    atm[index][posz] = z;
-    atm[index][angle] = a;
-    atm[index][cadangan] = 1000000;
-
-    atm[index][object] = CreateDynamicObject(19324, x, y, z, 0.0, 0.0, a, -1, 0, -1);
-
-    if(!IsValidDynamicObject(atm[index][object])) return 0;
-    if(!CreateAtmLabel(index)) {
-        DestroyDynamicObject(atm[index][object]);
-        return 0;
-    }
-
-    new query[512];
-    mysql_format(g_SQL, query, sizeof(query),
-        "INSERT INTO `atm` (`id`, `posx`, `posy`, `posz`, `angle`, `cadangan`) VALUES (%d, %f, %f, %f, %f, %d)",
-        atm[index][id], atm[index][posx], atm[index][posy], atm[index][posz], atm[index][angle], atm[index][cadangan]);
-    mysql_tquery(g_SQL, query);
-
-    atmcount++;
-
-    // lakukan hal yang sama untuk debug atm
-    printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidDynamicObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
-
-    return 1;
-}
-
-Fungsi: SaveDataAtm(the_atm_index) {
-    new query[512];
-    mysql_format(g_SQL, query, sizeof(query), "UPDATE `atm` SET posx='%f', posy='%f', posz='%f', angle='%f', cadangan='%d' WHERE id ='%d'", atm[the_atm_index][posx], atm[the_atm_index][posy], atm[the_atm_index][posz], atm[the_atm_index][angle], atm[the_atm_index][cadangan], atm[the_atm_index][id]);
-    mysql_query(g_SQL, query);
-
-    return 1;
-}
+new bool:AtmReady;
+new AtmEditor[MAX_ATM] = {INVALID_PLAYER_ID, ...};
 
 enum atmedited {
     STREAMER_TAG_OBJECT:objid,
@@ -108,107 +21,238 @@ enum atmedited {
     bool:active
 }
 new playereditatm[MAX_PLAYERS][atmedited];
+new idatmplayeruse[MAX_PLAYERS] = {-1, ...}; // id is atm[the_id]
 
-new idatmplayeruse[MAX_PLAYERS]; // id is atm[the_id]
+stock GetAtmIndex(atmid) {
+    for(new i = 0; i < atmcount; i++) {
+        if(atm[i][id] == atmid) return i;
+    }
+    return -1;
+}
+
+stock ResetAtmSlot(index) {
+    if(IsValidDynamicObject(atm[index][object])) DestroyDynamicObject(atm[index][object]);
+    if(IsValidDynamic3DTextLabel(atm[index][label])) DestroyDynamic3DTextLabel(atm[index][label]);
+    static const empty[atmdata];
+    atm[index] = empty;
+    AtmEditor[index] = INVALID_PLAYER_ID;
+    return 1;
+}
+
+Fungsi:CreateAtmLabel(index) {
+    new msg[256], money[128];
+    FormatUang(atm[index][cadangan], money);
+    format(msg, sizeof msg, "[%d]\n{55ff62}[ATM]{ffffff}\nUse /atm or ALT to use atm\n{1ed030}$%s", atm[index][id], money);
+    atm[index][label] = CreateDynamic3DTextLabel(msg, -1, atm[index][posx], atm[index][posy], atm[index][posz], 7.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
+    return IsValidDynamic3DTextLabel(atm[index][label]);
+}
+
+Fungsi: LoadAtm() {
+    if(AtmReady) return 1;
+    new baris = cache_num_rows();
+    for(new i = 0; i < baris && atmcount < MAX_ATM; i++) {
+        new index = atmcount;
+        cache_get_value_name_int(i, "id", atm[index][id]);
+        cache_get_value_name_float(i, "posx", atm[index][posx]);
+        cache_get_value_name_float(i, "posy", atm[index][posy]);
+        cache_get_value_name_float(i, "posz", atm[index][posz]);
+        cache_get_value_name_float(i, "angle", atm[index][angle]);
+        cache_get_value_name_int(i, "cadangan", atm[index][cadangan]);
+        if(atm[index][id] <= 0 || GetAtmIndex(atm[index][id]) != -1 || !ValidWorldPosition(atm[index][posx], atm[index][posy], atm[index][posz]) || atm[index][cadangan] < 0) {
+            ResetAtmSlot(index);
+            continue;
+        }
+        atm[index][object] = CreateDynamicObject(19324, atm[index][posx], atm[index][posy], atm[index][posz], 0.0, 0.0, atm[index][angle], 0, 0, -1);
+
+        // coba print debug atm yang jelas
+        printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidDynamicObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
+        if(!IsValidDynamicObject(atm[index][object]) || !CreateAtmLabel(index)) {
+            printf("[ATM] Gagal membuat object atau 3D text label untuk ATM ID %d.", atm[index][id]);
+            ResetAtmSlot(index);
+            continue;
+        }
+        atmcount++;
+    }
+    AtmReady = true;
+    printf("[ATM] Berhasil memuat %d ATM dari database.", atmcount);
+    return 1;
+}
+
+stock bool:ExecuteAtmWrite(const query[], &insertid, &affected) {
+    new Cache:result = mysql_query(g_SQL, query);
+    new bool:success = mysql_errno(g_SQL) == 0 && cache_is_valid(result);
+    if(success) {
+        insertid = cache_insert_id();
+        affected = cache_affected_rows();
+    }
+    if(cache_is_valid(result)) cache_delete(result);
+    return success;
+}
+
+Fungsi: CreateAtm(Float:x, Float:y, Float:z, Float:a) {
+    if(!AtmReady || atmcount >= MAX_ATM || !ValidWorldPosition(x + 2.0, y, z) || !(a >= -36000.0 && a <= 36000.0)) return 0;
+    new index = atmcount;
+    ResetAtmSlot(index);
+    atm[index][posx] = x + 2.0;
+    atm[index][posy] = y;
+    atm[index][posz] = z;
+    atm[index][angle] = a;
+    atm[index][cadangan] = 1000000;
+    atm[index][object] = CreateDynamicObject(19324, atm[index][posx], y, z, 0.0, 0.0, a, 0, 0, -1);
+    if(!IsValidDynamicObject(atm[index][object]) || !CreateAtmLabel(index)) {
+        ResetAtmSlot(index);
+        return 0;
+    }
+    new query[512], insertid, affected;
+    mysql_format(g_SQL, query, sizeof query, "INSERT INTO atm (posx, posy, posz, angle, cadangan) VALUES (%.6f, %.6f, %.6f, %.6f, %d)", atm[index][posx], y, z, a, atm[index][cadangan]);
+    if(!ExecuteAtmWrite(query, insertid, affected) || affected != 1 || insertid <= 0) {
+        ResetAtmSlot(index);
+        return 0;
+    }
+    atm[index][id] = insertid;
+    atmcount++;
+    EditTextAtm(index);
+
+    // lakukan hal yang sama untuk debug atm
+    printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidDynamicObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
+    return 1;
+}
+
+Fungsi: SaveDataAtm(index) {
+    if(index < 0 || index >= atmcount) return 0;
+    new query[512], insertid, affected;
+    mysql_format(g_SQL, query, sizeof query, "UPDATE atm SET posx = %.6f, posy = %.6f, posz = %.6f, angle = %.6f, cadangan = %d WHERE id = %d", atm[index][posx], atm[index][posy], atm[index][posz], atm[index][angle], atm[index][cadangan], atm[index][id]);
+    if(!ExecuteAtmWrite(query, insertid, affected)) return 0;
+    if(affected == 0) {
+        mysql_format(g_SQL, query, sizeof query, "SELECT id FROM atm WHERE id = %d LIMIT 1", atm[index][id]);
+        new Cache:result = mysql_query(g_SQL, query);
+        new bool:exists = mysql_errno(g_SQL) == 0 && cache_is_valid(result) && cache_num_rows() == 1;
+        if(cache_is_valid(result)) cache_delete(result);
+        return exists;
+    }
+    return 1;
+}
 
 Fungsi:ResetAtmEdit(playerid) {
+    new index = GetAtmIndex(playereditatm[playerid][edit_atm_id]);
+    new bool:wasEditing = playereditatm[playerid][active];
     playereditatm[playerid][objid] = INVALID_STREAMER_ID;
     playereditatm[playerid][edit_atm_id] = 0;
     playereditatm[playerid][active] = false;
+    if(index != -1 && AtmEditor[index] == playerid) {
+        AtmEditor[index] = INVALID_PLAYER_ID;
+        SetDynamicObjectPos(atm[index][object], atm[index][posx], atm[index][posy], atm[index][posz]);
+        SetDynamicObjectRot(atm[index][object], 0.0, 0.0, atm[index][angle]);
+    }
+    if(wasEditing && IsPlayerConnected(playerid)) CancelEdit(playerid);
     return 1;
 }
 
 Fungsi: EditAtm(playerid, ATMid) {
+    if(!IsPlayerAccountReady(playerid) || Admin[playerid] < 1 || !IsPlayerExterior(playerid)) return 0;
     if(PlayerEditBussines[playerid] != -1 || playereditatm[playerid][active]) return 0;
-    for(new i = 0; i < atmcount; i++) {
-        if(atm[i][id] == ATMid) {
-            if(!EditDynamicObject(playerid, atm[i][object])) return 0;
-            playereditatm[playerid][objid] = atm[i][object];
-            playereditatm[playerid][edit_atm_id] = atm[i][id];
-            playereditatm[playerid][active] = true;
-            return 1;
-        }
+    new index = GetAtmIndex(ATMid);
+    if(index == -1 || AtmEditor[index] != INVALID_PLAYER_ID || !IsPlayerInRangeOfPoint(playerid, 20.0, atm[index][posx], atm[index][posy], atm[index][posz])) return 0;
+    playereditatm[playerid][objid] = atm[index][object];
+    playereditatm[playerid][edit_atm_id] = ATMid;
+    playereditatm[playerid][active] = true;
+    AtmEditor[index] = playerid;
+    if(!EditDynamicObject(playerid, atm[index][object])) {
+        ResetAtmEdit(playerid);
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 Fungsi: SaveEditAtm(ATMid, Float:x, Float:y, Float:z, Float:facingAngle) {
-    new index = -1;
-    for(new i = 0; i < atmcount; i++) {
-        if(atm[i][id] == ATMid) {
-            index = i;
-            break;
-        }
-    }
-    if(index == -1) return 0;
-
+    new index = GetAtmIndex(ATMid);
+    if(index == -1 || !ValidWorldPosition(x, y, z) || !(facingAngle >= -36000.0 && facingAngle <= 36000.0)) return 0;
+    new Float:previous[4];
+    previous[0] = atm[index][posx];
+    previous[1] = atm[index][posy];
+    previous[2] = atm[index][posz];
+    previous[3] = atm[index][angle];
     atm[index][posx] = x;
     atm[index][posy] = y;
     atm[index][posz] = z;
     atm[index][angle] = facingAngle;
+    if(!SaveDataAtm(index)) {
+        atm[index][posx] = previous[0];
+        atm[index][posy] = previous[1];
+        atm[index][posz] = previous[2];
+        atm[index][angle] = previous[3];
+        return 0;
+    }
     SetDynamicObjectPos(atm[index][object], x, y, z);
     SetDynamicObjectRot(atm[index][object], 0.0, 0.0, facingAngle);
-
-    Delete3DTextLabel(atm[index][label]);
-    if(!CreateAtmLabel(index)) {
-        printf("[ATM] Failed to recreate 3D label for ATM ID %d.", ATMid);
-    }
-
-    new query[256];
-    mysql_format(g_SQL, query, sizeof(query),
-        "UPDATE `atm` SET `posx` = %f, `posy` = %f, `posz` = %f, `angle` = %f WHERE `id` = %d",
-        x, y, z, facingAngle, ATMid);
-    mysql_tquery(g_SQL, query);
+    Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, atm[index][label], E_STREAMER_X, x);
+    Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, atm[index][label], E_STREAMER_Y, y);
+    Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, atm[index][label], E_STREAMER_Z, z);
     return 1;
 }
 
 public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
     if(HandleBussinesEdit(playerid, objectid, response, x, y, z)) return 1;
     if(!playereditatm[playerid][active] || playereditatm[playerid][objid] != objectid) return 1;
-
+    if(!IsPlayerAccountReady(playerid) || Admin[playerid] < 1 || !IsPlayerExterior(playerid)) return ResetAtmEdit(playerid);
     if(response == _:EDIT_RESPONSE_FINAL) {
-        SaveEditAtm(playereditatm[playerid][edit_atm_id], x, y, z, rz);
+        if(!SaveEditAtm(playereditatm[playerid][edit_atm_id], x, y, z, rz)) SendMessageError(playerid, "Posisi ATM gagal disimpan. Posisi lama tetap digunakan.");
+        else SendMessageInfo(playerid, "Berhasil mengubah dan menyimpan posisi ATM.");
         ResetAtmEdit(playerid);
     }
-    else if(response == _:EDIT_RESPONSE_CANCEL) {
-        for(new i = 0; i < atmcount; i++) {
-            if(atm[i][object] == objectid) {
-                SetDynamicObjectPos(objectid, atm[i][posx], atm[i][posy], atm[i][posz]);
-                SetDynamicObjectRot(objectid, 0.0, 0.0, atm[i][angle]);
-                break;
-            }
-        }
-        ResetAtmEdit(playerid);
-    }
+    else if(response == _:EDIT_RESPONSE_CANCEL) ResetAtmEdit(playerid);
     return 1;
 }
 
-Fungsi: EditTextAtm(theatmid) {
+Fungsi: EditTextAtm(index) {
     new msg[256], money[128];
-    FormatUang(atm[theatmid][cadangan], money);
-    format(msg, sizeof(msg), "[%d]\n{55ff62}[ATM]{ffffff}\nUse /atm or ALT to use atm\n{1ed030}$%s", atm[theatmid][id], money);
-    Update3DTextLabelText(atm[theatmid][label], -1, msg);
+    FormatUang(atm[index][cadangan], money);
+    format(msg, sizeof msg, "[%d]\n{55ff62}[ATM]{ffffff}\nUse /atm or ALT to use atm\n{1ed030}$%s", atm[index][id], money);
+    UpdateDynamic3DTextLabelText(atm[index][label], -1, msg);
     return 1;
+}
+
+stock bool:CanUseAtm(playerid) {
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return false;
+    new index = idatmplayeruse[playerid];
+    if(!AtmReady || index < 0 || index >= atmcount || !IsValidDynamicObject(atm[index][object]) || !IsPlayerExterior(playerid) || AtmEditor[index] != INVALID_PLAYER_ID || !IsPlayerInRangeOfPoint(playerid, 3.0, atm[index][posx], atm[index][posy], atm[index][posz])) {
+        SendMessageError(playerid, "ATM tidak tersedia atau kamu terlalu jauh dari ATM.");
+        return false;
+    }
+    return true;
+}
+
+stock GetNearbyAtm(playerid) {
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || !AtmReady || !IsPlayerExterior(playerid)) return -1;
+    for(new i = 0; i < atmcount; i++) {
+        if(IsValidDynamicObject(atm[i][object]) && AtmEditor[i] == INVALID_PLAYER_ID && IsPlayerInRangeOfPoint(playerid, 3.0, atm[i][posx], atm[i][posy], atm[i][posz])) return i;
+    }
+    return -1;
 }
 
 Fungsi: PlayerUseAtm(playerid) {
-    for(new i = 0; i < atmcount; i++) {
-        if(IsPlayerInRangeOfPoint(playerid, 3.0, atm[i][posx], atm[i][posy], atm[i][posz])) {
-            new judul[256], money[128];
-            FormatUang(Pemain[playerid][pBank], money);
-            idatmplayeruse[playerid] = i;
-            format(judul, sizeof judul, "%s - $%s", Pemain[playerid][pNama], money);
-            Dialog_Show(playerid, ATMDialog, DIALOG_STYLE_LIST, judul, "Deposit\nWithdraw\nTransfer", "Pilih", "Batal");
-            break;
-        }
-    }
+    idatmplayeruse[playerid] = GetNearbyAtm(playerid);
+    if(idatmplayeruse[playerid] == -1) return SendMessageError(playerid, "Kamu tidak berada di dekat ATM.");
+    new judul[64], money[32];
+    FormatUang(Pemain[playerid][pBank], money);
+    format(judul, sizeof judul, "%s - $%s", Pemain[playerid][pNama], money);
+    Dialog_Show(playerid, ATMDialog, DIALOG_STYLE_LIST, judul, "Deposit\nWithdraw\nTransfer", "Pilih", "Batal");
     return 1;
 }
 
-Dialog:ATMDialog(playerid, response, listitem, inputtext[]) {
+stock DestroyAllAtm() {
+    for(new playerid = 0; playerid < MAX_PLAYERS; playerid++) ResetAtmEdit(playerid);
+    for(new i = 0; i < atmcount; i++) ResetAtmSlot(i);
+    atmcount = 0;
+    AtmReady = false;
+    return 1;
+}
+
+Dialog:ATMDialog(playerid, response, listitem, const inputtext[]) {
     if(response == 0) {
         return 1;
     }
+    if(!CanUseAtm(playerid)) return 1;
 
     // deposit
     if(listitem == 0) {
@@ -231,10 +275,11 @@ Dialog:ATMDialog(playerid, response, listitem, inputtext[]) {
     return 1;
 }
 
-Dialog:DepositATM(playerid, response, listitem, inputtext[]) {
+Dialog:DepositATM(playerid, response, listitem, const inputtext[]) {
     if(response == 0) {
         return 1;
     }
+    if(!CanUseAtm(playerid)) return 1;
 
     new length = strlen(inputtext);
 
@@ -258,22 +303,27 @@ Dialog:DepositATM(playerid, response, listitem, inputtext[]) {
         }
     }
 
+    if(!ValidUnsignedInteger(inputtext)) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
     new jumlah = strval(inputtext);
 
     if(jumlah <= 0) return SendMessageError(playerid, "Nominal deposit harus lebih dari 0!");
 
-    if(jumlah > Pemain[playerid][pUang]) return SendMessageError(playerid, "Uangmu tidak cukup!");
+    if(jumlah > GetPlayerMoney(playerid)) return SendMessageError(playerid, "Uangmu tidak cukup!");
+    new index = idatmplayeruse[playerid];
+    if(Pemain[playerid][pBank] > 2147483647 - jumlah || atm[index][cadangan] > 2147483647 - jumlah) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
+    new previous = atm[index][cadangan];
+    atm[index][cadangan] += jumlah;
+    if(!SaveDataAtm(index)) {
+        atm[index][cadangan] = previous;
+        return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
+    }
 
     GivePlayerMoney(playerid, -jumlah);
     Pemain[playerid][pBank] += jumlah;
 
     SimpanDataPemain(playerid);
 
-    atm[idatmplayeruse[playerid]][cadangan] += jumlah;
-
     EditTextAtm(idatmplayeruse[playerid]);
-
-    SaveDataAtm(idatmplayeruse[playerid]);
 
     SendMessageInfo(playerid, "Sukses mendepositkan uang!");
 
@@ -281,10 +331,11 @@ Dialog:DepositATM(playerid, response, listitem, inputtext[]) {
 }
 
 
-Dialog:WithdrawATM(playerid, response, listitem, inputtext[]) {
+Dialog:WithdrawATM(playerid, response, listitem, const inputtext[]) {
     if(response == 0) {
         return 1;
     }
+    if(!CanUseAtm(playerid)) return 1;
 
     new length = strlen(inputtext);
 
@@ -302,6 +353,7 @@ Dialog:WithdrawATM(playerid, response, listitem, inputtext[]) {
         }
     }
 
+    if(!ValidUnsignedInteger(inputtext)) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
     new jumlah = strval(inputtext);
 
     if(jumlah <= 0) {
@@ -318,17 +370,20 @@ Dialog:WithdrawATM(playerid, response, listitem, inputtext[]) {
         SendMessageError(playerid, "Uang tunai di ATM tidak cukup!");
         return 1;
     }
+    if(GetPlayerMoney(playerid) > 2147483647 - jumlah) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
+    new index = idatmplayeruse[playerid], previous = atm[index][cadangan];
+    atm[index][cadangan] -= jumlah;
+    if(!SaveDataAtm(index)) {
+        atm[index][cadangan] = previous;
+        return SendMessageError(playerid, "Transaksi gagal disimpan. Silakan coba lagi.");
+    }
 
     Pemain[playerid][pBank] -= jumlah;
     GivePlayerMoney(playerid, jumlah);
 
     SimpanDataPemain(playerid);
 
-    atm[idatmplayeruse[playerid]][cadangan] -= jumlah;
-
     EditTextAtm(idatmplayeruse[playerid]);
-
-    SaveDataAtm(idatmplayeruse[playerid]);
 
     SendMessageInfo(playerid, "Sukses menarik uang dari bank!");
 
@@ -337,10 +392,11 @@ Dialog:WithdrawATM(playerid, response, listitem, inputtext[]) {
 
 new norek_atm_masukkan[MAX_PLAYERS];
 
-Dialog:Transfer_NO_ATM(playerid, response, listitem, inputtext[]) {
+Dialog:Transfer_NO_ATM(playerid, response, listitem, const inputtext[]) {
     if(response == 0) {
         return 1;
     }
+    if(!CanUseAtm(playerid)) return 1;
 
     new length = strlen(inputtext);
 
@@ -358,6 +414,7 @@ Dialog:Transfer_NO_ATM(playerid, response, listitem, inputtext[]) {
         }
     }
 
+    if(!ValidUnsignedInteger(inputtext) || strval(inputtext) <= 0) return SendMessageError(playerid, "Nomor rekening tidak valid!");
     norek_atm_masukkan[playerid] = strval(inputtext);
 
     if(norek_atm_masukkan[playerid] == Pemain[playerid][pNorek]) {
@@ -371,10 +428,11 @@ Dialog:Transfer_NO_ATM(playerid, response, listitem, inputtext[]) {
     return 1;
 }
 
-Dialog:Transfer_Jum_ATM(playerid, response, listitem, inputtext[]) {
+Dialog:Transfer_Jum_ATM(playerid, response, listitem, const inputtext[]) {
     if(response == 0) {
         return 1;
     }
+    if(!CanUseAtm(playerid)) return 1;
 
     new length = strlen(inputtext);
 
@@ -392,22 +450,31 @@ Dialog:Transfer_Jum_ATM(playerid, response, listitem, inputtext[]) {
         }
     }
 
+    if(!ValidUnsignedInteger(inputtext)) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
     new jumlah = strval(inputtext);
 
     if(jumlah > Pemain[playerid][pBank]) return SendMessageError(playerid, "Uang di rekening mu tidak cukup!");
     if(jumlah < 1) return SendMessageError(playerid, "Jumlah tidak boleh kurang dari 0!");
 
+    if(norek_atm_masukkan[playerid] <= 0 || norek_atm_masukkan[playerid] == Pemain[playerid][pNorek]) return SendMessageError(playerid, "Tidak bisa transfer ke rekening sendiri!");
+    new target = INVALID_PLAYER_ID;
     foreach(new i : Player) {
-        if(Pemain[i][pNorek] == norek_atm_masukkan[playerid]) {
-            Pemain[i][pBank] += jumlah;
-            Pemain[playerid][pBank] -= jumlah;
-            new msg[256], jumlahstring[128];
-            FormatUang(jumlah, jumlahstring);
-            format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} %s telah mentransfer $%s ke rekening mu.", Pemain[playerid][pNama], jumlahstring);
-            SendClientMessage(i, -1, msg);
-            break;
-        }
+        if(!IsPlayerAccountReady(i) || Pemain[i][pNorek] != norek_atm_masukkan[playerid]) continue;
+        if(target != INVALID_PLAYER_ID) return SendMessageError(playerid, "Nomor rekening terdaftar lebih dari sekali. Silakan hubungi admin.");
+        target = i;
     }
+    if(target == INVALID_PLAYER_ID) return SendMessageError(playerid, "Rekening tujuan tidak ditemukan atau pemiliknya sedang offline.");
+    if(Pemain[target][pBank] > 2147483647 - jumlah) return SendMessageError(playerid, "Saldo rekening tujuan melebihi batas!");
+    Pemain[target][pBank] += jumlah;
+    Pemain[playerid][pBank] -= jumlah;
+    SimpanDataPemain(playerid);
+    SimpanDataPemain(target);
+    new msg[256], jumlahstring[128];
+    FormatUang(jumlah, jumlahstring);
+    format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} %s telah mentransfer $%s ke rekening mu.", Pemain[playerid][pNama], jumlahstring);
+    SendClientMessage(target, -1, msg);
+    SendMessageInfo(playerid, "Sukses mentransfer uang!");
+    norek_atm_masukkan[playerid] = -1;
 
     return 1;
 }

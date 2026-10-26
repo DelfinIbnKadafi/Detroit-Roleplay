@@ -3,11 +3,11 @@ LoadCityHall() {
     new tmpobjid;
 
     // pickup pintu luar
-    CreatePickup(19130, 1, 1481.04, -1771.79, 18.78, -1);
+    CreatePickup(19130, 1, 1481.04, -1771.79, 18.78, 0);
     // pickup pintu dalam
-    CreatePickup(19130, 1, 920.27, -1475.06, 2754.33, -1);
-    CreatePickup(1239, 1, 918.81, -1463.48, 2754.33, -1);
-    Create3DTextLabel("/balkot", 0xffff00ff, 918.81, -1463.48, 2754.33 + 0.5, 4.0, -1);
+    CreatePickup(19130, 1, 920.27, -1475.06, 2754.33, 0);
+    CreatePickup(1239, 1, 918.81, -1463.48, 2754.33, 0);
+    Create3DTextLabel("/balkot", 0xffff00ff, 918.81, -1463.48, 2754.33 + 0.5, 4.0, 0);
 
     // Interior
     tmpobjid = CreateDynamicObject(19464, 908.9829, -1475.7220, 2755.7070, 0.0000, 0.0000, 0.0000);

@@ -1,4 +1,5 @@
 stock DelayedKick(playerid, const timer = 500) {
+    PlayerKicking[playerid] = true;
     SetTimerEx("KickPemain", timer, false, "ii", playerid, PlayerSession[playerid]);
     return 1;
 }
@@ -8,6 +9,28 @@ Fungsi: KickPemain(playerid, sessionid) {
 
 	Kick(playerid);
 	return 1;
+}
+
+stock bool:IsPlayerAccountReady(playerid) {
+    return playerid >= 0 && playerid < MAX_PLAYERS && IsPlayerConnected(playerid) && StatusLogin[playerid] && !PlayerKicking[playerid];
+}
+
+stock bool:ValidUnsignedInteger(const value[]) {
+    new length = strlen(value);
+    if(length < 1 || length > 10) return false;
+    for(new i = 0; i < length; i++) {
+        if(value[i] < '0' || value[i] > '9') return false;
+    }
+    if(length == 10 && strcmp(value, "2147483647") > 0) return false;
+    return true;
+}
+
+stock bool:ValidWorldPosition(Float:x, Float:y, Float:z) {
+    return x >= -20000.0 && x <= 20000.0 && y >= -20000.0 && y <= 20000.0 && z >= -1000.0 && z <= 20000.0;
+}
+
+stock bool:IsPlayerExterior(playerid) {
+    return GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0;
 }
 
 FormatUang(jumlah, output[]) {
@@ -20,7 +43,7 @@ FormatUang(jumlah, output[]) {
     for (new i = 0; i < len; i++) {
         output[pos++] = angka[i];
 
-        if (i < len - 1 && (len - i - 1) % 3 == 0) {
+        if (angka[i] != '-' && i < len - 1 && (len - i - 1) % 3 == 0) {
             output[pos++] = '.';
         }
     }

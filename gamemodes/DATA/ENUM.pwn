@@ -1,4 +1,19 @@
 
+enum LoginStep {
+  LOGIN_LOADING,
+  LOGIN_CODE,
+  LOGIN_CREATE_PASSWORD,
+  LOGIN_HASHING,
+  LOGIN_REGISTER,
+  LOGIN_SAVING,
+  LOGIN_PASSWORD,
+  LOGIN_VERIFYING,
+  LOGIN_LOAD_DATA,
+  LOGIN_FINISHED
+}
+
+new LoginStep:PlayerLoginStep[MAX_PLAYERS];
+
 // Data player
 enum DATA_PEMAIN 
 {
@@ -17,9 +32,9 @@ enum DATA_PEMAIN
   pNorek,
   pPhone,
   pPhoneStatus,
-  pNohp[16],
+  pNohp[17],
   pKtp,
-  pDateBirth[64],
+  pDateBirth[65],
   pJob,
   pHaus,
   pLapar
@@ -44,7 +59,7 @@ enum DataVeh {
   vModel,
   vColor1,
   vColor2,
-  vPlate[16],
+  vPlate[17],
   Float:vHealth,
   Float:vX,
   Float:vY,

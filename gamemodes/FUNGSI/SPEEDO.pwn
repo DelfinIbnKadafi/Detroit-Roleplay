@@ -1,4 +1,5 @@
 Fungsi:UpdateSpeedoMeter(playerid) {
+  if(!IsPlayerAccountReady(playerid)) return 1;
   if(!IsPlayerInAnyVehicle(playerid)) return ShowHideSpeedo(playerid, false);
   new vehicleid = GetPlayerVehicleID(playerid);
   if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid)) return ShowHideSpeedo(playerid, false);
@@ -20,6 +21,11 @@ Fungsi:UpdateSpeedoMeter(playerid) {
   return 1;
 }
 
+Fungsi:TimerUpdateSpeedo(playerid, sessionid) {
+  if(!IsPlayerAccountReady(playerid) || PlayerSession[playerid] != sessionid) return 1;
+  return UpdateSpeedoMeter(playerid);
+}
+
 stock ShowHideSpeedo(playerid, bool:showorhide) {
   KillTimer(TimerSpedo[playerid]);
   TimerSpedo[playerid] = 0;
@@ -30,7 +36,7 @@ stock ShowHideSpeedo(playerid, bool:showorhide) {
     UpdateSpeedoMeter(playerid);
     for(new i = 0; i < 4; i++) TextDrawShowForPlayer(playerid, BACKGROUND_SPEDO[i]);
     for(new i = 0; i < 3; i++) PlayerTextDrawShow(playerid, VEHSPEED[playerid][i]);
-    TimerSpedo[playerid] = SetTimerEx("UpdateSpeedoMeter", 250, true, "i", playerid);
+    TimerSpedo[playerid] = SetTimerEx("TimerUpdateSpeedo", 250, true, "ii", playerid, PlayerSession[playerid]);
   }
   else {
     for(new i = 0; i < 4; i++) TextDrawHideForPlayer(playerid, BACKGROUND_SPEDO[i]);
