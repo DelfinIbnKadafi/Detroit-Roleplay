@@ -77,3 +77,13 @@ CREATE TABLE `atm` (
   `cadangan` int DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `bussines` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ownerid` int(11) NOT NULL,
+  `posx` float NOT NULL,
+  `posy` float NOT NULL,
+  `posz` float NOT NULL,
+  `type` tinyint NOT NULL,
+  `stock` int DEFAULT 100
+)
