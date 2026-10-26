@@ -56,7 +56,7 @@ public OnGameModeInit()
 
     DisableInteriorEnterExits();
     ManualVehicleEngineAndLights();
-    TimerDeadVehicle = SetTimerEx("JagaKendaraanMati", 500, true, "");
+    TimerDeadVehicle = SetTimerEx("JagaKendaraanMati", VEHICLE_HEALTH_CHECK_INTERVAL, true, "");
     
     ShowNameTags(true);
     

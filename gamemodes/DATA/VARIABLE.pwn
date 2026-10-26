@@ -28,6 +28,7 @@ new bool:MesinVeh[MAX_VEHICLES_SERVER];
 new bool:VehicleIsSpawn[MAX_PLAYERS][MAX_KENDARAAN];
 new VehicleGeneration[MAX_VEHICLES_SERVER];
 new TimerRespawnVeh[MAX_PLAYERS][MAX_KENDARAAN];
+new VehicleDeathGeneration[MAX_PLAYERS][MAX_KENDARAAN];
 new TimerDeadVehicle;
 new TimerLoadAtm;
 

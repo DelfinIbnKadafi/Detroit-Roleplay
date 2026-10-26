@@ -26,6 +26,7 @@ stock MuatDataKendaraan(playerid) {
 Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
   if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || !IsPlayerAccountReady(playerid) || VehiclesLoaded[playerid]) return 1;
   new rows = cache_num_rows();
+  new bool:normalized[MAX_KENDARAAN];
   for(new i = 0; i < rows && i < MAX_KENDARAAN; i++) {
     new databaseid;
     cache_get_value_name_int(i, "vid", databaseid);
@@ -50,19 +51,26 @@ Fungsi:OnVehiclesLoaded(playerid, sessionid, const expectedName[]) {
     cache_get_value_name_int(i, "kunci", PVeh[playerid][i][vKunci]);
 
     cache_get_value_name_int(i, "death", PVeh[playerid][i][vDeath]);
-    if(PVeh[playerid][i][vDeath] != 0) {
+    if(PVeh[playerid][i][vDeath] != 0 || !(PVeh[playerid][i][vHealth] > VEHICLE_CRITICAL_HEALTH)) {
+      normalized[i] = PVeh[playerid][i][vDeath] == 0;
       PVeh[playerid][i][vDeath] = 1;
       PVeh[playerid][i][vHealth] = 0.0;
+      SiapkanVisualKendaraanMati(playerid, i);
     }
+    else if(PVeh[playerid][i][vHealth] > 1000.0) PVeh[playerid][i][vHealth] = 1000.0;
   }
   JumVeh[playerid] = rows < MAX_KENDARAAN ? rows : MAX_KENDARAAN;
   VehiclesLoaded[playerid] = true;
+  for(new i = 0; i < JumVeh[playerid]; i++) {
+    if(normalized[i]) SaveSatuKendaraan(playerid, i, false);
+  }
   return 1;
 }
 
 stock SaveSatuKendaraan(playerid, slot, bool:ambilposisi = true) {
   if(slot < 0 || slot >= JumVeh[playerid]) return 0;
   new vehicleid = PlayerVehID[playerid][slot];
+  if(ambilposisi && PVeh[playerid][slot][vDeath] == 0 && CekKondisiKendaraan(vehicleid)) return 1;
   if(PVeh[playerid][slot][vDeath] != 0) PVeh[playerid][slot][vHealth] = 0.0;
   if(ambilposisi && IsValidVehicle(vehicleid) && IsPlayerOwnedVehicle(vehicleid) && VehOwner[vehicleid] == playerid && VehSlot[vehicleid] == slot) {
     if(PVeh[playerid][slot][vDeath] == 0) GetVehicleHealth(vehicleid, PVeh[playerid][slot][vHealth]);
@@ -84,6 +92,7 @@ stock HancurkanKendaraanPlayer(playerid) {
   for(new i = 0; i < JumVeh[playerid]; i++) {
     KillTimer(TimerRespawnVeh[playerid][i]);
     TimerRespawnVeh[playerid][i] = 0;
+    VehicleDeathGeneration[playerid][i]++;
     new vehicleid = PlayerVehID[playerid][i];
     if(!IsValidVehicle(vehicleid) || VehOwner[vehicleid] != playerid || VehSlot[vehicleid] != i) {
       PlayerVehID[playerid][i] = INVALID_VEHICLE_ID;
@@ -136,11 +145,30 @@ stock GetVehicleModelName(modelid, name[], len) {
 
 stock SetVehicleEngineAndLock(vehicleid, bool:engine, bool:locked) {
   if(!IsValidVehicle(vehicleid)) return 0;
+  if(engine && CekKondisiKendaraan(vehicleid)) return 0;
   if(IsDeadPlayerVehicle(vehicleid)) engine = false;
   new currentEngine, lights, alarm, doors, bonnet, boot, objective;
   GetVehicleParamsEx(vehicleid, currentEngine, lights, alarm, doors, bonnet, boot, objective);
-  SetVehicleParamsEx(vehicleid, engine, lights, alarm, locked, bonnet, boot, objective);
+  if(currentEngine != _:engine || doors != _:locked) SetVehicleParamsEx(vehicleid, engine, lights, alarm, locked, bonnet, boot, objective);
   MesinVeh[vehicleid] = engine;
+  return 1;
+}
+
+stock SiapkanVisualKendaraanMati(playerid, slot) {
+  // Bodi tetap mengikuti kerusakan terakhir, kap yang masih utuh dibuat rusak
+  new hood = _:PVeh[playerid][slot][vDoors] & 0xFF;
+  if(hood < 2) PVeh[playerid][slot][vDoors] = VEHICLE_DOOR_STATUS:(_:PVeh[playerid][slot][vDoors] | 2);
+  return 1;
+}
+
+stock TerapkanKerusakanKendaraanMati(vehicleid) {
+  if(!IsValidVehicle(vehicleid) || !IsDeadPlayerVehicle(vehicleid)) return 0;
+  new owner = VehOwner[vehicleid], slot = VehSlot[vehicleid];
+  new VEHICLE_PANEL_STATUS:panels, VEHICLE_DOOR_STATUS:doors, VEHICLE_LIGHT_STATUS:lights, VEHICLE_TYRE_STATUS:tyres;
+  if(!GetVehicleDamageStatus(vehicleid, panels, doors, lights, tyres)) return 0;
+  if(panels != PVeh[owner][slot][vPanels] || doors != PVeh[owner][slot][vDoors] || lights != PVeh[owner][slot][vLights] || tyres != PVeh[owner][slot][vTyres]) {
+    UpdateVehicleDamageStatus(vehicleid, PVeh[owner][slot][vPanels], PVeh[owner][slot][vDoors], PVeh[owner][slot][vLights], PVeh[owner][slot][vTyres]);
+  }
   return 1;
 }
 
@@ -152,11 +180,20 @@ stock TerapkanKendaraanMati(vehicleid) {
   GetVehicleHealth(vehicleid, health);
   if(health != DEAD_VEHICLE_HEALTH) SetVehicleHealth(vehicleid, DEAD_VEHICLE_HEALTH);
   SetVehicleEngineAndLock(vehicleid, false, PVeh[owner][slot][vKunci] != 0);
+  TerapkanKerusakanKendaraanMati(vehicleid);
   return 1;
 }
 
-stock SpawnKendaraanPlayer(playerid, slot, world = 0, interior = 0) {
+stock SpawnKendaraanPlayer(playerid, slot, world = -1, interior = -1) {
+  if(playerid < 0 || playerid >= MAX_PLAYERS) return INVALID_VEHICLE_ID;
   if(slot < 0 || slot >= JumVeh[playerid] || TimerRespawnVeh[playerid][slot] != 0) return INVALID_VEHICLE_ID;
+  if(world < 0) world = PVeh[playerid][slot][vWorld];
+  if(interior < 0) interior = PVeh[playerid][slot][vInterior];
+  if(PVeh[playerid][slot][vDeath] == 0 && !(PVeh[playerid][slot][vHealth] > VEHICLE_CRITICAL_HEALTH)) {
+    PVeh[playerid][slot][vDeath] = 1;
+    PVeh[playerid][slot][vHealth] = 0.0;
+    SaveSatuKendaraan(playerid, slot, false);
+  }
   new vehicleid = PlayerVehID[playerid][slot];
   if(IsValidVehicle(vehicleid) && IsPlayerOwnedVehicle(vehicleid) && VehOwner[vehicleid] == playerid && VehSlot[vehicleid] == slot) return vehicleid;
   PlayerVehID[playerid][slot] = INVALID_VEHICLE_ID;
@@ -169,10 +206,16 @@ stock SpawnKendaraanPlayer(playerid, slot, world = 0, interior = 0) {
   VehOwner[vehicleid] = playerid;
   VehSlot[vehicleid] = slot;
   VehicleGeneration[vehicleid]++;
+  PVeh[playerid][slot][vWorld] = world;
+  PVeh[playerid][slot][vInterior] = interior;
   SetVehicleVirtualWorld(vehicleid, world);
   LinkVehicleToInterior(vehicleid, interior);
+  if(strlen(PVeh[playerid][slot][vPlate])) SetVehicleNumberPlate(vehicleid, PVeh[playerid][slot][vPlate]);
   SetVehicleEngineAndLock(vehicleid, false, PVeh[playerid][slot][vKunci] != 0);
-  if(IsDeadPlayerVehicle(vehicleid)) TerapkanKendaraanMati(vehicleid);
+  if(IsDeadPlayerVehicle(vehicleid)) {
+    SiapkanVisualKendaraanMati(playerid, slot);
+    TerapkanKendaraanMati(vehicleid);
+  }
   else SetVehicleHealth(vehicleid, PVeh[playerid][slot][vHealth]);
   return vehicleid;
 }
@@ -190,6 +233,7 @@ stock ToggleMesinKendaraan(playerid) {
   new vehicleid = GetPlayerVehicleID(playerid);
   if(!IsPlayerOwnedVehicle(vehicleid)) return SendMessageError(playerid, "Mesin manual hanya tersedia untuk kendaraan milik pemain.");
   if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return 1;
+  if(CekKondisiKendaraan(vehicleid)) return 1;
   if(IsDeadPlayerVehicle(vehicleid)) {
     BatalkanTimerMesin(playerid);
     TerapkanKendaraanMati(vehicleid);
@@ -247,6 +291,7 @@ stock DestroyAdminVehicles(playerid) {
 
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
   #pragma unused ispassenger
+  if(CekKondisiKendaraan(vehicleid)) return 1;
   if(IsPlayerOwnedVehicle(vehicleid)) {
     new owner = VehOwner[vehicleid];
     new slot = VehSlot[vehicleid];
@@ -270,6 +315,7 @@ public OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstat
   }
   if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) {
     new vehicleid = GetPlayerVehicleID(playerid);
+    if(CekKondisiKendaraan(vehicleid)) return 1;
     if(IsDeadPlayerVehicle(vehicleid)) TerapkanKendaraanMati(vehicleid);
     ShowHideSpeedo(playerid, IsPlayerOwnedVehicle(vehicleid));
   }
@@ -293,6 +339,7 @@ Fungsi:HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati, sessionid, gener
   if(vehicleid <= 0 || vehicleid >= MAX_VEHICLES_SERVER || VehicleGeneration[vehicleid] != generation) return 1;
   BatalkanTimerMesin(playerid);
   if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid) || IsAdminVehicle(vehicleid)) return 1;
+  if(CekKondisiKendaraan(vehicleid)) return 1;
   if(IsDeadPlayerVehicle(vehicleid)) {
     TerapkanKendaraanMati(vehicleid);
     return 1;
@@ -338,27 +385,40 @@ Fungsi: BerikanKendaraan(playerid, model, color) {
   return 1;
 }
 
-// Recreate after the old death callback finishes, even if its vehicle ID is reused.
-public OnVehicleDeath(vehicleid, killerid) {
-  #pragma unused killerid
-  if(IsValidVehicle(vehicleid) && IsAdminVehicle(vehicleid)) {
-    RemoveAdminVehicle(vehicleid);
-    DestroyVehicle(vehicleid);
-    return 1;
-  }
-  if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid)) return 1;
+// Recreate after the old vehicle has been removed, before it can keep burning.
+stock TandaiKendaraanMati(vehicleid, bool:force = false) {
+  if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid)) return 0;
   new owner = VehOwner[vehicleid], slot = VehSlot[vehicleid];
-  new world = GetVehicleVirtualWorld(vehicleid), interior = GetVehicleInterior(vehicleid);
-  GetVehiclePos(vehicleid, PVeh[owner][slot][vX], PVeh[owner][slot][vY], PVeh[owner][slot][vZ]);
-  GetVehicleZAngle(vehicleid, PVeh[owner][slot][vAngel]);
+  new bool:wasDead = PVeh[owner][slot][vDeath] != 0;
+  if(wasDead && !force) return 0;
+
+  // Tandai lebih dulu agar callback lain tidak bisa menghidupkan kendaraan ini
   PVeh[owner][slot][vDeath] = 1;
   PVeh[owner][slot][vHealth] = 0.0;
+  GetVehiclePos(vehicleid, PVeh[owner][slot][vX], PVeh[owner][slot][vY], PVeh[owner][slot][vZ]);
+  GetVehicleZAngle(vehicleid, PVeh[owner][slot][vAngel]);
+  PVeh[owner][slot][vWorld] = GetVehicleVirtualWorld(vehicleid);
+  PVeh[owner][slot][vInterior] = GetVehicleInterior(vehicleid);
+  GetVehicleDamageStatus(vehicleid, PVeh[owner][slot][vPanels], PVeh[owner][slot][vDoors], PVeh[owner][slot][vLights], PVeh[owner][slot][vTyres]);
+  SiapkanVisualKendaraanMati(owner, slot);
+  TerapkanKendaraanMati(vehicleid);
   SaveSatuKendaraan(owner, slot, false);
+
   foreach(new playerid : Player) {
     if(GetPlayerVehicleID(playerid) != vehicleid) continue;
     BatalkanTimerMesin(playerid);
     ShowHideSpeedo(playerid, false);
+    new seat = GetPlayerVehicleSeat(playerid);
+    if(seat < 0) seat = 0;
+    new Float:side = (seat % 2 == 0) ? -2.5 : 2.5;
+    new Float:back = seat >= 2 ? -1.5 : 0.0;
+    new Float:angle = PVeh[owner][slot][vAngel];
+    RemovePlayerFromVehicle(playerid, true);
+    // Beri ruang agar player tidak terjebak di bodi kendaraan pengganti
+    SetPlayerPos(playerid, PVeh[owner][slot][vX] + side * floatcos(angle, degrees) - back * floatsin(angle, degrees), PVeh[owner][slot][vY] + side * floatsin(angle, degrees) + back * floatcos(angle, degrees), PVeh[owner][slot][vZ] + 0.5);
+    if(!wasDead) SendMessageError(playerid, "Mesin kendaraan mengalami kerusakan total. Kendaraan tidak bisa dihidupkan kembali!");
   }
+
   VehOwner[vehicleid] = -1;
   VehSlot[vehicleid] = -1;
   MesinVeh[vehicleid] = false;
@@ -367,13 +427,45 @@ public OnVehicleDeath(vehicleid, killerid) {
   VehicleIsSpawn[owner][slot] = false;
   DestroyVehicle(vehicleid);
   KillTimer(TimerRespawnVeh[owner][slot]);
-  TimerRespawnVeh[owner][slot] = SetTimerEx("RespawnKendaraanMati", 250, false, "iiiiii", owner, slot, PlayerSession[owner], PVeh[owner][slot][vId], world, interior);
+  VehicleDeathGeneration[owner][slot]++;
+  TimerRespawnVeh[owner][slot] = SetTimerEx("RespawnKendaraanMati", DEAD_VEHICLE_RESPAWN_DELAY, false, "iiiiiii", owner, slot, PlayerSession[owner], PVeh[owner][slot][vId], PVeh[owner][slot][vWorld], PVeh[owner][slot][vInterior], VehicleDeathGeneration[owner][slot]);
   return 1;
 }
 
-Fungsi:RespawnKendaraanMati(playerid, slot, sessionid, databaseid, world, interior) {
-  if(!IsPlayerConnected(playerid) || !StatusLogin[playerid] || PlayerSession[playerid] != sessionid) return 1;
+stock CekKondisiKendaraan(vehicleid) {
+  if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid)) return 0;
+  new Float:health;
+  if(!GetVehicleHealth(vehicleid, health)) return 0;
+  if(IsDeadPlayerVehicle(vehicleid)) {
+    new bool:changed = health != DEAD_VEHICLE_HEALTH;
+    TerapkanKendaraanMati(vehicleid);
+    return _:changed;
+  }
+  if(!(health > VEHICLE_CRITICAL_HEALTH)) return TandaiKendaraanMati(vehicleid);
+  if(health > 1000.0) {
+    health = 1000.0;
+    SetVehicleHealth(vehicleid, health);
+  }
+  PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vHealth] = health;
+  return 0;
+}
+
+public OnVehicleDeath(vehicleid, killerid) {
+  #pragma unused killerid
+  if(IsValidVehicle(vehicleid) && IsAdminVehicle(vehicleid)) {
+    RemoveAdminVehicle(vehicleid);
+    DestroyVehicle(vehicleid);
+    return 1;
+  }
+  // Tetap tangani ledakan instan, tenggelam, atau laporan death dari client
+  TandaiKendaraanMati(vehicleid, true);
+  return 1;
+}
+
+Fungsi:RespawnKendaraanMati(playerid, slot, sessionid, databaseid, world, interior, generation) {
+  if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid) || !StatusLogin[playerid] || PlayerSession[playerid] != sessionid) return 1;
   if(slot < 0 || slot >= JumVeh[playerid] || PVeh[playerid][slot][vId] != databaseid || PVeh[playerid][slot][vDeath] == 0) return 1;
+  if(TimerRespawnVeh[playerid][slot] == 0 || VehicleDeathGeneration[playerid][slot] != generation) return 1;
   TimerRespawnVeh[playerid][slot] = 0;
   if(SpawnKendaraanPlayer(playerid, slot, world, interior) == INVALID_VEHICLE_ID) SendMessageError(playerid, "Kendaraan mati gagal dibuat. Gunakan /myveh untuk mencoba spawn kembali.");
   return 1;
@@ -385,17 +477,32 @@ public OnVehicleSpawn(vehicleid) {
   if(IsDeadPlayerVehicle(vehicleid)) {
     SetVehiclePos(vehicleid, PVeh[owner][slot][vX], PVeh[owner][slot][vY], PVeh[owner][slot][vZ]);
     SetVehicleZAngle(vehicleid, PVeh[owner][slot][vAngel]);
+    SetVehicleVirtualWorld(vehicleid, PVeh[owner][slot][vWorld]);
+    LinkVehicleToInterior(vehicleid, PVeh[owner][slot][vInterior]);
     TerapkanKendaraanMati(vehicleid);
   }
-  else SetVehicleEngineAndLock(vehicleid, false, PVeh[owner][slot][vKunci] != 0);
+  else {
+    if(!(PVeh[owner][slot][vHealth] > VEHICLE_CRITICAL_HEALTH)) {
+      TandaiKendaraanMati(vehicleid);
+      return 1;
+    }
+    SetVehicleHealth(vehicleid, PVeh[owner][slot][vHealth]);
+    if(CekKondisiKendaraan(vehicleid)) return 1;
+    SetVehicleEngineAndLock(vehicleid, false, PVeh[owner][slot][vKunci] != 0);
+  }
+  return 1;
+}
+
+public OnVehicleDamageStatusUpdate(vehicleid, playerid) {
+  #pragma unused playerid
+  CekKondisiKendaraan(vehicleid);
   return 1;
 }
 
 Fungsi:JagaKendaraanMati() {
   foreach(new playerid : Player) {
     for(new slot = 0; slot < JumVeh[playerid]; slot++) {
-      if(PVeh[playerid][slot][vDeath] == 0) continue;
-      TerapkanKendaraanMati(PlayerVehID[playerid][slot]);
+      CekKondisiKendaraan(PlayerVehID[playerid][slot]);
     }
   }
   return 1;
@@ -403,19 +510,40 @@ Fungsi:JagaKendaraanMati() {
 
 // Keep future health/repair calls in this gamemode from reviving dead vehicles.
 stock bool:SetVehicleHealthProtected(vehicleid, Float:health) {
+  if(!IsValidVehicle(vehicleid)) return false;
+  if(IsPlayerOwnedVehicle(vehicleid) && CekKondisiKendaraan(vehicleid)) return false;
   if(IsDeadPlayerVehicle(vehicleid)) {
     TerapkanKendaraanMati(vehicleid);
     return false;
+  }
+  if(IsPlayerOwnedVehicle(vehicleid)) {
+    if(!(health >= 0.0 && health <= 1000.0)) return false;
+    if(health <= VEHICLE_CRITICAL_HEALTH) {
+      TandaiKendaraanMati(vehicleid);
+      return true;
+    }
+    PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vHealth] = health;
   }
   return SetVehicleHealth(vehicleid, health);
 }
 
 stock bool:RepairVehicleProtected(vehicleid) {
+  if(!IsValidVehicle(vehicleid)) return false;
+  if(IsPlayerOwnedVehicle(vehicleid) && CekKondisiKendaraan(vehicleid)) return false;
   if(IsDeadPlayerVehicle(vehicleid)) {
     TerapkanKendaraanMati(vehicleid);
     return false;
   }
-  return RepairVehicle(vehicleid);
+  new bool:repaired = RepairVehicle(vehicleid);
+  if(repaired && IsPlayerOwnedVehicle(vehicleid)) {
+    new owner = VehOwner[vehicleid], slot = VehSlot[vehicleid];
+    PVeh[owner][slot][vHealth] = 1000.0;
+    PVeh[owner][slot][vPanels] = VEHICLE_PANEL_STATUS:0;
+    PVeh[owner][slot][vDoors] = VEHICLE_DOOR_STATUS:0;
+    PVeh[owner][slot][vLights] = VEHICLE_LIGHT_STATUS:0;
+    PVeh[owner][slot][vTyres] = VEHICLE_TYRE_STATUS:0;
+  }
+  return repaired;
 }
 
 #define SetVehicleHealth SetVehicleHealthProtected

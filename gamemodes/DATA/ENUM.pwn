@@ -67,7 +67,14 @@ enum DataVeh {
   Float:vAngel,
   vFuel,
   vKunci,
-  vDeath
+  vDeath,
+  // Damage dan dimensi disimpan selama kendaraan masih dimuat oleh player
+  VEHICLE_PANEL_STATUS:vPanels,
+  VEHICLE_DOOR_STATUS:vDoors,
+  VEHICLE_LIGHT_STATUS:vLights,
+  VEHICLE_TYRE_STATUS:vTyres,
+  vWorld,
+  vInterior
 };
 
 new PVeh[MAX_PLAYERS][MAX_KENDARAAN][DataVeh];
