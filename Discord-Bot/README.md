@@ -86,6 +86,9 @@ Contoh:
     DB_PASSWORD=
     DB_NAME=dtrp
 
+    SAMP_HOST=127.0.0.1
+    SAMP_PORT=7777
+
 `TOKEN` dapat diambil pada halaman Bot di Developer Portal. `CLIENT_ID` adalah
 Application ID pada halaman General Information. Untuk mengambil `GUILD_ID`, aktifkan
 Developer Mode pada pengaturan Discord, lalu klik kanan server dan pilih Copy Server ID.

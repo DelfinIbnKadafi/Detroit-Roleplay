@@ -1,11 +1,12 @@
 console.log("Starting BOT...");
 
 require('dotenv').config({ path: require('node:path').join(__dirname, '../.env') });
-const { Client, Collection, GatewayIntentBits, MessageFlags } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, MessageFlags, ActivityType } = require("discord.js");
 const mysql = require("./mysql");
 const loadCommand = require('./handler/loadCommand');
 const loadButton = require('./handler/loadButton');
 const loadModal = require('./handler/loadModal');
+const { querySAMP } = require("./query");
 
 const client = new Client({
     intents: [
@@ -18,8 +19,31 @@ client.commands = new Collection();
 client.buttons = new Collection();
 client.modals = new Collection();
 
+let presenceInterval = null;
+
+async function updateServerPresence() {
+    const host = process.env.SAMP_HOST || "127.0.0.1";
+    const port = parseInt(process.env.SAMP_PORT, 10) || 7777;
+
+    try {
+        const server = await querySAMP(host, port);
+        const activityText = server.online
+            ? `DETROIT ROLEPLAY | ${server.players}/${server.maxPlayers} Online!`
+            : `DETROIT ROLEPLAY | Server Offline`;
+
+        if (client.user && typeof client.user.setActivity === "function") {
+            client.user.setActivity(activityText, { type: ActivityType.Playing });
+        }
+    } catch (err) {
+        // Abaikan error saat refresh presence agar background loop tetap berjalan
+    }
+}
+
 client.once("clientReady", () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    updateServerPresence();
+    if (presenceInterval) clearInterval(presenceInterval);
+    presenceInterval = setInterval(updateServerPresence, 30000);
 });
 
 client.on("error", (error) => {
@@ -42,6 +66,10 @@ client.on("interactionCreate", async (interaction) => {
             await modal.run(client, interaction);
         }
     } catch (error) {
+        if (error.code === 10062) {
+            console.warn("[DTRP-BOT] Interaksi kedaluwarsa (> 3 detik) atau tidak valid di Discord API (Unknown Interaction).");
+            return;
+        }
         console.error("Interaction error:", error);
         try {
             if (interaction.deferred && !interaction.replied) {
@@ -83,6 +111,7 @@ async function startBot() {
 startBot().catch(async (error) => {
     console.error("[DTRP-BOT] Gagal menjalankan bot:", error);
     process.exitCode = 1;
+    if (presenceInterval) clearInterval(presenceInterval);
     client.destroy();
     try {
         await mysql.end();
