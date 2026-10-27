@@ -234,3 +234,79 @@ test("Deploy menolak ID tidak valid dan melaporkan exit code saat API gagal", as
         assert.equal(route, fail ? "/applications/123456789012345678/guilds/223456789012345678/commands" : "/applications/123456789012345678/commands");
     }
 });
+
+test("querySAMP mengembalikan data server online dan offline", async () => {
+    const fakeGameDig = {
+        async query({ type }) {
+            if (type === "gtasao") {
+                return {
+                    name: "Detroit Roleplay",
+                    game: "open.mp",
+                    numplayers: 2,
+                    maxplayers: 50,
+                    ping: 25,
+                    players: [{ name: "Admin" }, { name: "Player" }],
+                    raw: { gamemode: "Roleplay", rules: { mapname: "Detroit" } }
+                };
+            }
+            throw new Error("Query failed");
+        }
+    };
+    const queryScript = loadScript("query.js", { gamedig: { GameDig: fakeGameDig } }).exports;
+    const resultOnline = await queryScript.querySAMP("127.0.0.1", 7777);
+    assert.equal(resultOnline.online, true);
+    assert.equal(resultOnline.players, 2);
+    assert.equal(resultOnline.maxPlayers, 50);
+    assert.equal(resultOnline.gamemode, "Roleplay");
+    assert.equal(resultOnline.map, "Detroit");
+
+    const failingGameDig = {
+        async query() {
+            throw new Error("Connection timed out");
+        }
+    };
+    const queryFailScript = loadScript("query.js", { gamedig: { GameDig: failingGameDig } }).exports;
+    const resultOffline = await queryFailScript.querySAMP("127.0.0.1", 7777);
+    assert.equal(resultOffline.online, false);
+    assert.equal(resultOffline.players, 0);
+    assert.equal(resultOffline.maxPlayers, 0);
+});
+
+test("Command status mengembalikan embed online dan offline", async () => {
+    const onlineQuery = async () => ({
+        online: true,
+        name: "Detroit Roleplay Project",
+        gamemode: "DTRP v1.0",
+        map: "San Andreas",
+        players: 5,
+        maxPlayers: 100,
+        ping: 30,
+        playerList: ["Player_One", "Player_Two"]
+    });
+    const statusOnline = loadScript("commands/status.js", { "../query": { querySAMP: onlineQuery } }).exports;
+    const interaction1 = makeInteraction();
+    await statusOnline.run({}, interaction1);
+    assert.equal(interaction1.calls[0].method, "deferReply");
+    assert.equal(interaction1.calls[1].method, "editReply");
+    const embed1 = interaction1.calls[1].options.embeds[0].toJSON();
+    assert.equal(embed1.title, "🎮 Detroit Roleplay Project");
+    assert.equal(embed1.color, 0x57F287);
+
+    const offlineQuery = async () => ({
+        online: false,
+        name: "Unknown",
+        gamemode: "Unknown",
+        map: "Unknown",
+        players: 0,
+        maxPlayers: 0,
+        ping: 0,
+        playerList: []
+    });
+    const statusOffline = loadScript("commands/status.js", { "../query": { querySAMP: offlineQuery } }).exports;
+    const interaction2 = makeInteraction();
+    await statusOffline.run({}, interaction2);
+    const embed2 = interaction2.calls[1].options.embeds[0].toJSON();
+    assert.equal(embed2.title, "🔴 Server Offline");
+    assert.equal(embed2.color, 0xED4245);
+});
+
