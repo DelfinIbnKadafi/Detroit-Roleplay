@@ -7,12 +7,10 @@ module.exports = {
         .setDescription("Menampilkan status server SA:MP / open.mp Detroit Roleplay"),
 
     async run(client, interaction) {
-        await interaction.deferReply();
-
         const host = process.env.SAMP_HOST || "127.0.0.1";
         const port = parseInt(process.env.SAMP_PORT, 10) || 7777;
 
-        const server = await querySAMP(host, port);
+        const server = (client && client.serverStatus) ? client.serverStatus : await querySAMP(host, port);
 
         if (!server.online) {
             const offlineEmbed = new EmbedBuilder()
@@ -26,7 +24,7 @@ module.exports = {
                 .setTimestamp()
                 .setFooter({ text: "Detroit Roleplay" });
 
-            return interaction.editReply({ embeds: [offlineEmbed] });
+            return interaction.reply({ embeds: [offlineEmbed] });
         }
 
         const onlineEmbed = new EmbedBuilder()
@@ -53,6 +51,6 @@ module.exports = {
             });
         }
 
-        return interaction.editReply({ embeds: [onlineEmbed] });
+        return interaction.reply({ embeds: [onlineEmbed] });
     }
 };
