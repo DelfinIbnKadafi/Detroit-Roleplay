@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit", "keluar", " ");
   
   return 1;
 }
@@ -369,6 +369,25 @@ CMD:revive(playerid, params[]) {
   if(!RevivePlayer(targetid, x, y, z)) return SendMessageError(playerid, "Player gagal direvive!");
 
   SendMessageInfo(targetid, "Admin telah merevive kamu!");
+
+  return 1;
+}
+
+CMD:setskin(playerid, params[]) {
+  if(Admin[playerid] < 1) {
+    SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+    return 1;
+  }
+
+  new targetid, skinid;
+  if(sscanf(params, "ii", targetid, skinid)) return SendClientMessage(playerid, -1, "Gunakan: /setskin <targetid> <skinid>");
+
+  if(!IsPlayerConnected(targetid) || !StatusLogin[targetid]) return SendMessageError(playerid, "Id sedang tidak online!");
+
+  if(skinid < 0 || skinid > 255) return SendMessageError(playerid, "Skinid tidak valid!");
+
+  SetPlayerSkin(targetid, skinid);
+  SimpanDataPemain(targetid);
 
   return 1;
 }
