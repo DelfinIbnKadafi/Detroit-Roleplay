@@ -235,6 +235,58 @@ test("Deploy menolak ID tidak valid dan melaporkan exit code saat API gagal", as
     }
 });
 
+test("Undeploy menghapus command global dan command pada guild yang dikonfigurasi", async () => {
+    assert.throws(() => loadScript("undeployCommands.js"), /exit:1/);
+    assert.throws(() => loadScript("undeployCommands.js", {}, { TOKEN: "test-token", CLIENT_ID: "invalid" }), /exit:1/);
+    assert.throws(() => loadScript("undeployCommands.js", {}, { TOKEN: "test-token", CLIENT_ID: "123456789012345678", GUILD_ID: "invalid" }), /exit:1/);
+
+    for (const guildId of [undefined, "223456789012345678"]) {
+        const requests = [];
+        class FakeREST {
+            setToken(token) { assert.equal(token, "test-token"); return this; }
+            async put(route, options) {
+                requests.push({ route, body: options.body });
+                return [];
+            }
+        }
+
+        const env = { TOKEN: "test-token", CLIENT_ID: "123456789012345678" };
+        if (guildId) env.GUILD_ID = guildId;
+        const script = loadScript("undeployCommands.js", { "discord.js": { ...discord, REST: FakeREST } }, env);
+        await new Promise(setImmediate);
+        assert.equal(script.context.process.exitCode, 0);
+        assert.deepEqual(requests.map(request => request.route), guildId
+            ? [
+                "/applications/123456789012345678/commands",
+                `/applications/123456789012345678/guilds/${guildId}/commands`
+            ]
+            : ["/applications/123456789012345678/commands"]);
+        assert.ok(requests.every(request => request.body.length === 0));
+    }
+});
+
+test("Undeploy melaporkan kegagalan API tanpa melewatkan scope berikutnya", async () => {
+    const requests = [];
+    class FakeREST {
+        setToken() { return this; }
+        async put(route, options) {
+            requests.push({ route, body: options.body });
+            if (requests.length === 1) throw new Error("API unavailable");
+            return [];
+        }
+    }
+
+    const script = loadScript("undeployCommands.js", { "discord.js": { ...discord, REST: FakeREST } }, {
+        TOKEN: "test-token",
+        CLIENT_ID: "123456789012345678",
+        GUILD_ID: "223456789012345678"
+    });
+    await new Promise(setImmediate);
+    assert.equal(script.context.process.exitCode, 1);
+    assert.equal(requests.length, 2);
+    assert.ok(script.messages.some(message => String(message[0]).includes("Gagal menghapus slash command Global")));
+});
+
 test("querySAMP mengembalikan data server online dan offline", async () => {
     const fakeGameDig = {
         async query({ type }) {
@@ -309,4 +361,3 @@ test("Command status mengembalikan embed online dan offline", async () => {
     assert.equal(embed2.title, "🔴 Server Offline");
     assert.equal(embed2.color, 0xED4245);
 });
-

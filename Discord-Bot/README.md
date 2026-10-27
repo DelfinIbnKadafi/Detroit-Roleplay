@@ -122,6 +122,15 @@ Setelah file `.env` selesai diisi, jalankan:
 Jalankan kembali perintah ini jika nama, deskripsi, atau pilihan slash command diubah.
 Perintah ini tidak menjalankan bot dan tidak memerlukan koneksi database.
 
+Untuk menghapus slash command yang sudah terdaftar, jalankan:
+
+    npm run undeploy
+
+Perintah ini menghapus command global dan, jika `GUILD_ID` diatur, command pada
+server tersebut. Command khusus server lain yang pernah didaftarkan harus dihapus
+dengan mengatur `GUILD_ID` ke ID server terkait lalu menjalankan perintah ini lagi.
+Penghapusan command global dapat membutuhkan waktu untuk diterapkan di semua server.
+
 2. Jalankan Bot
 
     npm start

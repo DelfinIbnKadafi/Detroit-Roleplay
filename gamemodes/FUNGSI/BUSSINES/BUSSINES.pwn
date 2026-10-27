@@ -124,7 +124,7 @@ stock DestroyAllBussines() {
 Fungsi:BuyBusiness(playerid) {
     for (new i = 0; i < BussinesCount; i++) {
         if(IsPlayerInRangeOfPoint(playerid, 1.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) {
-            printf("Player mencoba membeli business");
+            printf("%s mencoba membeli business", Pemain[playerid][pNama]);
             break;
         }
         continue;

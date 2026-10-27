@@ -79,7 +79,7 @@ INSERT INTO `atm` (`id`, `posx`, `posy`, `posz`, `angle`, `cadangan`) VALUES
 CREATE TABLE `bussines` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
-  `ownerid` int(11) NOT NULL DEFAULT '0',
+  `ownerid` int(11) NOT NULL,
   `posx` float NOT NULL,
   `posy` float NOT NULL,
   `posz` float NOT NULL,
