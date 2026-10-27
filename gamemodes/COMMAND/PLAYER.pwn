@@ -132,10 +132,3 @@ CMD:death(playerid, params[]) {
   }
   return 1;
 }
-
-
-// buy business
-CMD:buybusiness(playerid, params) {
-  BuyBusiness(playerid);
-  return 1;
-}

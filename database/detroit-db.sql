@@ -85,6 +85,6 @@ CREATE TABLE `bussines` (
   `posz` float NOT NULL,
   `type` tinyint NOT NULL,
   `stock` int NOT NULL DEFAULT '100',
-  `price` int DEFAULT '0'
+  `price` int DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
