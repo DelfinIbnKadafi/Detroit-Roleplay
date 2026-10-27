@@ -20,6 +20,7 @@ Fungsi: LoadBussines() {
         cache_get_value_name_int(i, "stock", Bussines[index][bsisa]);
         cache_get_value_name(i, "name", Bussines[index][bnames], MAX_BUSSINES_NAME + 1);
         cache_get_value_name(i, "ownername", Bussines[index][bownername], MAX_PLAYER_NAME + 1);
+        cache_get_value_name_int(i, "price", Bussines[index][bprice]);
 
         if(!ValidBussinesName(Bussines[index][bnames]) || !ValidBussinesPosition(Bussines[index][bx], Bussines[index][by], Bussines[index][bz]) || Bussines[index][bownerid] < 0 || Bussines[index][btype] < 0 || Bussines[index][btype] > 127 || Bussines[index][bsisa] < 0) {
             printf("[BUSSINES] Data business ID %d tidak valid, data tidak dimuat.", bussid);

@@ -120,3 +120,14 @@ stock DestroyAllBussines() {
     BussinesReady = false;
     return 1;
 }
+
+Fungsi:BuyBusiness(playerid) {
+    for (new i = 0; i < BussinesCount; i++) {
+        if(IsPlayerInRangeOfPoint(playerid, 1.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) {
+            printf("Player mencoba membeli business");
+            break;
+        }
+        continue;
+    }
+    return 1;
+}
