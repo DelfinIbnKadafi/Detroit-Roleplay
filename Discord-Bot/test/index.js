@@ -286,9 +286,8 @@ test("Command status mengembalikan embed online dan offline", async () => {
     const statusOnline = loadScript("commands/status.js", { "../query": { querySAMP: onlineQuery } }).exports;
     const interaction1 = makeInteraction();
     await statusOnline.run({}, interaction1);
-    assert.equal(interaction1.calls[0].method, "deferReply");
-    assert.equal(interaction1.calls[1].method, "editReply");
-    const embed1 = interaction1.calls[1].options.embeds[0].toJSON();
+    assert.equal(interaction1.calls[0].method, "reply");
+    const embed1 = interaction1.calls[0].options.embeds[0].toJSON();
     assert.equal(embed1.title, "🎮 Detroit Roleplay Project");
     assert.equal(embed1.color, 0x57F287);
 
@@ -305,7 +304,8 @@ test("Command status mengembalikan embed online dan offline", async () => {
     const statusOffline = loadScript("commands/status.js", { "../query": { querySAMP: offlineQuery } }).exports;
     const interaction2 = makeInteraction();
     await statusOffline.run({}, interaction2);
-    const embed2 = interaction2.calls[1].options.embeds[0].toJSON();
+    assert.equal(interaction2.calls[0].method, "reply");
+    const embed2 = interaction2.calls[0].options.embeds[0].toJSON();
     assert.equal(embed2.title, "🔴 Server Offline");
     assert.equal(embed2.color, 0xED4245);
 });

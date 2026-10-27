@@ -1,5 +1,10 @@
 console.log("Starting BOT...");
 
+const dns = require('node:dns');
+try {
+    dns.setDefaultResultOrder('ipv4first');
+} catch {}
+
 require('dotenv').config({ path: require('node:path').join(__dirname, '../.env') });
 const { Client, Collection, GatewayIntentBits, MessageFlags, ActivityType } = require("discord.js");
 const mysql = require("./mysql");
@@ -18,6 +23,7 @@ const client = new Client({
 client.commands = new Collection();
 client.buttons = new Collection();
 client.modals = new Collection();
+client.serverStatus = null;
 
 let presenceInterval = null;
 
@@ -27,6 +33,8 @@ async function updateServerPresence() {
 
     try {
         const server = await querySAMP(host, port);
+        client.serverStatus = server;
+
         const activityText = server.online
             ? `DETROIT ROLEPLAY | ${server.players}/${server.maxPlayers} Online!`
             : `DETROIT ROLEPLAY | Server Offline`;
@@ -43,7 +51,7 @@ client.once("clientReady", () => {
     console.log(`Logged in as ${client.user.tag}!`);
     updateServerPresence();
     if (presenceInterval) clearInterval(presenceInterval);
-    presenceInterval = setInterval(updateServerPresence, 30000);
+    presenceInterval = setInterval(updateServerPresence, 15000);
 });
 
 client.on("error", (error) => {
