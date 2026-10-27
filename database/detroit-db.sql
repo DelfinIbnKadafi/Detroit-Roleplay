@@ -68,6 +68,14 @@ CREATE TABLE `atm` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO `atm` (`id`, `posx`, `posy`, `posz`, `angle`, `cadangan`) VALUES
+(1, 1739.22, -1863.56, 13.2372, 179.68, 1000000),
+(2, 1746.95, -1863.51, 13.209, -179.365, 1009999),
+(3, 905.298, -1467.55, 2753.98, 89.3048, 1000000),
+(4, 1454.92, -1755.54, 13.2169, 179.566, 1000000),
+(5, 1172.08, -1328.1, 15.0397, 87.5041, 1000000);
+
+
 CREATE TABLE `bussines` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
