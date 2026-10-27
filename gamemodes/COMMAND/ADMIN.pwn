@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney (Get player Info Money)\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm <atmid>\n/revive\n/createbusiness <type> <nama> (0 = Market)\n/editbusiness <id> pos (Editor posisi pintu)\n/editbusiness <id> here (Pindahkan ke posisi admin)\n/editbusiness <id> name <nama>\n/editbusiness <id> type <0-127>\n/editbusiness <id> stock <jumlah>\n/editbusiness <id> owner <id akun/0>\n/deletebusiness <id>\n/gotobusiness <id>\n/businesslist [halaman]\n/cancelbusinessedit", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit", "keluar", " ");
   
   return 1;
 }

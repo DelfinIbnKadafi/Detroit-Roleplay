@@ -230,7 +230,7 @@ Fungsi: EditTextAtm(index) {
     return 1;
 }
 
-stock bool:CanUseAtm(playerid) {
+Fungsi:CanUseAtm(playerid) {
     if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return false;
     new index = idatmplayeruse[playerid];
     if(!AtmReady || index < 0 || index >= atmcount || !IsValidDynamicObject(atm[index][object]) || !IsPlayerExterior(playerid) || AtmEditor[index] != INVALID_PLAYER_ID || !IsPlayerInRangeOfPoint(playerid, 3.0, atm[index][posx], atm[index][posy], atm[index][posz])) {

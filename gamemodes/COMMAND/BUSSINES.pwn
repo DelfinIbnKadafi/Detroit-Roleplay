@@ -2,13 +2,13 @@ CMD:createbusiness(playerid, params[]) {
     if(!CanManageBussines(playerid)) return 1;
     if(!IsBussinesExterior(playerid)) return SendMessageError(playerid, "Business hanya bisa dibuat di luar bangunan pada virtual world 0.");
 
-    new typeString[16], name[144];
-    if(sscanf(params, "s[16]s[144]", typeString, name)) return SendClientMessage(playerid, -1, "Gunakan: /createbusiness <type> <nama> (0 = Market)");
-    if(!ValidBussinesNumber(typeString) || strval(typeString) > 127 || !ValidBussinesName(name)) return SendMessageError(playerid, "Type harus 0-127 dan nama business harus 1-128 karakter tanpa kode warna.");
+    new typeString[16];
+    if(sscanf(params, "s[16]s[144]", typeString)) return SendClientMessage(playerid, -1, "Gunakan: /createbusiness <type> (0 = Market)");
+    if(!ValidBussinesNumber(typeString) || strval(typeString) > 127) return SendMessageError(playerid, "Type harus 0-127.");
 
     new Float:x, Float:y, Float:z;
     GetPlayerPos(playerid, x, y, z);
-    new index = CreateBussines(name, strval(typeString), x, y, z);
+    new index = CreateBussines("For Sell", strval(typeString), x, y, z);
     if(index == -1) return SendMessageError(playerid, "Business gagal dibuat. Periksa database, posisi, atau batas pintu dan text label.");
 
     new msg[144];
