@@ -25,6 +25,15 @@ Jika sudah pernah mendaftar, tekan kembali tombol Register untuk melihat nama ka
 kode verifikasi, dan status akun. Jika database sedang lambat, form dapat tetap terbuka,
 namun bot akan memeriksa kembali data akun saat form dikirim.
 
+### Command `/setadmin`
+
+Command `/setadmin` mengubah level admin karakter yang tersimpan di tabel `Pemain`.
+Format penggunaan: `/setadmin name_name:<First_Last> leveladmin:<level>`.
+Contoh: `/setadmin name_name:John_Doe leveladmin:5`. Gunakan level `0` untuk mencabut
+hak admin. Hanya anggota Discord yang memiliki role dengan ID yang ditetapkan pada
+`SETADMIN_ROLE_ID` di file `.env` yang dapat menjalankan command ini. Pengaturan role
+ini diperiksa oleh bot saat command digunakan; jangan membagikan file `.env`.
+
 ## Instalasi
 
 Siapkan Node.js 18 atau lebih baru, MySQL atau MariaDB, serta aplikasi bot dari
@@ -79,6 +88,7 @@ Contoh:
     TOKEN=token_bot_anda
     CLIENT_ID=application_id_anda
     GUILD_ID=server_id_anda
+    SETADMIN_ROLE_ID=discord_role_id_yang_diizinkan
 
     DB_HOST=127.0.0.1
     DB_PORT=3306
@@ -92,6 +102,8 @@ Contoh:
 `TOKEN` dapat diambil pada halaman Bot di Developer Portal. `CLIENT_ID` adalah
 Application ID pada halaman General Information. Untuk mengambil `GUILD_ID`, aktifkan
 Developer Mode pada pengaturan Discord, lalu klik kanan server dan pilih Copy Server ID.
+Untuk `SETADMIN_ROLE_ID`, aktifkan Developer Mode, klik kanan role Discord yang
+diizinkan, lalu pilih Copy Role ID.
 
 Isi `GUILD_ID` jika command hanya ingin didaftarkan ke satu server. Kosongkan nilainya
 jika Anda ingin mendaftarkan command secara global. Sebaiknya tetap isi `CLIENT_ID`
