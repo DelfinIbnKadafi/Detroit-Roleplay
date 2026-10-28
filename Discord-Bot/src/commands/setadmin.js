@@ -9,9 +9,9 @@ module.exports = {
         .addIntegerOption(option => option.setName("leveladmin").setDescription("Level admin baru (0 untuk mencabut admin)").setRequired(true).setMinValue(0).setMaxValue(2147483647)),
 
     async run(client, interaction) {
-        const allowedRoleId = process.env.SETADMIN_ROLE_ID;
+        const allowedRoleId = process.env.SETADMIN_ROLE_ID?.trim();
 
-        if (!allowedRoleId || !/^\\d{17,20}$/.test(allowedRoleId)) {
+        if (!allowedRoleId || !/^\d{17,20}$/.test(allowedRoleId)) {
             return interaction.reply({ content: "Command /setadmin belum dikonfigurasi dengan benar oleh pengelola bot.", flags: MessageFlags.Ephemeral });
         }
 
