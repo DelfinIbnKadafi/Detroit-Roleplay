@@ -14,7 +14,10 @@ Fungsi:UpdateSpeedoMeter(playerid) {
   if(!IsDeadPlayerVehicle(vehicleid)) {
     new Float:health;
     GetVehicleHealth(vehicleid, health);
-    hpveh = floatround(health, floatround_floor) / 10;
+    if(health > VEHICLE_CRITICAL_HEALTH) {
+        if(health > 1000.0) health = 1000.0;
+        hpveh = floatround((health - VEHICLE_CRITICAL_HEALTH) / (1000.0 - VEHICLE_CRITICAL_HEALTH) * 100.0, floatround_floor);
+    }
   }
   format(str, sizeof(str), "%d", hpveh);
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][0], str);

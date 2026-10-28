@@ -60,14 +60,39 @@ Dialog:DL_REGISTER_GENDER(playerid, response, listitem, const inputtext[])
   return 1;
 }
 
-Fungsi: OnHashPassword(playerid, hashid, sessionid, const expectedName[]) {
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_HASHING) return 1;
-  Pemain[playerid][pPassword] = 0; // sm kayak EOS atau '\0'
-  bcrypt_get_hash(Pemain[playerid][pPassword], BCRYPT_HASH_LENGTH);
-  if(strlen(Pemain[playerid][pPassword]) != BCRYPT_HASH_LENGTH - 1) {
+// Sesi hash disimpan di variabel global, BUKAN lewat argumen tambahan plugin bcrypt
+// (argumen tambahan samp_bcrypt di server ini terbukti datang rusak -> guard session selalu gagal)
+new PlayerHashSession[MAX_PLAYERS];
+
+stock bool:IsHashSessionValid(playerid)
+{
+  return playerid >= 0 && playerid < MAX_PLAYERS && IsPlayerConnected(playerid)
+    && PlayerHashSession[playerid] == PlayerSession[playerid];
+}
+
+Fungsi: OnHashPassword(playerid, hashid) {
+  printf("[HASH] callback OnHashPassword MASUK: pid=%d hashid=%d", playerid, hashid);
+  if(!IsHashSessionValid(playerid)) {
+    printf("[HASH] DIBATALKAN: sesi tidak valid / pemain sudah keluar");
+    return 1;
+  }
+  if(PlayerKicking[playerid]) {
+    printf("[HASH] DIBATALKAN: PlayerKicking=true");
+    return 1;
+  }
+  if(PlayerLoginStep[playerid] != LOGIN_HASHING) {
+    printf("[HASH] DIBATALKAN: step=%d (seharusnya LOGIN_HASHING=%d)", _:PlayerLoginStep[playerid], _:LOGIN_HASHING);
+    return 1;
+  }
+
+  new hash[BCRYPT_HASH_LENGTH];
+  bcrypt_get_hash(hash, sizeof hash);
+  printf("[HASH] bcrypt_get_hash: panjang=%d (harus %d)", strlen(hash), BCRYPT_HASH_LENGTH - 1);
+  if(strlen(hash) != BCRYPT_HASH_LENGTH - 1) {
     SendMessageError(playerid, "Password gagal diproses. Silakan masuk kembali.");
     return DelayedKick(playerid);
   }
+  format(Pemain[playerid][pPassword], BCRYPT_HASH_LENGTH, "%s", hash);
   PlayerLoginStep[playerid] = LOGIN_REGISTER;
   printf("Succesfully hash password register!");
   ShowRegisterDialog(playerid);
@@ -86,6 +111,17 @@ stock ShowCreatePasswordDialog(playerid)
     - Panjang password harus 8-32 karakter"
   );
   Dialog_Show(playerid, DL_CREATE_PW, DIALOG_STYLE_INPUT, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Buat Password", body, "Buat", "Batal");
+  return 1;
+}
+
+// watchdog: kalau callback bcrypt tidak pernah datang, jangan biarkan pemain menggantung diam-diam
+Fungsi: CekHashTimeout(playerid, sessionid)
+{
+  if(!IsPlayerConnected(playerid) || PlayerSession[playerid] != sessionid || PlayerLoginStep[playerid] != LOGIN_HASHING) return 1;
+  printf("[HASH] TIMEOUT: 15 detik berlalu, hash belum selesai diproses (pid=%d)", playerid);
+  SendMessageError(playerid, "Proses password terlalu lama. Silakan buat password lagi.");
+  PlayerLoginStep[playerid] = LOGIN_CREATE_PASSWORD;
+  ShowCreatePasswordDialog(playerid);
   return 1;
 }
 
@@ -140,7 +176,10 @@ Dialog:DL_VERIFY_CODE(playerid, response, listitem, const inputtext[])
 
 Dialog:DL_CREATE_PW(playerid, response, listitem, const inputtext[])
 {
-  if(PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_CREATE_PASSWORD) return 1;
+  if(PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_CREATE_PASSWORD) {
+    printf("[HASH] DL_CREATE_PW DIABAIKAN: kicking=%d step=%d (seharusnya LOGIN_CREATE_PASSWORD=%d)", _:PlayerKicking[playerid], _:PlayerLoginStep[playerid], _:LOGIN_CREATE_PASSWORD);
+    return 1;
+  }
   if(!response)
       return DelayedKick(playerid);
 
@@ -151,7 +190,10 @@ Dialog:DL_CREATE_PW(playerid, response, listitem, const inputtext[])
   }
   else {
     PlayerLoginStep[playerid] = LOGIN_HASHING;
-    bcrypt_hash(playerid, "OnHashPassword", inputtext, BCRYPT_COST, "is", PlayerSession[playerid], Pemain[playerid][pNama]);
+    printf("[HASH] request bcrypt_hash dikirim: pid=%d sess=%d panjang_pw=%d cost=%d", playerid, PlayerSession[playerid], strlen(inputtext), BCRYPT_COST);
+    PlayerHashSession[playerid] = PlayerSession[playerid];
+    bcrypt_hash(playerid, "OnHashPassword", inputtext, BCRYPT_COST);
+    SetTimerEx("CekHashTimeout", 15000, false, "ii", playerid, PlayerSession[playerid]);
   }
   return 1;
 }

@@ -1,6 +1,9 @@
-Fungsi: OnVerifyPassword(playerid, bool:success, sessionid, const expectedName[])
+Fungsi: OnVerifyPassword(playerid, bool:success)
 {
-  if(!IsCurrentPlayerSession(playerid, sessionid, expectedName) || PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_VERIFYING) return 1;
+  if(!IsHashSessionValid(playerid) || PlayerKicking[playerid] || PlayerLoginStep[playerid] != LOGIN_VERIFYING) {
+    printf("[LOGIN] OnVerifyPassword DIBATALKAN: pid=%d step=%d kicking=%d", playerid, _:PlayerLoginStep[playerid], _:PlayerKicking[playerid]);
+    return 1;
+  }
 
   new 
     attempts = GetPVarInt(playerid, "login_attempts")
@@ -38,7 +41,7 @@ Fungsi: OnVerifyPassword(playerid, bool:success, sessionid, const expectedName[]
     DeletePVar(playerid, "login_attempts");
     PlayerLoginStep[playerid] = LOGIN_LOAD_DATA;
     mysql_format(g_SQL, query, sizeof query, "SELECT * FROM Pemain where id=%d", Pemain[playerid][pId]);
-    mysql_tquery(g_SQL, query, "MuatDataPemain", "iis", playerid, sessionid, expectedName);
+    mysql_tquery(g_SQL, query, "MuatDataPemain", "iis", playerid, PlayerSession[playerid], Pemain[playerid][pNama]);
   }
   return 1;
 }
@@ -61,7 +64,8 @@ Dialog:DL_LOGIN(playerid, response, listitem, const inputtext[])
   }
   else {
     PlayerLoginStep[playerid] = LOGIN_VERIFYING;
-    bcrypt_verify(playerid, "OnVerifyPassword", inputtext, Pemain[playerid][pPassword], "is", PlayerSession[playerid], Pemain[playerid][pNama]);
+    PlayerHashSession[playerid] = PlayerSession[playerid];
+    bcrypt_verify(playerid, "OnVerifyPassword", inputtext, Pemain[playerid][pPassword]);
   }
   return 1;
 }

@@ -384,7 +384,7 @@ CMD:setskin(playerid, params[]) {
 
   if(!IsPlayerConnected(targetid) || !StatusLogin[targetid]) return SendMessageError(playerid, "Id sedang tidak online!");
 
-  if(skinid < 0 || skinid > 255) return SendMessageError(playerid, "Skinid tidak valid!");
+  if(skinid < 0 || skinid > 299) return SendMessageError(playerid, "Skinid tidak valid!");
 
   SetPlayerSkin(targetid, skinid);
   SimpanDataPemain(targetid);
