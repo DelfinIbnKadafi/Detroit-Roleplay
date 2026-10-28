@@ -44,7 +44,14 @@ stock GetBussinesTypeName(type, output[], size) {
 stock GetBussinesText(index, output[], size) {
     new types[32];
     GetBussinesTypeName(Bussines[index][btype], types, sizeof types);
-    format(output, size, "[%d]\n%s\nOwner : %s\nType : %s\nStock : %d", Bussines[index][bid], Bussines[index][bnames], Bussines[index][bownername], types, Bussines[index][bsisa]);
+    if(Bussines[index][bownerid] != 0) {
+        format(output, size, "[%d]\n%s\nOwner : %s\nType : %s\nStock : %d", Bussines[index][bid], Bussines[index][bnames], Bussines[index][bownername], types, Bussines[index][bsisa]);
+        return 1;
+    }
+    new moneysss[128];
+    FormatUang(Bussines[index][bprice], moneysss);
+    format(output, size, "[%d]\n%s $%s\nOwner : %s\nType : %s\nStock : %d", Bussines[index][bid], Bussines[index][bnames], moneysss, Bussines[index][bownername], types, Bussines[index][bsisa]);
+
     return 1;
 }
 

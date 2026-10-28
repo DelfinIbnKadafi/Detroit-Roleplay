@@ -27,5 +27,6 @@ public OnPlayerUpdate(playerid) {
     TextDrawHideForPlayer(playerid, TD_PINTU);
     TdPintuShown[playerid] = false;
   }
+
   return 1;
 }

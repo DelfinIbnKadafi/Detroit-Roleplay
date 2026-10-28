@@ -127,3 +127,8 @@ CMD:businesslist(playerid, params[]) {
     Dialog_Show(playerid, DL_BUSSINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, list, "Tutup", "");
     return 1;
 }
+
+CMD:buybusiness(playerid, params[]) {
+    BuyBusiness(playerid);
+    return 1;
+}

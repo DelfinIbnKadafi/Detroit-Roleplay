@@ -92,6 +92,7 @@ stock CreateBussines(const name[], type, Float:x, Float:y, Float:z) {
     Bussines[index][bx] = x;
     Bussines[index][by] = y;
     Bussines[index][bz] = z;
+    Bussines[index][bprice] = 15000000;
 
     // Jangan insert jika pintu atau text label gagal dibuat
     if(!MakeBussinesObject(index)) {
@@ -99,7 +100,7 @@ stock CreateBussines(const name[], type, Float:x, Float:y, Float:z) {
         return -1;
     }
     new query[768], affected, insertid;
-    mysql_format(g_SQL, query, sizeof query, "INSERT INTO bussines (name, ownerid, posx, posy, posz, type, stock) VALUES ('%e', 0, %.6f, %.6f, %.6f, %d, 100)", name, x, y, z, type);
+    mysql_format(g_SQL, query, sizeof query, "INSERT INTO bussines (name, ownerid, posx, posy, posz, type, stock, price) VALUES ('%e', 0, %.6f, %.6f, %.6f, %d, 100, 15000000)", name, x, y, z, type);
     if(!ExecuteBussinesWrite(query, affected, insertid) || affected != 1 || insertid <= 0) {
         ResetBussinesSlot(index);
         return -1;
@@ -134,4 +135,38 @@ stock bool:DeleteBussines(index) {
     ResetBussinesSlot(index);
     BussinesCount--;
     return true;
+}
+
+stock PindahkanKepemilikanBusiness(bussindex, playerid) {
+
+    Bussines[bussindex][bownerid] = Pemain[playerid][pId];
+    strcopy(Bussines[bussindex][bownername], Pemain[playerid][pNama], 64);
+
+    DestroyBussinesObject(bussindex);
+    MakeBussinesObject(bussindex);
+
+    SaveDataBussines(bussindex, Bussines[bussindex]);
+
+    return 1;
+}
+
+stock BuyBusiness(playerid) {
+    if(BussinesCount < 1) return SendMessageError(playerid, "Tidak ada satupun business di server!");
+
+    for(new i = 0; i < BussinesCount; i++) {
+        if(IsPlayerInRangeOfPoint(playerid, 1.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) {
+
+            if(Bussines[i][bownerid] != 0) return SendMessageError(playerid, "Business ini sudah dimiliki oleh orang lain!");
+
+            if(GetPlayerMoney(playerid) < Bussines[i][bprice]) return SendMessageError(playerid, "Uangmu tidak cukup!");
+
+            GivePlayerMoney(playerid, -Bussines[i][bprice]);
+
+            PindahkanKepemilikanBusiness(i, playerid);
+
+            break;
+        }
+    }
+
+    return 1;
 }
