@@ -171,7 +171,7 @@ stock MakeBussinesExitObject(index) {
     if(Bussines[index][bid] <= 0) return 1;
 
     new Float:jojox, Float:jojoy, Float:jojoz;
-    if(!GetBusinessInteriorPosition(Bussines[index][binterior], jojox, jojoy, jojoz)) return 1;
+    if(!GetBusinessInteriorPosition(Bussines[index][binterior], jojox, jojoy, jojoz)) return 0;
 
     Bussines[index][bexitobject] = CreateDynamicObject(BUSSINES_PICKUP_MODEL, jojox, jojoy, jojoz, 0.0, 0.0, 0.0, Bussines[index][bid], Bussines[index][binterior], INVALID_PLAYER_ID, 100.0);
     return IsValidDynamicObject(Bussines[index][bexitobject]);
@@ -215,6 +215,7 @@ stock UpdateBussinesObject(index) {
     Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, Bussines[index][blabel], E_STREAMER_Z, Bussines[index][bz] + 0.5);
     UpdateDynamic3DTextLabelText(Bussines[index][blabel], -1, msg);
     if(!IsValidDynamicObject(Bussines[index][bexitobject]) && !MakeBussinesExitObject(index)) return 0;
+    if(!MakeBussinesExitObject(index)) return 0;
     return 1;
 }
 
