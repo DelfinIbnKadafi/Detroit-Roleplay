@@ -5,12 +5,15 @@ public OnPlayerUpdate(playerid) {
   if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || IsPlayerInAnyVehicle(playerid)) {
     if(TdPintuShown[playerid]) {
       TextDrawHideForPlayer(playerid, TD_PINTU);
+      TextDrawHideForPlayer(playerid, TD_PINTU_KELUAR);
       TdPintuShown[playerid] = false;
+      TdPintuExitShown[playerid] = false;
     }
     return 1;
   }
   
   dekatPintu[playerid] = false;
+  new bool:exitDoor = false;
   
   if(IsPlayerExterior(playerid)) {
     if(GetPlayerDistanceFromPoint(playerid, EXT_BALAI_KOTA_x, EXT_BALAI_KOTA_y, EXT_BALAI_KOTA_z) <= 2 || GetPlayerDistanceFromPoint(playerid, INT_BALAI_KOTA_x, INT_BALAI_KOTA_y, INT_BALAI_KOTA_z) <= 2) {
@@ -25,15 +28,27 @@ public OnPlayerUpdate(playerid) {
   }
   else if(DekatPintuKeluarBusiness(playerid)) {
     dekatPintu[playerid] = true;
+    exitDoor = true;
   }
   
-  if(dekatPintu[playerid] && !TdPintuShown[playerid]) {
-    TextDrawShowForPlayer(playerid, TD_PINTU);
+  if(dekatPintu[playerid] && (!TdPintuShown[playerid] || TdPintuExitShown[playerid] != exitDoor)) {
+    TextDrawHideForPlayer(playerid, TD_PINTU);
+    TextDrawHideForPlayer(playerid, TD_PINTU_KELUAR);
+    if(exitDoor) {
+      TextDrawShowForPlayer(playerid, TD_PINTU_KELUAR);
+      TdPintuExitShown[playerid] = true;
+    }
+    else {
+      TextDrawShowForPlayer(playerid, TD_PINTU);
+      TdPintuExitShown[playerid] = false;
+    }
     TdPintuShown[playerid] = true;
   }
   else if(!dekatPintu[playerid] && TdPintuShown[playerid]) {
     TextDrawHideForPlayer(playerid, TD_PINTU);
+    TextDrawHideForPlayer(playerid, TD_PINTU_KELUAR);
     TdPintuShown[playerid] = false;
+    TdPintuExitShown[playerid] = false;
   }
 
   return 1;

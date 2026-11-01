@@ -9,6 +9,7 @@ enum BussinesData {
     bnames[MAX_BUSSINES_NAME + 1],
     STREAMER_TAG_PICKUP:bpickup,
     STREAMER_TAG_3D_TEXT_LABEL:blabel,
+    STREAMER_TAG_OBJECT:bexitobject,
     bownerid,
     bownername[MAX_PLAYER_NAME + 1],
     Float:bx,

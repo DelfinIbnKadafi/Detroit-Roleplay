@@ -26,7 +26,7 @@ Fungsi:DeteksiPintuBusiness(playerid) {
 
     if(IsPlayerExterior(playerid)) {
         for(new i = 0; i < MAX_BUSSINES; i ++) {
-            if(!ValidBussinesIndex(i)) continue;
+            if(!ValidBussinesIndex(i) || Bussines[i][bownerid] == 0) continue;
             if(IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return MasukKeBusiness(playerid, i);
         }
         return 0;
@@ -55,6 +55,11 @@ stock GetPlayerBusinessIndex(playerid) {
 // masuk ke business
 stock MasukKeBusiness(playerid, busindex) {
     if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || IsPlayerInAnyVehicle(playerid) || !IsPlayerExterior(playerid) || !ValidBussinesIndex(busindex)) return 0;
+
+    if(Bussines[busindex][bownerid] == 0) {
+        SendMessageError(playerid, "Business ini belum memiliki owner.");
+        return 0;
+    }
 
     new Float:jojox, Float:jojoy, Float:jojoz;
     if(!GetBusinessInteriorPosition(Bussines[busindex][binterior], jojox, jojoy, jojoz)) {
@@ -89,7 +94,7 @@ stock KeluarDariBusiness(playerid, busindex) {
 
 stock DekatBusiness(playerid) {
     for(new i = 0; i < MAX_BUSSINES; i ++) {
-        if(!ValidBussinesIndex(i)) continue;
+        if(!ValidBussinesIndex(i) || Bussines[i][bownerid] == 0) continue;
         if(IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return 1;
     }
     return 0;
@@ -160,11 +165,25 @@ stock GetBussinesText(index, output[], size) {
     return 1;
 }
 
+stock MakeBussinesExitObject(index) {
+    if(IsValidDynamicObject(Bussines[index][bexitobject])) DestroyDynamicObject(Bussines[index][bexitobject]);
+    Bussines[index][bexitobject] = STREAMER_TAG_OBJECT:INVALID_STREAMER_ID;
+    if(Bussines[index][bid] <= 0) return 1;
+
+    new Float:jojox, Float:jojoy, Float:jojoz;
+    if(!GetBusinessInteriorPosition(Bussines[index][binterior], jojox, jojoy, jojoz)) return 1;
+
+    Bussines[index][bexitobject] = CreateDynamicObject(BUSSINES_PICKUP_MODEL, jojox, jojoy, jojoz, 0.0, 0.0, 0.0, Bussines[index][bid], Bussines[index][binterior], INVALID_PLAYER_ID, 100.0);
+    return IsValidDynamicObject(Bussines[index][bexitobject]);
+}
+
 stock DestroyBussinesObject(index) {
     if(IsValidDynamicPickup(Bussines[index][bpickup])) DestroyDynamicPickup(Bussines[index][bpickup]);
     if(IsValidDynamic3DTextLabel(Bussines[index][blabel])) DestroyDynamic3DTextLabel(Bussines[index][blabel]);
+    if(IsValidDynamicObject(Bussines[index][bexitobject])) DestroyDynamicObject(Bussines[index][bexitobject]);
     Bussines[index][bpickup] = STREAMER_TAG_PICKUP:INVALID_STREAMER_ID;
     Bussines[index][blabel] = STREAMER_TAG_3D_TEXT_LABEL:INVALID_STREAMER_ID;
+    Bussines[index][bexitobject] = STREAMER_TAG_OBJECT:INVALID_STREAMER_ID;
     return 1;
 }
 
@@ -176,7 +195,7 @@ stock MakeBussinesObject(index) {
     if(IsValidDynamicPickup(Bussines[index][bpickup])) {
         Bussines[index][blabel] = CreateDynamic3DTextLabel(msg, -1, Bussines[index][bx], Bussines[index][by], Bussines[index][bz] + 0.5, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
     }
-    if(!IsValidDynamicPickup(Bussines[index][bpickup]) || !IsValidDynamic3DTextLabel(Bussines[index][blabel])) {
+    if(!IsValidDynamicPickup(Bussines[index][bpickup]) || !IsValidDynamic3DTextLabel(Bussines[index][blabel]) || !MakeBussinesExitObject(index)) {
         DestroyBussinesObject(index);
         return 0;
     }
@@ -195,6 +214,7 @@ stock UpdateBussinesObject(index) {
     Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, Bussines[index][blabel], E_STREAMER_Y, Bussines[index][by]);
     Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, Bussines[index][blabel], E_STREAMER_Z, Bussines[index][bz] + 0.5);
     UpdateDynamic3DTextLabelText(Bussines[index][blabel], -1, msg);
+    if(!IsValidDynamicObject(Bussines[index][bexitobject]) && !MakeBussinesExitObject(index)) return 0;
     return 1;
 }
 
