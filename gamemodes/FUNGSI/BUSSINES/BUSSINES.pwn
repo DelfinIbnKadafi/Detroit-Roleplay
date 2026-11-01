@@ -1,3 +1,8 @@
+/// valid bus
+stock bool:ValidBussinesIndex(index) {
+    return index >= 0 && index < MAX_BUSSINES && Bussines[index][bactive] && Bussines[index][bid] > 0;
+}
+
 
 // posisi business
 stock GetBusinessInteriorPosition(interiorid, &Float:jojox, &Float:jojoy, &Float:jojoz) {
@@ -101,10 +106,6 @@ stock DekatPintuKeluarBusiness(playerid) {
 }
 
 ///////////////////////////////////////////////////////////
-
-stock bool:ValidBussinesIndex(index) {
-    return index >= 0 && index < MAX_BUSSINES && Bussines[index][bactive] && Bussines[index][bid] > 0;
-}
 
 stock GetBussinesIndex(bussid) {
     if(bussid <= 0) return -1;
