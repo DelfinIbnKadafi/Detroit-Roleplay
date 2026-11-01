@@ -8,29 +8,74 @@ stock GetBusinessInteriorPosition(interiorid, &Float:jojox, &Float:jojoy, &Float
         jojox = -25.7220;
         jojoy = -187.8216;
         jojoz = 1003.5469;
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////
 
 // deteksi pintu business
 Fungsi:DeteksiPintuBusiness(playerid) {
-    for(new i = 0; i < BussinesCount; i ++) {
-        if(Bussines[i][bownerid] == 0 && IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return MasukKeBusiness(playerid, i);
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || IsPlayerInAnyVehicle(playerid)) return 0;
+
+    if(IsPlayerExterior(playerid)) {
+        for(new i = 0; i < MAX_BUSSINES; i ++) {
+            if(!ValidBussinesIndex(i)) continue;
+            if(IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return MasukKeBusiness(playerid, i);
+        }
+        return 0;
     }
-    return 0;
+
+    new busindex = GetPlayerBusinessIndex(playerid);
+    if(busindex == -1) return 0;
+
+    new Float:jojox, Float:jojoy, Float:jojoz;
+    if(!GetBusinessInteriorPosition(Bussines[busindex][binterior], jojox, jojoy, jojoz)) return 0;
+    if(!IsPlayerInRangeOfPoint(playerid, 2.0, jojox, jojoy, jojoz)) return 0;
+
+    return KeluarDariBusiness(playerid, busindex);
+}
+
+// mencari business yang sedang dimasuki player
+stock GetPlayerBusinessIndex(playerid) {
+    if(GetPlayerInterior(playerid) == 0 || GetPlayerVirtualWorld(playerid) == 0) return -1;
+    for(new i = 0; i < MAX_BUSSINES; i ++) {
+        if(!ValidBussinesIndex(i)) continue;
+        if(Bussines[i][bid] == GetPlayerVirtualWorld(playerid) && Bussines[i][binterior] == GetPlayerInterior(playerid)) return i;
+    }
+    return -1;
 }
 
 // masuk ke business
 stock MasukKeBusiness(playerid, busindex) {
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || IsPlayerInAnyVehicle(playerid) || !IsPlayerExterior(playerid) || !ValidBussinesIndex(busindex)) return 0;
+
     new Float:jojox, Float:jojoy, Float:jojoz;
-    GetBusinessInteriorPosition(Bussines[busindex][binterior], jojox, jojoy, jojoz);
+    if(!GetBusinessInteriorPosition(Bussines[busindex][binterior], jojox, jojoy, jojoz)) {
+        SendMessageError(playerid, "Interior business belum tersedia.");
+        return 0;
+    }
 
     SetPlayerInterior(playerid, Bussines[busindex][binterior]);
-    SetPlayerPos(playerid, jojox, jojoy, jojoz);
-
     SetPlayerVirtualWorld(playerid, Bussines[busindex][bid]);
+    Streamer_UpdateEx(playerid, jojox, jojoy, jojoz, Bussines[busindex][bid], Bussines[busindex][binterior]);
+    SetPlayerPos(playerid, jojox, jojoy, jojoz);
+    playerinbussines[playerid] = true;
+
+    return 1;
+}
+
+// keluar dari business
+stock KeluarDariBusiness(playerid, busindex) {
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || IsPlayerInAnyVehicle(playerid) || !ValidBussinesIndex(busindex)) return 0;
+    if(GetPlayerInterior(playerid) != Bussines[busindex][binterior] || GetPlayerVirtualWorld(playerid) != Bussines[busindex][bid]) return 0;
+
+    SetPlayerInterior(playerid, 0);
+    SetPlayerVirtualWorld(playerid, 0);
+    Streamer_UpdateEx(playerid, Bussines[busindex][bx], Bussines[busindex][by], Bussines[busindex][bz], 0, 0);
+    SetPlayerPos(playerid, Bussines[busindex][bx], Bussines[busindex][by], Bussines[busindex][bz]);
+    playerinbussines[playerid] = false;
 
     return 1;
 }
@@ -38,10 +83,21 @@ stock MasukKeBusiness(playerid, busindex) {
 ///////////////////////////////////////////////////////////
 
 stock DekatBusiness(playerid) {
-    for(new i = 0; i < BussinesCount; i ++) {
-        if(Bussines[i][bownerid] == 0 && IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return 1;
+    for(new i = 0; i < MAX_BUSSINES; i ++) {
+        if(!ValidBussinesIndex(i)) continue;
+        if(IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return 1;
     }
     return 0;
+}
+
+// deteksi pintu keluar business
+stock DekatPintuKeluarBusiness(playerid) {
+    new busindex = GetPlayerBusinessIndex(playerid);
+    if(busindex == -1) return 0;
+
+    new Float:jojox, Float:jojoy, Float:jojoz;
+    if(!GetBusinessInteriorPosition(Bussines[busindex][binterior], jojox, jojoy, jojoz)) return 0;
+    return IsPlayerInRangeOfPoint(playerid, 2.0, jojox, jojoy, jojoz);
 }
 
 ///////////////////////////////////////////////////////////
