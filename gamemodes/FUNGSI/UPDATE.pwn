@@ -1,4 +1,5 @@
 public OnPlayerUpdate(playerid) {
+  new bool:exitDoor;
   if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
     if(CekKondisiKendaraan(GetPlayerVehicleID(playerid))) return 0;
   }
@@ -13,7 +14,7 @@ public OnPlayerUpdate(playerid) {
   }
   
   dekatPintu[playerid] = false;
-  new bool:exitDoor = false;
+  exitDoor = false;
   
   if(IsPlayerExterior(playerid)) {
     if(GetPlayerDistanceFromPoint(playerid, EXT_BALAI_KOTA_x, EXT_BALAI_KOTA_y, EXT_BALAI_KOTA_z) <= 2 || GetPlayerDistanceFromPoint(playerid, INT_BALAI_KOTA_x, INT_BALAI_KOTA_y, INT_BALAI_KOTA_z) <= 2) {
