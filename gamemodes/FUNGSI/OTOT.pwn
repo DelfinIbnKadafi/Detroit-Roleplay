@@ -8,6 +8,7 @@ public OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys) {
     if(IsPlayerInAnyVehicle(playerid)) return 1;
     if(DeteksiPintuBalaiKota(playerid)) return 1;
     if(DeteksiPintuHospital(playerid)) return 1;
+    if(DeteksiPintuBusiness(playerid)) return 1;
   }
   if((newkeys & KEY_NO) && !(oldkeys & KEY_NO)) {
     if(!IsPlayerInAnyVehicle(playerid)) return 1;

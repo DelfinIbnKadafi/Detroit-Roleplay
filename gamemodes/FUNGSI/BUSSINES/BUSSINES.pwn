@@ -1,3 +1,51 @@
+
+// posisi business
+stock GetBusinessInteriorPosition(interiorid, &Float:jojox, &Float:jojoy, &Float:jojoz) {
+    jojox = 0.0;
+    jojoy = 0.0;
+    jojoz = 0.0;
+    if(interiorid == 17) {
+        jojox = -25.7220;
+        jojoy = -187.8216;
+        jojoz = 1003.5469;
+    }
+    return 1;
+}
+
+///////////////////////////////////////////////////////////
+
+// deteksi pintu business
+Fungsi:DeteksiPintuBusiness(playerid) {
+    for(new i = 0; i < BussinesCount; i ++) {
+        if(Bussines[i][bownerid] == 0 && IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return MasukKeBusiness(playerid, i);
+    }
+    return 0;
+}
+
+// masuk ke business
+stock MasukKeBusiness(playerid, busindex) {
+    new Float:jojox, Float:jojoy, Float:jojoz;
+    GetBusinessInteriorPosition(Bussines[busindex][binterior], jojox, jojoy, jojoz);
+
+    SetPlayerInterior(playerid, Bussines[busindex][binterior]);
+    SetPlayerPos(playerid, jojox, jojoy, jojoz);
+
+    SetPlayerVirtualWorld(playerid, Bussines[busindex][bid]);
+
+    return 1;
+}
+
+///////////////////////////////////////////////////////////
+
+stock DekatBusiness(playerid) {
+    for(new i = 0; i < BussinesCount; i ++) {
+        if(Bussines[i][bownerid] == 0 && IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return 1;
+    }
+    return 0;
+}
+
+///////////////////////////////////////////////////////////
+
 stock bool:ValidBussinesIndex(index) {
     return index >= 0 && index < MAX_BUSSINES && Bussines[index][bactive] && Bussines[index][bid] > 0;
 }

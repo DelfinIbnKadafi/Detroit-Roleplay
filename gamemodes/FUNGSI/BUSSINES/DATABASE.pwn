@@ -21,6 +21,7 @@ Fungsi: LoadBussines() {
         cache_get_value_name(i, "name", Bussines[index][bnames], MAX_BUSSINES_NAME + 1);
         cache_get_value_name(i, "ownername", Bussines[index][bownername], MAX_PLAYER_NAME + 1);
         cache_get_value_name_int(i, "price", Bussines[index][bprice]);
+        cache_get_value_name_int(i, "interior", Bussines[index][binterior]);
 
         if(!ValidBussinesName(Bussines[index][bnames]) || !ValidBussinesPosition(Bussines[index][bx], Bussines[index][by], Bussines[index][bz]) || Bussines[index][bownerid] < 0 || Bussines[index][btype] < 0 || Bussines[index][btype] > 127 || Bussines[index][bsisa] < 0) {
             printf("[BUSSINES] Data business ID %d tidak valid, data tidak dimuat.", bussid);
@@ -94,13 +95,16 @@ stock CreateBussines(const name[], type, Float:x, Float:y, Float:z) {
     Bussines[index][bz] = z;
     Bussines[index][bprice] = 15000000;
 
+    // type interior
+    if(type == 0) Bussines[index][binterior] = 17;
+
     // Jangan insert jika pintu atau text label gagal dibuat
     if(!MakeBussinesObject(index)) {
         ResetBussinesSlot(index);
         return -1;
     }
     new query[768], affected, insertid;
-    mysql_format(g_SQL, query, sizeof query, "INSERT INTO bussines (name, ownerid, posx, posy, posz, type, stock, price) VALUES ('%e', 0, %.6f, %.6f, %.6f, %d, 100, 15000000)", name, x, y, z, type);
+    mysql_format(g_SQL, query, sizeof query, "INSERT INTO bussines (name, ownerid, posx, posy, posz, type, stock, price, interior) VALUES ('%e', 0, %.6f, %.6f, %.6f, %d, 100, 15000000, %d)", name, x, y, z, type, Bussines[index][binterior]);
     if(!ExecuteBussinesWrite(query, affected, insertid) || affected != 1 || insertid <= 0) {
         ResetBussinesSlot(index);
         return -1;

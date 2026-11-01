@@ -18,6 +18,9 @@ public OnPlayerUpdate(playerid) {
   if(GetPlayerDistanceFromPoint(playerid, EXT_HOSPITAL_X, EXT_HOSPITAL_Y, EXT_HOSPITAL_Z) <= 2 || GetPlayerDistanceFromPoint(playerid, INT_HOSPITAL_X, INT_HOSPITAL_Y, INT_HOSPITAL_Z) <= 2) {
     dekatPintu[playerid] = true;
   }
+  if(DekatBusiness(playerid) == 1 && playerinbussines[playerid] == false) {
+    dekatPintu[playerid] = true;
+  }
   
   if(dekatPintu[playerid] && !TdPintuShown[playerid]) {
     TextDrawShowForPlayer(playerid, TD_PINTU);

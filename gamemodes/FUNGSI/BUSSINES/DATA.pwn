@@ -16,7 +16,8 @@ enum BussinesData {
     Float:bz,
     btype,
     bsisa,
-    bprice
+    bprice,
+    binterior
 }
 
 new Bussines[MAX_BUSSINES][BussinesData];

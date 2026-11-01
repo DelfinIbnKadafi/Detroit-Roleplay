@@ -3,7 +3,7 @@ CMD:createbusiness(playerid, params[]) {
     if(!IsBussinesExterior(playerid)) return SendMessageError(playerid, "Business hanya bisa dibuat di luar bangunan pada virtual world 0.");
 
     new typeString[16];
-    if(sscanf(params, "s[16]s[144]", typeString)) return SendClientMessage(playerid, -1, "Gunakan: /createbusiness <type> (0 = Market)");
+    if(sscanf(params, "s[16]s[144]", typeString)) return SendClientMessage(playerid, -1, "Gunakan: /createbusiness <type> (0 = Market, 1 = Fast Food, 2 = Electronic)");
     if(!ValidBussinesNumber(typeString) || strval(typeString) > 127) return SendMessageError(playerid, "Type harus 0-127.");
 
     new Float:x, Float:y, Float:z;

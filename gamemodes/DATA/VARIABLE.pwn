@@ -53,3 +53,6 @@ new jumaveh;
 // pintu
 new bool:TdPintuShown[MAX_PLAYERS];
 new bool:dekatPintu[MAX_PLAYERS] = false;
+
+// busines player
+new bool:playerinbussines[MAX_PLAYERS] = false;

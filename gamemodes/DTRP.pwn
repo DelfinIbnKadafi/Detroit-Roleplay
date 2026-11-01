@@ -86,6 +86,7 @@ public OnPlayerConnect(playerid)
     StatusLogin[playerid] = false;
 
     PlayerDeath[playerid] = false;
+    playerinbussines[playerid] = false;
 
     norek_atm_masukkan[playerid] = -1;
     
