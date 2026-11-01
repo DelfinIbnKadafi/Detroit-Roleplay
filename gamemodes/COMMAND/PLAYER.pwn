@@ -109,6 +109,8 @@ CMD:enter(playerid, params[]) {
   
   if(DeteksiPintuBalaiKota(playerid)) return 1;
   if(DeteksiPintuHospital(playerid)) return 1;
+
+  if(DeteksiPintuBusiness(playerid)) return 1;
   return 1;
 }
 

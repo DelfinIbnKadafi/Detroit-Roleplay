@@ -201,7 +201,7 @@ stock LoadTextdraw() {
   TextDrawFont(MEMATIKAN_MESIN_KENDARAAN[0], TEXT_DRAW_FONT_1);
   TextDrawSetProportional(MEMATIKAN_MESIN_KENDARAAN[0], true);
   
-  TD_PINTU = TextDrawCreate(315, 45.733333, "Tekan F atau gunakan /enter untuk masuk ke bangunan ini");
+  TD_PINTU = TextDrawCreate(315, 45.733333, "Tekan F atau gunakan /enter untuk masuk ke pintu ini");
   TextDrawLetterSize(TD_PINTU, 1, 3.5);
   TextDrawTextSize(TD_PINTU, 77.733333, 385);
   TextDrawAlignment(TD_PINTU, TEXT_DRAW_ALIGN_CENTER);
@@ -214,7 +214,7 @@ stock LoadTextdraw() {
   TextDrawFont(TD_PINTU, TEXT_DRAW_FONT_1);
   TextDrawSetProportional(TD_PINTU, true);
 
-  TD_PINTU_KELUAR = TextDrawCreate(315, 45.733333, "Tekan F untuk keluar dari business ini");
+  TD_PINTU_KELUAR = TextDrawCreate(315, 45.733333, "Tekan F atau /enter untuk keluar dari business ini");
   TextDrawLetterSize(TD_PINTU_KELUAR, 1, 3.5);
   TextDrawTextSize(TD_PINTU_KELUAR, 77.733333, 385);
   TextDrawAlignment(TD_PINTU_KELUAR, TEXT_DRAW_ALIGN_CENTER);
