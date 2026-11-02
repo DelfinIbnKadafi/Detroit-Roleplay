@@ -3,7 +3,7 @@ CMD:createbusiness(playerid, params[]) {
     if(!IsBussinesExterior(playerid)) return SendMessageError(playerid, "Business hanya bisa dibuat di luar bangunan pada virtual world 0.");
 
     new typeString[16];
-    if(sscanf(params, "s[16]s[144]", typeString)) return SendClientMessage(playerid, -1, "Gunakan: /createbusiness <type> (0 = Market, 1 = Fast Food, 2 = Electronic)");
+    if(sscanf(params, "s[16]", typeString)) return SendClientMessage(playerid, -1, "Gunakan: /createbusiness <type> (0 = Market, 1 = Fast Food");
     if(!ValidBussinesNumber(typeString) || strval(typeString) > 127) return SendMessageError(playerid, "Type harus 0-127.");
 
     new Float:x, Float:y, Float:z;
@@ -20,7 +20,7 @@ CMD:createbusiness(playerid, params[]) {
 CMD:editbusiness(playerid, params[]) {
     if(!CanManageBussines(playerid)) return 1;
     new idString[16], option[16], value[144];
-    if(sscanf(params, "s[16]s[16]S()[144]", idString, option, value)) return SendClientMessage(playerid, -1, "Gunakan: /editbusiness <id> <pos/here/name/type/stock/owner> [nilai]");
+    if(sscanf(params, "s[16]s[16]S()[144]", idString, option, value)) return SendClientMessage(playerid, -1, "Gunakan: /editbusiness <id> <pos/here/name/type/stock/price/owner> [nilai]");
     if(!ValidBussinesNumber(idString)) return SendMessageError(playerid, "ID business tidak valid!");
     new index = GetBussinesIndex(strval(idString));
     if(index == -1) return SendMessageError(playerid, "Business tidak ditemukan!");
@@ -48,17 +48,22 @@ CMD:editbusiness(playerid, params[]) {
     else if(!strcmp(option, "type", true)) {
         if(!ValidBussinesNumber(value) || strval(value) > 127) return SendMessageError(playerid, "Type business harus 0-127. Type 0 adalah Market.");
         data[btype] = strval(value);
+        data[binterior] = GetBussinesTypeInterior(data[btype]);
     }
     else if(!strcmp(option, "stock", true)) {
         if(!ValidBussinesNumber(value)) return SendMessageError(playerid, "Stock business harus berupa angka 0-2147483647.");
         data[bsisa] = strval(value);
+    }
+    else if(!strcmp(option, "price", true)) {
+        if(!ValidBussinesNumber(value) || strval(value) < 1) return SendMessageError(playerid, "Harga business harus berupa angka 1-2147483647.");
+        data[bprice] = strval(value);
     }
     else if(!strcmp(option, "owner", true)) {
         if(!ValidBussinesNumber(value)) return SendMessageError(playerid, "Gunakan ID akun pemilik dari database, atau 0 untuk menghapus pemilik.");
         data[bownerid] = strval(value);
         if(!GetBussinesOwnerName(data[bownerid], data[bownername], MAX_PLAYER_NAME + 1)) return SendMessageError(playerid, "Akun pemilik tidak ditemukan atau database gagal diakses.");
     }
-    else return SendClientMessage(playerid, -1, "Gunakan: /editbusiness <id> <pos/here/name/type/stock/owner> [nilai]");
+    else return SendClientMessage(playerid, -1, "Gunakan: /editbusiness <id> <pos/here/name/type/stock/price/owner> [nilai]");
 
     if(!SaveDataBussines(index, data)) return SendMessageError(playerid, "Data business gagal disimpan. Data lama tetap digunakan.");
     SendMessageInfo(playerid, "Berhasil mengubah dan menyimpan data business.");

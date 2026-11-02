@@ -15,6 +15,12 @@ stock GetBusinessInteriorPosition(interiorid, &Float:jojox, &Float:jojoy, &Float
         jojoz = 1003.5469;
         return 1;
     }
+    else if(interiorid == 9) {
+        jojox = 366.0002;
+        jojoy = -9.4338;
+        jojoz = 1001.8516;
+        return 1;
+    }
     return 0;
 }
 
@@ -25,11 +31,18 @@ Fungsi:DeteksiPintuBusiness(playerid) {
     if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || IsPlayerInAnyVehicle(playerid)) return 0;
 
     if(IsPlayerExterior(playerid)) {
-        for(new i = 0; i < MAX_BUSSINES; i ++) {
-            if(!ValidBussinesIndex(i) || Bussines[i][bownerid] == 0) continue;
-            if(IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return MasukKeBusiness(playerid, i);
+        new index = GetNearbyBussinesIndex(playerid, 2.0);
+        if(index == -1) return 0;
+
+        // Business yang belum punya owner tidak bisa dimasuki, beri tahu cara membelinya
+        if(Bussines[index][bownerid] == 0) {
+            new msg[144], moneysss[32];
+            FormatUang(Bussines[index][bprice], moneysss);
+            format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} Business ini dijual seharga {55FF62}$%s{FFFFFF}. Gunakan /buybusiness untuk membelinya.", moneysss);
+            SendClientMessage(playerid, 0xFFFFFFFF, msg);
+            return 1;
         }
-        return 0;
+        return MasukKeBusiness(playerid, index);
     }
 
     new busindex = GetPlayerBusinessIndex(playerid);
@@ -44,12 +57,27 @@ Fungsi:DeteksiPintuBusiness(playerid) {
 
 // mencari business yang sedang dimasuki player
 stock GetPlayerBusinessIndex(playerid) {
-    if(GetPlayerInterior(playerid) == 0 || GetPlayerVirtualWorld(playerid) == 0) return -1;
-    for(new i = 0; i < MAX_BUSSINES; i ++) {
+    new interiorid = GetPlayerInterior(playerid), worldid = GetPlayerVirtualWorld(playerid);
+    if(interiorid == 0 || worldid == 0) return -1;
+    for(new i = 0; i < BussinesSlotLimit; i ++) {
         if(!ValidBussinesIndex(i)) continue;
-        if(Bussines[i][bid] == GetPlayerVirtualWorld(playerid) && Bussines[i][binterior] == GetPlayerInterior(playerid)) return i;
+        if(Bussines[i][bid] == worldid && Bussines[i][binterior] == interiorid) return i;
     }
     return -1;
+}
+
+// mencari business terdekat dari player (semua business, baik yang sudah dimiliki maupun belum)
+stock GetNearbyBussinesIndex(playerid, Float:range = 2.0) {
+    new nearest = -1, Float:nearestdistance = range, Float:distance;
+    for(new i = 0; i < BussinesSlotLimit; i ++) {
+        if(!ValidBussinesIndex(i)) continue;
+        distance = GetPlayerDistanceFromPoint(playerid, Bussines[i][bx], Bussines[i][by], Bussines[i][bz]);
+        if(distance <= nearestdistance) {
+            nearest = i;
+            nearestdistance = distance;
+        }
+    }
+    return nearest;
 }
 
 // masuk ke business
@@ -93,7 +121,7 @@ stock KeluarDariBusiness(playerid, busindex) {
 ///////////////////////////////////////////////////////////
 
 stock DekatBusiness(playerid) {
-    for(new i = 0; i < MAX_BUSSINES; i ++) {
+    for(new i = 0; i < BussinesSlotLimit; i ++) {
         if(!ValidBussinesIndex(i) || Bussines[i][bownerid] == 0) continue;
         if(IsPlayerInRangeOfPoint(playerid, 2.0, Bussines[i][bx], Bussines[i][by], Bussines[i][bz])) return 1;
     }
@@ -114,7 +142,7 @@ stock DekatPintuKeluarBusiness(playerid) {
 
 stock GetBussinesIndex(bussid) {
     if(bussid <= 0) return -1;
-    for(new i = 0; i < MAX_BUSSINES; i++) {
+    for(new i = 0; i < BussinesSlotLimit; i++) {
         if(ValidBussinesIndex(i) && Bussines[i][bid] == bussid) return i;
     }
     return -1;
@@ -125,6 +153,17 @@ stock GetFreeBussinesSlot() {
         if(!Bussines[i][bactive]) return i;
     }
     return -1;
+}
+
+stock GetBussinesTypeInterior(type) {
+
+    switch(type) {
+        case 0: return 17; // market
+        case 1: return 9; // fast food
+    }
+    
+    // jika busisness type tidak valid, berikan default
+    return BUSSINES_DEFAULT_INTERIOR;
 }
 
 stock bool:ValidBussinesName(const name[]) {
@@ -147,6 +186,7 @@ stock bool:ValidBussinesPosition(Float:x, Float:y, Float:z) {
 
 stock GetBussinesTypeName(type, output[], size) {
     if(type == 0) format(output, size, "Market");
+    if(type == 1) format(output, size, "Fast Food");
     else format(output, size, "Type %d", type);
     return 1;
 }
@@ -214,7 +254,7 @@ stock UpdateBussinesObject(index) {
     Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, Bussines[index][blabel], E_STREAMER_Y, Bussines[index][by]);
     Streamer_SetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, Bussines[index][blabel], E_STREAMER_Z, Bussines[index][bz] + 0.5);
     UpdateDynamic3DTextLabelText(Bussines[index][blabel], -1, msg);
-    if(!IsValidDynamicObject(Bussines[index][bexitobject]) && !MakeBussinesExitObject(index)) return 0;
+    // Dibuat ulang agar world dan interior pintu keluar selalu mengikuti data business terbaru
     if(!MakeBussinesExitObject(index)) return 0;
     return 1;
 }
@@ -224,7 +264,35 @@ stock ResetBussinesSlot(index) {
     DestroyBussinesObject(index);
     Bussines[index] = empty;
     BussinesEditor[index] = INVALID_PLAYER_ID;
+    while(BussinesSlotLimit > 0 && !Bussines[BussinesSlotLimit - 1][bactive]) BussinesSlotLimit--;
     return 1;
+}
+
+// menandai slot business sebagai aktif setelah semua data dan object siap
+stock ActivateBussinesSlot(index) {
+    Bussines[index][bactive] = true;
+    BussinesCount++;
+    if(index >= BussinesSlotLimit) BussinesSlotLimit = index + 1;
+    return 1;
+}
+
+// memindahkan player keluar dari interior business secara paksa (business dihapus atau interior berubah)
+stock KeluarkanPemainDariBusiness(index) {
+    if(index < 0 || index >= MAX_BUSSINES || Bussines[index][bid] <= 0) return 0;
+    new total;
+    for(new playerid = 0; playerid < MAX_PLAYERS; playerid++) {
+        if(!IsPlayerConnected(playerid)) continue;
+        if(GetPlayerVirtualWorld(playerid) != Bussines[index][bid] || GetPlayerInterior(playerid) != Bussines[index][binterior]) continue;
+        if(IsPlayerInAnyVehicle(playerid)) RemovePlayerFromVehicle(playerid);
+        SetPlayerInterior(playerid, 0);
+        SetPlayerVirtualWorld(playerid, 0);
+        Streamer_UpdateEx(playerid, Bussines[index][bx], Bussines[index][by], Bussines[index][bz], 0, 0);
+        SetPlayerPos(playerid, Bussines[index][bx], Bussines[index][by], Bussines[index][bz]);
+        playerinbussines[playerid] = false;
+        SendMessageInfo(playerid, "Kamu dipindahkan keluar karena business ini diubah atau dihapus.");
+        total++;
+    }
+    return total;
 }
 
 stock bool:CanManageBussines(playerid) {
@@ -250,6 +318,7 @@ stock DestroyAllBussines() {
     }
     for(new i = 0; i < MAX_BUSSINES; i++) ResetBussinesSlot(i);
     BussinesCount = 0;
+    BussinesSlotLimit = 0;
     BussinesReady = false;
     return 1;
 }
