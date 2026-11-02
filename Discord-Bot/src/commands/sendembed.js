@@ -14,9 +14,9 @@ module.exports = {
 
     async run(client, interaction) {
         const embed = new EmbedBuilder()
-            .setTitle("Register")
-            .setDescription("klik tombol dibawah untuk register")
-            .setColor("#FF0000");
+            .setTitle("Detroit Roleplay - Register")
+            .setDescription("Untuk register atau membuat akun kedalam server,\n silahkan klik tombol dibawah untuk register\nGunakan format **First_Last**\nContoh : **Bryan_Walton**, **Sheyla_Pratama**")
+            .setColor("#ff9900");
 
         const button = new ButtonBuilder()
             .setCustomId("reg_btn")
