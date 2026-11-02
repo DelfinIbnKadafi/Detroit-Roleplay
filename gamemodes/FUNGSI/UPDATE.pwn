@@ -6,7 +6,7 @@ public OnPlayerUpdate(playerid) {
   if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || IsPlayerInAnyVehicle(playerid)) {
     if(TdPintuShown[playerid]) {
       TextDrawHideForPlayer(playerid, TD_PINTU);
-      TextDrawHideForPlayer(playerid, TD_PINTU_KELUAR);
+      TextDrawHideForPlayer(playerid, TD_PINTU);
       TdPintuShown[playerid] = false;
       TdPintuExitShown[playerid] = false;
     }
@@ -34,9 +34,9 @@ public OnPlayerUpdate(playerid) {
   
   if(dekatPintu[playerid] && (!TdPintuShown[playerid] || TdPintuExitShown[playerid] != exitDoor)) {
     TextDrawHideForPlayer(playerid, TD_PINTU);
-    TextDrawHideForPlayer(playerid, TD_PINTU_KELUAR);
+    TextDrawHideForPlayer(playerid, TD_PINTU);
     if(exitDoor) {
-      TextDrawShowForPlayer(playerid, TD_PINTU_KELUAR);
+      TextDrawShowForPlayer(playerid, TD_PINTU);
       TdPintuExitShown[playerid] = true;
     }
     else {
@@ -47,7 +47,7 @@ public OnPlayerUpdate(playerid) {
   }
   else if(!dekatPintu[playerid] && TdPintuShown[playerid]) {
     TextDrawHideForPlayer(playerid, TD_PINTU);
-    TextDrawHideForPlayer(playerid, TD_PINTU_KELUAR);
+    TextDrawHideForPlayer(playerid, TD_PINTU);
     TdPintuShown[playerid] = false;
     TdPintuExitShown[playerid] = false;
   }

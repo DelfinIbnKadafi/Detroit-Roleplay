@@ -13,7 +13,6 @@ new PlayerText:VEHSPEED[MAX_PLAYERS][3]; // 0 = kerusakan , 1 = fuel, 3 = speed
 new Text:MENGHIDUPKAN_MESIN_KENDARAAN[1];
 new Text:MEMATIKAN_MESIN_KENDARAAN[1];
 new Text:TD_PINTU;
-new Text:TD_PINTU_KELUAR;
 
 stock LoadPlayerTextdraw(playerid) {
   // speedo value
@@ -214,18 +213,6 @@ stock LoadTextdraw() {
   TextDrawFont(TD_PINTU, TEXT_DRAW_FONT_1);
   TextDrawSetProportional(TD_PINTU, true);
 
-  TD_PINTU_KELUAR = TextDrawCreate(315, 45.733333, "Tekan F atau /enter untuk keluar dari business ini");
-  TextDrawLetterSize(TD_PINTU_KELUAR, 1, 3.5);
-  TextDrawTextSize(TD_PINTU_KELUAR, 77.733333, 385);
-  TextDrawAlignment(TD_PINTU_KELUAR, TEXT_DRAW_ALIGN_CENTER);
-  TextDrawColour(TD_PINTU_KELUAR, 0xFFFFFFFF);
-  TextDrawUseBox(TD_PINTU_KELUAR, false);
-  TextDrawBoxColour(TD_PINTU_KELUAR, 0x000000AA);
-  TextDrawSetShadow(TD_PINTU_KELUAR, 0);
-  TextDrawSetOutline(TD_PINTU_KELUAR, 1);
-  TextDrawBackgroundColour(TD_PINTU_KELUAR, 0x000000FF);
-  TextDrawFont(TD_PINTU_KELUAR, TEXT_DRAW_FONT_1);
-  TextDrawSetProportional(TD_PINTU_KELUAR, true);
   /////////////////////////////////////////////////////////////// 
   
   return 1;
