@@ -16,8 +16,8 @@ stock GetBusinessInteriorPosition(interiorid, &Float:jojox, &Float:jojoy, &Float
         return 1;
     }
     else if(interiorid == 9) {
-        jojox = 366.0002;
-        jojoy = -9.4338;
+        jojox = 364.75;
+        jojoy = -11.50;
         jojoz = 1001.8516;
         return 1;
     }
