@@ -11,7 +11,11 @@ Dialog:DL_DELETEBUSSINES(playerid, response, listitem, const inputtext[]) {
 
 
 Dialog:DIALOG_GANTI_NAMA_BUSI(playerid, response, listitem, const inputtext[]) {
-    if(response == 0) return 1;
+    if(response == 0) {
+        new msg[256];
+        format(msg, sizeof msg, "Nama Lama :\n%s\n\nMasukkan Nama Baru", Bussines[SheylaCantikImutBanget[playerid]][bnames]);
+        return Dialog_Show(playerid, DIALOG_GANTI_NAMA_BUSI, DIALOG_STYLE_INPUT, "Business - Ganti Nama", msg, "Kirim", "Batal");
+    }
 
     strcopy(Bussines[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_BUSSINES_NAME + 1);
 
