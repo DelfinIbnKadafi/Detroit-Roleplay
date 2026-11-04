@@ -8,3 +8,8 @@ CMD:koordinat(playerid) {
   SendClientMessage(playerid, 0xFFFFFFFF, str);
   return 1;
 }
+
+CMD:cc(playerid, params[]) {
+  for(new i = 0; i < 1000; i ++) SendClientMessage(playerid, -1, "");
+  return 1;
+}

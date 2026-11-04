@@ -202,7 +202,7 @@ stock LoadTextdraw() {
   
   TD_PINTU = TextDrawCreate(315, 45.733333, "Tekan F atau gunakan /enter untuk masuk ke pintu ini");
   TextDrawLetterSize(TD_PINTU, 1, 3.5);
-  TextDrawTextSize(TD_PINTU, 60.0, 367);
+  TextDrawTextSize(TD_PINTU, 60.0, 367.0);
   TextDrawAlignment(TD_PINTU, TEXT_DRAW_ALIGN_CENTER);
   TextDrawColour(TD_PINTU, 0xFFFFFFFF);
   TextDrawUseBox(TD_PINTU, false);
