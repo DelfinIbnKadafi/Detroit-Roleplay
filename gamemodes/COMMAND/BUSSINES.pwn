@@ -113,6 +113,12 @@ CMD:businesslist(playerid, params[]) {
     return ShowBussinesList(playerid, PlayerBussinesListPage[playerid]);
 }
 
+CMD:closebusinesslist(playerid, params[]) {
+    if(!CanManageBussines(playerid)) return 1;
+    HidePlayerDialog(playerid);
+    return 1;
+}
+
 CMD:buybusiness(playerid, params[]) {
     BuyBusiness(playerid);
     return 1;
