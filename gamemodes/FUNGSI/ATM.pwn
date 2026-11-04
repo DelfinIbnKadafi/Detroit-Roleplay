@@ -64,8 +64,6 @@ Fungsi: LoadAtm() {
         }
         atm[index][object] = CreateDynamicObject(19324, atm[index][posx], atm[index][posy], atm[index][posz], 0.0, 0.0, atm[index][angle], 0, 0, -1);
 
-        // coba print debug atm yang jelas
-        printf("[ATM-DEBUG] ID %d | object=%d | valid=%d | pos=%.2f, %.2f, %.2f", atm[index][id], atm[index][object], IsValidDynamicObject(atm[index][object]), atm[index][posx], atm[index][posy], atm[index][posz]);
         if(!IsValidDynamicObject(atm[index][object]) || !CreateAtmLabel(index)) {
             printf("[ATM] Gagal membuat object atau 3D text label untuk ATM ID %d.", atm[index][id]);
             ResetAtmSlot(index);
