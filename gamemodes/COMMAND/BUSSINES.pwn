@@ -8,7 +8,7 @@ CMD:createbusiness(playerid, params[]) {
 
     new Float:x, Float:y, Float:z;
     GetPlayerPos(playerid, x, y, z);
-    new index = CreateBussines("For Sell /buybusiness", strval(typeString), x, y, z);
+    new index = CreateBussines("For Sell", strval(typeString), x, y, z);
     if(index == -1) return SendMessageError(playerid, "Business gagal dibuat. Periksa database, posisi, atau batas pintu dan text label.");
 
     new msg[144];

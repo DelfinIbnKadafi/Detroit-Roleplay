@@ -200,7 +200,7 @@ stock GetBussinesText(index, output[], size) {
     }
     new moneysss[128];
     FormatUang(Bussines[index][bprice], moneysss);
-    format(output, size, "[%d]\n%s $%s\nOwner : %s\nType : %s\nStock : %d", Bussines[index][bid], Bussines[index][bnames], moneysss, Bussines[index][bownername], types, Bussines[index][bsisa]);
+    format(output, size, "[%d]\n%s $%s\n/buybusiness\nOwner : %s\nType : %s\nStock : %d", Bussines[index][bid], Bussines[index][bnames], moneysss, Bussines[index][bownername], types, Bussines[index][bsisa]);
 
     return 1;
 }
