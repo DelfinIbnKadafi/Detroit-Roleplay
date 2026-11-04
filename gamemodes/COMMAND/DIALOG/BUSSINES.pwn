@@ -9,14 +9,15 @@ Dialog:DL_DELETEBUSSINES(playerid, response, listitem, const inputtext[]) {
     return 1;
 }
 
+
 Dialog:DL_BUSSINES_LIST(playerid, response, listitem, const inputtext[]) {
     if(!CanManageBussines(playerid)) return 1;
-    if(response) {
-        if(PlayerBussinesListPage[playerid] > 1) {
-            return ShowBussinesList(playerid, PlayerBussinesListPage[playerid] - 1);
-        }
-        return ShowBussinesList(playerid, PlayerBussinesListPage[playerid]);
+    if(response) { // left button or butnf
+        if(PlayerBussinesListPage[playerid] == 1) return HidePlayerDialog(playerid);
+        if(PlayerBussinesListPage[playerid] > 1) return ShowBussinesList(playerid, PlayerBussinesListPage[playerid] - 1);
     }
+    // right button or butns
+    if(PlayerBussinesListPage[playerid] == PlayerBussinesListPages[playerid]) return HidePlayerDialog(playerid);
     return ShowBussinesList(playerid, PlayerBussinesListPage[playerid] + 1);
 }
 
@@ -31,6 +32,8 @@ stock ShowBussinesList(playerid, page) {
     }
 
     new pages = (ownedCount + BUSSINES_PER_PAGE - 1) / BUSSINES_PER_PAGE;
+    PlayerBussinesListPages[playerid] = pages;
+    
     if(page < 1) page = 1;
     if(page > pages) page = pages;
     PlayerBussinesListPage[playerid] = page;
@@ -47,6 +50,12 @@ stock ShowBussinesList(playerid, page) {
         if(++count >= page * BUSSINES_PER_PAGE) break;
     }
     format(title, sizeof title, "Business - Halaman %d/%d", page, pages);
-    Dialog_Show(playerid, DL_BUSSINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, list, "Sebelumnya", "Berikutnya");
+
+    new butnf[64], butns[64];
+
+    if(page == 1) { format(butnf, sizeof butnf, "Close"); } else { format(butnf, sizeof butnf, "Sebelumnya"); }
+    if(page == pages && pages > 1) { format(butns, sizeof butns, "Close"); } else if(page < pages) { format(butns, sizeof butns, "Selanjutnya"); }
+
+    Dialog_Show(playerid, DL_BUSSINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, list, butnf, butns);
     return 1;
 }
