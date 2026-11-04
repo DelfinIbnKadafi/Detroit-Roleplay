@@ -1,5 +1,5 @@
 stock ShowHelpDialog(playerid) {
-  Dialog_Show(playerid, DL_HELP_MAIN, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Help", "Roleplay Command\nBasic Command\nVehicle Command", "Pilih", "Batal");
+  Dialog_Show(playerid, DL_HELP_MAIN, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Help", "Roleplay Command\nBasic Command\nVehicle Command\nBusiness Command", "Pilih", "Batal");
   
   return 1;
 }
@@ -23,6 +23,9 @@ Dialog:DL_HELP_MAIN(playerid, response, listitem, const inputtext[]) {
     }
     case 2: {
       Dialog_Show(playerid, DL_HELP, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Vehicle Command", "/myveh\n/en\n/lockveh", "Kembali", " ");
+    }
+    case 3: {
+      Dialog_Show(playerid, DL_HELP, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Business Command", "/buybusiness", "Kembali", " ");
     }
   }
   return 1;
