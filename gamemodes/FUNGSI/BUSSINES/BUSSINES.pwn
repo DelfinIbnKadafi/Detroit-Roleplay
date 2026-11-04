@@ -186,8 +186,8 @@ stock bool:ValidBussinesPosition(Float:x, Float:y, Float:z) {
 
 stock GetBussinesTypeName(type, output[], size) {
     if(type == 0) format(output, size, "Market");
-    if(type == 1) format(output, size, "Fast Food");
-    else format(output, size, "Type %d", type);
+    else if(type == 1) format(output, size, "Fast Food");
+    else format(output, size, "Unknown (Type : %d)", type);
     return 1;
 }
 
