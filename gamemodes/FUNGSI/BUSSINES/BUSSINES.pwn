@@ -322,3 +322,10 @@ stock DestroyAllBussines() {
     BussinesReady = false;
     return 1;
 }
+
+stock ShowChangeNamaBusiness(playerid, busindex) {
+    new msg[256];
+    format(msg, sizeof msg, "Nama Lama :\n%s\n\nMasukkan Nama Baru", Bussines[busindex][bnames]);
+    Dialog_Show(playerid, DIALOG_GANTI_NAMA_BUSI, DIALOG_STYLE_INPUT, "Business - Ganti Nama", msg, "Kirim", "Batal");
+    return 1;
+}

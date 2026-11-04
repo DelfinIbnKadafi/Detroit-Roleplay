@@ -10,6 +10,19 @@ Dialog:DL_DELETEBUSSINES(playerid, response, listitem, const inputtext[]) {
 }
 
 
+Dialog:DIALOG_GANTI_NAMA_BUSI(playerid, response, listitem, const inputtext[]) {
+    if(response == 0) return 1;
+
+    strcopy(Bussines[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_BUSSINES_NAME + 1);
+
+    UpdateBussinesObject(SheylaCantikImutBanget[playerid]);
+
+    SaveDataBussines(SheylaCantikImutBanget[playerid], Bussines[SheylaCantikImutBanget[playerid]]);
+
+    return 1;
+}
+
+
 Dialog:DL_BUSSINES_LIST(playerid, response, listitem, const inputtext[]) {
     if(!CanManageBussines(playerid)) return 1;
     if(response) { // left button or butnf

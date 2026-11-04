@@ -190,6 +190,10 @@ stock bool:SimpanPembelianBusiness(playerid, bussindex) {
     return saved;
 }
 
+
+// temp var, the name i make random and bad, so its never can use in another file when next developer edit this, if they not see this
+new SheylaCantikImutBanget[MAX_PLAYERS];
+
 stock BuyBusiness(playerid) {
     if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return 0;
     if(!BussinesReady) return SendMessageError(playerid, "Data business belum selesai dimuat. Silakan coba lagi.");
@@ -214,6 +218,9 @@ stock BuyBusiness(playerid) {
     FormatUang(harga, moneysss);
     format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} Kamu berhasil membeli business ID %d seharga {55FF62}$%s{FFFFFF}.", Bussines[index][bid], moneysss);
     SendClientMessage(playerid, 0xFFFFFFFF, msg);
+
+    ShowChangeNamaBusiness(playerid, index);
+    SheylaCantikImutBanget[playerid] = index;
 
     return 1;
 }

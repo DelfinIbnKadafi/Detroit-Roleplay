@@ -190,7 +190,7 @@ CMD:givemoney(playerid, params[]) {
     return 1;
   }
   if(!IsPlayerAccountReady(target)) return SendMessageError(playerid, "Player yang dituju belum login!");
-  if(amount < 1 || amount > 1000000 || GetPlayerMoney(target) > 2147483647 - amount) {
+  if(amount < 1 || amount > 100000000 || GetPlayerMoney(target) > 2147483647 - amount) {
     SendMessageError(playerid, "Jumlah uang tidak valid atau melebihi batas saldo!");
     return 1;
   }
