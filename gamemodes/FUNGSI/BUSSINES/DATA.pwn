@@ -32,3 +32,4 @@ new BussinesEditor[MAX_BUSSINES] = {INVALID_PLAYER_ID, ...};
 new PlayerEditBussines[MAX_PLAYERS] = {-1, ...};
 new STREAMER_TAG_OBJECT:PlayerBussinesObject[MAX_PLAYERS];
 new PlayerDeleteBussines[MAX_PLAYERS];
+new PlayerBussinesListPage[MAX_PLAYERS];

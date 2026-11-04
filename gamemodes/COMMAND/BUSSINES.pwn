@@ -8,7 +8,7 @@ CMD:createbusiness(playerid, params[]) {
 
     new Float:x, Float:y, Float:z;
     GetPlayerPos(playerid, x, y, z);
-    new index = CreateBussines("For Sell", strval(typeString), x, y, z);
+    new index = CreateBussines("For Sell /buybusiness", strval(typeString), x, y, z);
     if(index == -1) return SendMessageError(playerid, "Business gagal dibuat. Periksa database, posisi, atau batas pintu dan text label.");
 
     new msg[144];
@@ -109,28 +109,8 @@ CMD:deletebusiness(playerid, params[]) {
 
 CMD:businesslist(playerid, params[]) {
     if(!CanManageBussines(playerid)) return 1;
-    if(BussinesCount == 0) return SendMessageInfo(playerid, "Belum ada business yang dimuat.");
-    new page = 1, pages = (BussinesCount + BUSSINES_PER_PAGE - 1) / BUSSINES_PER_PAGE;
-    if(strlen(params)) {
-        if(!ValidBussinesNumber(params)) return SendClientMessage(playerid, -1, "Gunakan: /businesslist [halaman]");
-        page = strval(params);
-    }
-    if(page < 1 || page > pages) return SendMessageError(playerid, "Halaman business tidak tersedia.");
-
-    new list[2048], line[224], title[64], types[32], count;
-    strcat(list, "ID\tNama\tType\tOwner\n");
-    for(new i = 0; i < MAX_BUSSINES; i++) {
-        if(!ValidBussinesIndex(i)) continue;
-        if(count >= (page - 1) * BUSSINES_PER_PAGE && count < page * BUSSINES_PER_PAGE) {
-            GetBussinesTypeName(Bussines[i][btype], types, sizeof types);
-            format(line, sizeof line, "%d\t%s\t%s\t%s\n", Bussines[i][bid], Bussines[i][bnames], types, Bussines[i][bownername]);
-            strcat(list, line, sizeof list);
-        }
-        if(++count >= page * BUSSINES_PER_PAGE) break;
-    }
-    format(title, sizeof title, "Business - Halaman %d/%d", page, pages);
-    Dialog_Show(playerid, DL_BUSSINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, list, "Tutup", "");
-    return 1;
+    PlayerBussinesListPage[playerid] = 1;
+    return ShowBussinesList(playerid, PlayerBussinesListPage[playerid]);
 }
 
 CMD:buybusiness(playerid, params[]) {
