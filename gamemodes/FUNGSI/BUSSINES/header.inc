@@ -1,3 +1,4 @@
 #include "FUNGSI/BUSSINES/BUSSINES.pwn"
 #include "FUNGSI/BUSSINES/DATABASE.pwn"
 #include "FUNGSI/BUSSINES/EDIT.pwn"
+#include "FUNGSI/BUSSINES/BUY.pwn"

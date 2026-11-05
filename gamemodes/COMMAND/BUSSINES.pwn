@@ -123,3 +123,8 @@ CMD:buybusiness(playerid, params[]) {
     BuyBusiness(playerid);
     return 1;
 }
+
+CMD:buy(playerid, params[]) {
+    ShowBuyDialog(playerid);
+    return 1;
+}

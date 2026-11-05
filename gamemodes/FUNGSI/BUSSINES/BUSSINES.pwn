@@ -120,6 +120,7 @@ stock KeluarDariBusiness(playerid, busindex) {
 
 ///////////////////////////////////////////////////////////
 
+// memeriksa apakah player berada di dekat business yang sudah dimiliki
 stock DekatBusiness(playerid) {
     for(new i = 0; i < BussinesSlotLimit; i ++) {
         if(!ValidBussinesIndex(i) || Bussines[i][bownerid] == 0) continue;
@@ -140,6 +141,7 @@ stock DekatPintuKeluarBusiness(playerid) {
 
 ///////////////////////////////////////////////////////////
 
+// mencari indeks business berdasarkan ID business
 stock GetBussinesIndex(bussid) {
     if(bussid <= 0) return -1;
     for(new i = 0; i < BussinesSlotLimit; i++) {
@@ -148,6 +150,7 @@ stock GetBussinesIndex(bussid) {
     return -1;
 }
 
+// mencari slot kosong untuk business baru
 stock GetFreeBussinesSlot() {
     for(new i = 0; i < MAX_BUSSINES; i++) {
         if(!Bussines[i][bactive]) return i;
@@ -155,6 +158,7 @@ stock GetFreeBussinesSlot() {
     return -1;
 }
 
+// menentukan interior berdasarkan tipe business
 stock GetBussinesTypeInterior(type) {
 
     switch(type) {
@@ -166,6 +170,7 @@ stock GetBussinesTypeInterior(type) {
     return BUSSINES_DEFAULT_INTERIOR;
 }
 
+// memeriksa apakah nama business valid
 stock bool:ValidBussinesName(const name[]) {
     new length = strlen(name), bool:hasLetter;
     if(length < 1 || length > MAX_BUSSINES_NAME) return false;
@@ -176,14 +181,17 @@ stock bool:ValidBussinesName(const name[]) {
     return hasLetter;
 }
 
+// memeriksa apakah nilai business berupa angka bulat nonnegatif yang valid
 stock bool:ValidBussinesNumber(const value[]) {
     return ValidUnsignedInteger(value);
 }
 
+// memeriksa apakah koordinat business berada di posisi dunia yang valid
 stock bool:ValidBussinesPosition(Float:x, Float:y, Float:z) {
     return ValidWorldPosition(x, y, z);
 }
 
+// mengambil nama tipe business ke dalam output
 stock GetBussinesTypeName(type, output[], size) {
     if(type == 0) format(output, size, "Market");
     else if(type == 1) format(output, size, "Fast Food");
@@ -191,6 +199,7 @@ stock GetBussinesTypeName(type, output[], size) {
     return 1;
 }
 
+// menyusun teks informasi business untuk ditampilkan
 stock GetBussinesText(index, output[], size) {
     new types[32];
     GetBussinesTypeName(Bussines[index][btype], types, sizeof types);
@@ -205,6 +214,7 @@ stock GetBussinesText(index, output[], size) {
     return 1;
 }
 
+// membuat object pintu keluar di interior business
 stock MakeBussinesExitObject(index) {
     if(IsValidDynamicObject(Bussines[index][bexitobject])) DestroyDynamicObject(Bussines[index][bexitobject]);
     Bussines[index][bexitobject] = STREAMER_TAG_OBJECT:INVALID_STREAMER_ID;
@@ -217,6 +227,7 @@ stock MakeBussinesExitObject(index) {
     return IsValidDynamicObject(Bussines[index][bexitobject]);
 }
 
+// menghapus semua object dan label milik business
 stock DestroyBussinesObject(index) {
     if(IsValidDynamicPickup(Bussines[index][bpickup])) DestroyDynamicPickup(Bussines[index][bpickup]);
     if(IsValidDynamic3DTextLabel(Bussines[index][blabel])) DestroyDynamic3DTextLabel(Bussines[index][blabel]);
@@ -227,6 +238,7 @@ stock DestroyBussinesObject(index) {
     return 1;
 }
 
+// membuat pickup, label, dan object pintu keluar business
 stock MakeBussinesObject(index) {
     new msg[384];
     DestroyBussinesObject(index);
@@ -242,6 +254,7 @@ stock MakeBussinesObject(index) {
     return 1;
 }
 
+// memperbarui posisi dan informasi object business
 stock UpdateBussinesObject(index) {
     if(!IsValidDynamicPickup(Bussines[index][bpickup]) || !IsValidDynamic3DTextLabel(Bussines[index][blabel])) return MakeBussinesObject(index);
 
@@ -259,6 +272,7 @@ stock UpdateBussinesObject(index) {
     return 1;
 }
 
+// menghapus data dan mengosongkan slot business
 stock ResetBussinesSlot(index) {
     static const empty[BussinesData];
     DestroyBussinesObject(index);
@@ -295,6 +309,7 @@ stock KeluarkanPemainDariBusiness(index) {
     return total;
 }
 
+// memeriksa apakah player dapat mengelola business
 stock bool:CanManageBussines(playerid) {
     if(!IsPlayerAccountReady(playerid) || Admin[playerid] < 1) {
         SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
@@ -307,10 +322,12 @@ stock bool:CanManageBussines(playerid) {
     return true;
 }
 
+// memeriksa apakah player berada di luar interior
 stock bool:IsBussinesExterior(playerid) {
     return IsPlayerExterior(playerid);
 }
 
+// menghapus seluruh data dan object business
 stock DestroyAllBussines() {
     for(new playerid = 0; playerid < MAX_PLAYERS; playerid++) {
         ResetBussinesEdit(playerid);
@@ -323,6 +340,7 @@ stock DestroyAllBussines() {
     return 1;
 }
 
+// menampilkan dialog untuk mengganti nama business
 stock ShowChangeNamaBusiness(playerid, busindex) {
     new msg[256];
     format(msg, sizeof msg, "Nama Lama :\n%s\n\nMasukkan Nama Baru", Bussines[busindex][bnames]);

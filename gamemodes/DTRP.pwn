@@ -120,6 +120,12 @@ public OnGameModeExit()
     SaveDataKendaraan(playerid);
   }
   if(g_SQL != MYSQL_INVALID_HANDLE) mysql_close(g_SQL);
+
+  // simpan semua data business
+  for(new i = 0; i < MAX_BUSSINES; i++) {
+    if(Bussines[i][bactive] == true) SaveDataBussines(i, Bussines[i]);
+  }
+
   return 1;
 }
 

@@ -76,3 +76,49 @@ stock ShowBussinesList(playerid, page) {
     Dialog_Show(playerid, DL_BUSSINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, list, butnf, butns);
     return 1;
 }
+
+
+// buy business
+Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
+    if(!response) return 1;
+
+    new businessid = GetPlayerBusinessIndex(playerid);
+    if(Bussines[businessid][bsisa] < 1) return SendMessageError(playerid, "Business ini sudah kehabisan stock!");
+
+    new price, hunger, thirst;
+
+    switch(listitem) {
+        case 0: {
+            price = 30000;
+            hunger = 20;
+        }
+        case 1: {
+            price = 40000;
+            hunger = 30;
+        }
+        case 2: {
+            price = 15000;
+            thirst = 20;
+        }
+        default: return 1;
+    }
+
+    if(GetPlayerMoney(playerid) < price) return SendMessageError(playerid, "Uangmu tidak cukup");
+
+    GivePlayerMoney(playerid, -price);
+
+    if(hunger > 0) {
+        Pemain[playerid][pLapar] += hunger;
+        if(Pemain[playerid][pLapar] > 100) Pemain[playerid][pLapar] = 100;
+    }
+
+    if(thirst > 0) {
+        Pemain[playerid][pHaus] += thirst;
+        if(Pemain[playerid][pHaus] > 100) Pemain[playerid][pHaus] = 100;
+    }
+
+    Bussines[businessid][bsisa]--;
+    SaveDataBussines(businessid, Bussines[businessid]);
+
+    return 1;
+}
