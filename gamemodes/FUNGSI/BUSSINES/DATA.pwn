@@ -2,7 +2,6 @@
 #define MAX_BUSSINES_NAME 128
 #define BUSSINES_PER_PAGE 10
 #define BUSSINES_PICKUP_MODEL 19132
-#define BUSSINES_BUY_PICKUP_MODEL 1274
 #define BUSSINES_DEFAULT_PRICE 15000000
 #define BUSSINES_DEFAULT_INTERIOR 17
 
@@ -32,12 +31,6 @@ new BussinesEditor[MAX_BUSSINES] = {INVALID_PLAYER_ID, ...};
 new PlayerEditBussines[MAX_PLAYERS] = {-1, ...};
 new STREAMER_TAG_OBJECT:PlayerBussinesObject[MAX_PLAYERS];
 
-// object panah pintu keluar (PlayerObject) dan pickup titik beli (PlayerPickup), hanya ada selama player berada di interior business
-new STREAMER_TAG_OBJECT:PlayerBussinesExitPickup[MAX_PLAYERS];
-new STREAMER_TAG_PICKUP:PlayerBussinesBuyPickup[MAX_PLAYERS];
-// ID business (sama dengan virtual world) dan interior tempat object tersebut dibuat, 0 jika player tidak punya object
-new PlayerBussinesObjectBid[MAX_PLAYERS];
-new PlayerBussinesObjectInt[MAX_PLAYERS];
 new PlayerDeleteBussines[MAX_PLAYERS];
 
 // pages
