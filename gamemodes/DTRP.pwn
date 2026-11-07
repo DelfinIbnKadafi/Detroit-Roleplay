@@ -137,7 +137,7 @@ public OnPlayerDisconnect(playerid, reason)
   PlayerSession[playerid]++;
   TdPintuShown[playerid] = false;
   ResetBussinesEdit(playerid);
-  ResetPlayerBussinesObjectData(playerid);
+  DestroyPlayerBussinesObjects(playerid);
   ResetAtmEdit(playerid);
   BatalkanStatusDown(playerid);
   idatmplayeruse[playerid] = -1;

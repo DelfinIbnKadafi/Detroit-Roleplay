@@ -24,8 +24,8 @@ stock GetBusinessBuyPosition(interiorid, &Float:buyx, &Float:buyy, &Float:buyz) 
 // mengosongkan data object dan pickup business milik player (tidak menghapus apa pun di server)
 // dipakai saat player connect/disconnect, karena server sudah menghapus object dan pickup milik player yang disconnect
 stock ResetPlayerBussinesObjectData(playerid) {
-    PlayerBussinesExitObject[playerid] = INVALID_OBJECT_ID;
-    PlayerBussinesBuyPickup[playerid] = INVALID_PICKUP;
+    PlayerBussinesExitPickup[playerid] = STREAMER_TAG_OBJECT:INVALID_STREAMER_ID;
+    PlayerBussinesBuyPickup[playerid] = STREAMER_TAG_PICKUP:INVALID_STREAMER_ID;
     PlayerBussinesObjectBid[playerid] = 0;
     PlayerBussinesObjectInt[playerid] = 0;
     return 1;
@@ -34,14 +34,8 @@ stock ResetPlayerBussinesObjectData(playerid) {
 // menghapus object panah pintu keluar dan pickup titik beli milik player
 stock DestroyPlayerBussinesObjects(playerid) {
     if(playerid < 0 || playerid >= MAX_PLAYERS) return 0;
-    if(IsPlayerConnected(playerid)) {
-        if(PlayerBussinesExitObject[playerid] != INVALID_OBJECT_ID && IsValidPlayerObject(playerid, PlayerBussinesExitObject[playerid])) {
-            DestroyPlayerObject(playerid, PlayerBussinesExitObject[playerid]);
-        }
-        if(PlayerBussinesBuyPickup[playerid] != INVALID_PICKUP && IsValidPlayerPickup(playerid, PlayerBussinesBuyPickup[playerid])) {
-            DestroyPlayerPickup(playerid, PlayerBussinesBuyPickup[playerid]);
-        }
-    }
+    if(IsValidDynamicObject(PlayerBussinesExitPickup[playerid])) DestroyDynamicObject(PlayerBussinesExitPickup[playerid]);
+    if(IsValidDynamicPickup(PlayerBussinesBuyPickup[playerid])) DestroyDynamicPickup(PlayerBussinesBuyPickup[playerid]);
     ResetPlayerBussinesObjectData(playerid);
     return 1;
 }
@@ -62,14 +56,17 @@ stock MakePlayerBussinesObjects(playerid, busindex) {
     PlayerBussinesObjectInt[playerid] = Bussines[busindex][binterior];
 
     // panah pintu keluar, hanya terlihat oleh player ini
-    PlayerBussinesExitObject[playerid] = CreatePlayerObject(playerid, BUSSINES_PICKUP_MODEL, exitx, exity, exitz, 0.0, 0.0, 0.0, 100.0);
-    new bool:success = PlayerBussinesExitObject[playerid] != INVALID_OBJECT_ID;
+    PlayerBussinesExitPickup[playerid] = CreateDynamicPickup(BUSSINES_PICKUP_MODEL, 1, exitx, exity, exitz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), playerid, 50.0);
+    new bool:success = IsValidDynamicPickup(PlayerBussinesExitPickup[playerid]) != 0;
 
-    // pickup di titik pembelian, hanya terlihat oleh player ini di virtual world business
+    // pickup di titik pembelian, hanya terlihat oleh player ini
     if(GetBusinessBuyPosition(Bussines[busindex][binterior], buyx, buyy, buyz)) {
-        PlayerBussinesBuyPickup[playerid] = CreatePlayerPickup(playerid, BUSSINES_BUY_PICKUP_MODEL, 1, buyx, buyy, buyz, Bussines[busindex][bid]);
-        if(PlayerBussinesBuyPickup[playerid] == INVALID_PICKUP) success = false;
+        PlayerBussinesBuyPickup[playerid] = CreateDynamicPickup(BUSSINES_BUY_PICKUP_MODEL, 1, buyx, buyy, buyz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), playerid, 50.0);
+        if(!IsValidDynamicPickup(PlayerBussinesBuyPickup[playerid])) success = false;
     }
+
+    Streamer_Update(playerid);
+
     return success;
 }
 
@@ -82,8 +79,9 @@ stock SyncPlayerBussinesObjects(playerid) {
     new busindex = GetPlayerBusinessIndex(playerid);
     if(busindex == -1) return DestroyPlayerBussinesObjects(playerid);
 
-    new bool:hasObject = PlayerBussinesExitObject[playerid] != INVALID_OBJECT_ID && IsValidPlayerObject(playerid, PlayerBussinesExitObject[playerid]);
-    new bool:hasPickup = PlayerBussinesBuyPickup[playerid] != INVALID_PICKUP && IsValidPlayerPickup(playerid, PlayerBussinesBuyPickup[playerid]);
+    new bool:hasObject = IsValidDynamicObject(PlayerBussinesExitPickup[playerid]) != 0;
+    new bool:hasPickup = IsValidDynamicPickup(PlayerBussinesBuyPickup[playerid]) != 0;
+    
     if(hasObject && hasPickup && PlayerBussinesObjectBid[playerid] == Bussines[busindex][bid] && PlayerBussinesObjectInt[playerid] == Bussines[busindex][binterior]) return 1;
 
     return MakePlayerBussinesObjects(playerid, busindex);
