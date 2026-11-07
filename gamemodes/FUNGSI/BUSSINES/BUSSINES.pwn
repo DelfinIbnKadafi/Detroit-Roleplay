@@ -1,3 +1,5 @@
+
+
 /// valid bus
 stock bool:ValidBussinesIndex(index) {
     return index >= 0 && index < MAX_BUSSINES && Bussines[index][bactive] && Bussines[index][bid] > 0;
@@ -9,13 +11,13 @@ stock GetBusinessInteriorPosition(interiorid, &Float:jojox, &Float:jojoy, &Float
     jojox = 0.0;
     jojoy = 0.0;
     jojoz = 0.0;
-    if(interiorid == 17) {
+    if(interiorid == 17) { // market
         jojox = -25.7220;
         jojoy = -187.8216;
         jojoz = 1003.5469;
         return 1;
     }
-    else if(interiorid == 9) {
+    else if(interiorid == 9) { // fast food
         jojox = 364.75;
         jojoy = -11.50;
         jojoz = 1001.8516;
@@ -23,6 +25,31 @@ stock GetBusinessInteriorPosition(interiorid, &Float:jojox, &Float:jojoy, &Float
     }
     return 0;
 }
+
+
+// buat item (pickup) didalam interior bus
+stock MakeBussinesInteriorItem() {
+
+    new Float:px, Float:py, Float:pz;
+    
+    // market
+    GetBusinessInteriorPosition(17, px, py, pz);
+    CreateDynamicPickup(19132, 1, px, py, pz, -1, 17, -1, 50.0);
+    GetBusinessBuyPosition(17, px, py, pz);
+    CreateDynamicPickup(1274, 1, px, py, pz, -1, 17, -1, 50.0);
+    CreateDynamic3DTextLabel("{ffff00}/buy {ffffff}atau gunakan {00ff40}ALT", 0xFFFFFFFF, px, py, pz + 0.5, 3.0);
+
+    // fast food
+    GetBusinessInteriorPosition(9, px, py, pz);
+    CreateDynamicPickup(19132, 1, px, py, pz, -1, 9, -1, 50.0);
+    GetBusinessBuyPosition(9, px, py, pz);
+    CreateDynamicPickup(1274, 1, px, py, pz, -1, 9, -1, 50.0);
+    CreateDynamic3DTextLabel("{ffff00}/buy {ffffff}atau gunakan {00ff40}ALT", 0xFFFFFFFF, px, py, pz + 0.5, 3.0);
+
+    return 1;
+}
+
+
 
 ///////////////////////////////////////////////////////////
 

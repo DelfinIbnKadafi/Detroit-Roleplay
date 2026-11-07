@@ -46,6 +46,9 @@ Fungsi: LoadBussines() {
     }
     BussinesReady = true;
     printf("[BUSSINES] Berhasil memuat %d business dari database.", BussinesCount);
+
+    MakeBussinesInteriorItem();
+
     return 1;
 }
 
