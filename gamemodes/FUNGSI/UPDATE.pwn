@@ -1,7 +1,5 @@
 public OnPlayerUpdate(playerid) {
   new bool:exitDoor;
-  // hapus object dan pickup business jika player sudah tidak berada di interior business
-  CekObjectBusinessPlayer(playerid);
   if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
     if(CekKondisiKendaraan(GetPlayerVehicleID(playerid))) return 0;
   }
