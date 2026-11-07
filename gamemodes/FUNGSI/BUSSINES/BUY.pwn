@@ -1,4 +1,3 @@
-
 // fungsi mengambil posisi poin beli business
 stock GetBusinessBuyPosition(interiorid, &Float:buyx, &Float:buyy, &Float:buyz) {
     buyx = 0.0;
@@ -17,83 +16,6 @@ stock GetBusinessBuyPosition(interiorid, &Float:buyx, &Float:buyy, &Float:buyz) 
         return 1;
     }
     return 0;
-}
-
-
-
-// mengosongkan data object dan pickup business milik player (tidak menghapus apa pun di server)
-// dipakai saat player connect/disconnect, karena server sudah menghapus object dan pickup milik player yang disconnect
-stock ResetPlayerBussinesObjectData(playerid) {
-    PlayerBussinesExitPickup[playerid] = STREAMER_TAG_OBJECT:INVALID_STREAMER_ID;
-    PlayerBussinesBuyPickup[playerid] = STREAMER_TAG_PICKUP:INVALID_STREAMER_ID;
-    PlayerBussinesObjectBid[playerid] = 0;
-    PlayerBussinesObjectInt[playerid] = 0;
-    return 1;
-}
-
-// menghapus object panah pintu keluar dan pickup titik beli milik player
-stock DestroyPlayerBussinesObjects(playerid) {
-    if(playerid < 0 || playerid >= MAX_PLAYERS) return 0;
-    if(IsValidDynamicObject(PlayerBussinesExitPickup[playerid])) DestroyDynamicObject(PlayerBussinesExitPickup[playerid]);
-    if(IsValidDynamicPickup(PlayerBussinesBuyPickup[playerid])) DestroyDynamicPickup(PlayerBussinesBuyPickup[playerid]);
-    ResetPlayerBussinesObjectData(playerid);
-    return 1;
-}
-
-// membuat object panah pintu keluar dan pickup titik beli untuk player di interior business
-// dipanggil tepat setelah player dipindahkan ke interior
-stock MakePlayerBussinesObjects(playerid, busindex) {
-    if(playerid < 0 || playerid >= MAX_PLAYERS) return 0;
-
-    // hapus sisa object lama (jika ada) agar tidak menumpuk
-    DestroyPlayerBussinesObjects(playerid);
-    if(!IsPlayerConnected(playerid) || !ValidBussinesIndex(busindex)) return 0;
-
-    new Float:exitx, Float:exity, Float:exitz, Float:buyx, Float:buyy, Float:buyz;
-    if(!GetBusinessInteriorPosition(Bussines[busindex][binterior], exitx, exity, exitz)) return 0;
-
-    PlayerBussinesObjectBid[playerid] = Bussines[busindex][bid];
-    PlayerBussinesObjectInt[playerid] = Bussines[busindex][binterior];
-
-    // panah pintu keluar, hanya terlihat oleh player ini
-    PlayerBussinesExitPickup[playerid] = CreateDynamicPickup(BUSSINES_PICKUP_MODEL, 1, exitx, exity, exitz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), playerid, 50.0);
-    new bool:success = IsValidDynamicPickup(PlayerBussinesExitPickup[playerid]) != 0;
-
-    // pickup di titik pembelian, hanya terlihat oleh player ini
-    if(GetBusinessBuyPosition(Bussines[busindex][binterior], buyx, buyy, buyz)) {
-        PlayerBussinesBuyPickup[playerid] = CreateDynamicPickup(BUSSINES_BUY_PICKUP_MODEL, 1, buyx, buyy, buyz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), playerid, 50.0);
-        if(!IsValidDynamicPickup(PlayerBussinesBuyPickup[playerid])) success = false;
-    }
-
-    Streamer_Update(playerid);
-
-    return success;
-}
-
-// memastikan player yang berada di interior business punya object dan pickup business
-// dipakai saat spawn (mis. login di dalam business atau respawn setelah mati di dalam business)
-// dan menghapus object jika player ternyata tidak lagi berada di business
-stock SyncPlayerBussinesObjects(playerid) {
-    if(playerid < 0 || playerid >= MAX_PLAYERS || !IsPlayerConnected(playerid)) return 0;
-
-    new busindex = GetPlayerBusinessIndex(playerid);
-    if(busindex == -1) return DestroyPlayerBussinesObjects(playerid);
-
-    new bool:hasObject = IsValidDynamicObject(PlayerBussinesExitPickup[playerid]) != 0;
-    new bool:hasPickup = IsValidDynamicPickup(PlayerBussinesBuyPickup[playerid]) != 0;
-    
-    if(hasObject && hasPickup && PlayerBussinesObjectBid[playerid] == Bussines[busindex][bid] && PlayerBussinesObjectInt[playerid] == Bussines[busindex][binterior]) return 1;
-
-    return MakePlayerBussinesObjects(playerid, busindex);
-}
-
-// menghapus object dan pickup business jika player sudah berpindah dari interior business tanpa lewat pintu keluar
-// (mis. dipindahkan admin atau respawn di hospital), dipanggil dari OnPlayerUpdate sehingga harus ringan
-stock CekObjectBusinessPlayer(playerid) {
-    if(PlayerBussinesObjectBid[playerid] == 0) return 0;
-    if(GetPlayerVirtualWorld(playerid) == PlayerBussinesObjectBid[playerid] && GetPlayerInterior(playerid) == PlayerBussinesObjectInt[playerid]) return 0;
-    DestroyPlayerBussinesObjects(playerid);
-    return 1;
 }
 
 
