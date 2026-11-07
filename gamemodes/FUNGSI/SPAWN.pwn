@@ -87,6 +87,8 @@ public OnPlayerSpawn(playerid)
   SetPlayerInterior(playerid, PosisiPemain[playerid][pInt]);
   SetPlayerVirtualWorld(playerid, PosisiPemain[playerid][pVW]);
   Streamer_UpdateEx(playerid, PosisiPemain[playerid][pX], PosisiPemain[playerid][pY], PosisiPemain[playerid][pZ], PosisiPemain[playerid][pVW], PosisiPemain[playerid][pInt]);
+  // spawn di dalam business (login atau respawn setelah mati): object panah pintu keluar dan pickup titik beli harus ada
+  SyncPlayerBussinesObjects(playerid);
   if(PlayerDeath[playerid]) JadwalkanStatusDown(playerid);
   else TogglePlayerControllable(playerid, true);
   if(NewPlayerPendingSave[playerid]) {

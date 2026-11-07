@@ -79,33 +79,51 @@ stock ShowBussinesList(playerid, page) {
 
 
 // buy business
+Dialog:BUY_MARKET(playerid, response, listitem, const inputtext[]) {
+    if(!response) return 1;
+    return SendMessageInfo(playerid, "Market ini belum menjual item apa pun.");
+}
+
 Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
     if(!response) return 1;
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return 1;
 
+    // dialog bisa tetap terbuka setelah player berpindah tempat, jadi pastikan player masih di titik beli business Fast Food
     new businessid = GetPlayerBusinessIndex(playerid);
+    if(businessid == -1 || Bussines[businessid][binterior] != 9 || !IsPlayerInBuyPoint(playerid, businessid)) return SendMessageError(playerid, "Kamu harus berada di titik beli business Fast Food!");
     if(Bussines[businessid][bsisa] < 1) return SendMessageError(playerid, "Business ini sudah kehabisan stock!");
 
-    new price, hunger, thirst;
+    new price, hunger, thirst, item[16];
 
     switch(listitem) {
         case 0: {
             price = 30000;
             hunger = 20;
+            format(item, sizeof item, "Burger");
         }
         case 1: {
             price = 40000;
             hunger = 30;
+            format(item, sizeof item, "Pizza");
         }
         case 2: {
             price = 15000;
             thirst = 20;
+            format(item, sizeof item, "Cola");
         }
         default: return 1;
     }
 
     if(GetPlayerMoney(playerid) < price) return SendMessageError(playerid, "Uangmu tidak cukup");
 
+    // stock berkurang dan tersimpan ke database lebih dulu, jika gagal pembelian dibatalkan dan uang tidak berkurang
+    new data[BussinesData];
+    data = Bussines[businessid];
+    data[bsisa]--;
+    if(!SaveDataBussines(businessid, data)) return SendMessageError(playerid, "Pembelian gagal diproses. Uangmu tidak berkurang, silakan coba lagi.");
+
     GivePlayerMoney(playerid, -price);
+    Pemain[playerid][pUang] = GetPlayerMoney(playerid);
 
     if(hunger > 0) {
         Pemain[playerid][pLapar] += hunger;
@@ -117,8 +135,10 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
         if(Pemain[playerid][pHaus] > 100) Pemain[playerid][pHaus] = 100;
     }
 
-    Bussines[businessid][bsisa]--;
-    SaveDataBussines(businessid, Bussines[businessid]);
+    new msg[144], moneysss[32];
+    FormatUang(price, moneysss);
+    format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} Kamu membeli %s seharga {55FF62}$%s{FFFFFF}.", item, moneysss);
+    SendClientMessage(playerid, 0xFFFFFFFF, msg);
 
     return 1;
 }
