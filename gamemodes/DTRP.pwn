@@ -76,7 +76,6 @@ public OnPlayerConnect(playerid)
     if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
     ResetAtmEdit(playerid);
     ResetBussinesEdit(playerid);
-    ResetPlayerBussinesObjectData(playerid);
     idatmplayeruse[playerid] = -1;
     PlayerDeleteBussines[playerid] = 0;
     ResetDataPemain(playerid);
@@ -137,7 +136,6 @@ public OnPlayerDisconnect(playerid, reason)
   PlayerSession[playerid]++;
   TdPintuShown[playerid] = false;
   ResetBussinesEdit(playerid);
-  DestroyPlayerBussinesObjects(playerid);
   ResetAtmEdit(playerid);
   BatalkanStatusDown(playerid);
   idatmplayeruse[playerid] = -1;
