@@ -20,7 +20,7 @@ stock GetBusinessBuyPosition(interiorid, &Float:buyx, &Float:buyy, &Float:buyz) 
 
 
 
-// fungsi mengecek apakah player berada dalam radius 1,5 dari titik poin pembelian business
+// fungsi mengecek apakah player berada dalam radius 1 dari titik poin pembelian business
 stock IsPlayerInBuyPoint(playerid, busindex) {
     if(!ValidBussinesIndex(busindex) || GetPlayerBusinessIndex(playerid) != busindex) return 0;
 
@@ -28,7 +28,7 @@ stock IsPlayerInBuyPoint(playerid, busindex) {
 
     if(!GetBusinessBuyPosition(Bussines[busindex][binterior], buyx, buyy, buyz)) return 0;
 
-    return IsPlayerInRangeOfPoint(playerid, 1.5, buyx, buyy, buyz);
+    return IsPlayerInRangeOfPoint(playerid, 1.0, buyx, buyy, buyz);
 }
 
 // fungsi yang menunjukan dialog membeli item di business

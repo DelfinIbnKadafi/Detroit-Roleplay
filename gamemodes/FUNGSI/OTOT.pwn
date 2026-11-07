@@ -14,5 +14,10 @@ public OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys) {
     if(!IsPlayerInAnyVehicle(playerid)) return 1;
     ToggleMesinKendaraan(playerid);
   }
+  // alt
+  if((newkeys & KEY_WALK) && !(oldkeys & KEY_WALK)) {
+    if(IsPlayerInAnyVehicle(playerid)) return 1;
+    ShowBuyDialog(playerid);
+  }
   return 1;
 }
