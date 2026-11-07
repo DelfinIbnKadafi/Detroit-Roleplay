@@ -101,9 +101,6 @@ stock MasukKeBusiness(playerid, busindex) {
     SetPlayerPos(playerid, jojox, jojoy, jojoz);
     playerinbussines[playerid] = true;
 
-    // object panah pintu keluar dan pickup titik beli baru dibuat setelah player dipindahkan ke interior
-    if(!MakePlayerBussinesObjects(playerid, busindex)) printf("[BUSSINES] Gagal membuat object atau pickup interior business ID %d untuk player %d.", Bussines[busindex][bid], playerid);
-
     return 1;
 }
 
@@ -117,9 +114,6 @@ stock KeluarDariBusiness(playerid, busindex) {
     Streamer_UpdateEx(playerid, Bussines[busindex][bx], Bussines[busindex][by], Bussines[busindex][bz], 0, 0);
     SetPlayerPos(playerid, Bussines[busindex][bx], Bussines[busindex][by], Bussines[busindex][bz]);
     playerinbussines[playerid] = false;
-
-    // object panah pintu keluar dan pickup titik beli dihapus saat player keluar
-    DestroyPlayerBussinesObjects(playerid);
 
     return 1;
 }
@@ -220,8 +214,7 @@ stock GetBussinesText(index, output[], size) {
     return 1;
 }
 
-// menghapus pickup dan label milik business
-// (object panah pintu keluar dan pickup titik beli di interior dibuat per player, lihat MakePlayerBussinesObjects di BUY.pwn)
+// menghapus pickup dan label business di area luar
 stock DestroyBussinesObject(index) {
     if(IsValidDynamicPickup(Bussines[index][bpickup])) DestroyDynamicPickup(Bussines[index][bpickup]);
     if(IsValidDynamic3DTextLabel(Bussines[index][blabel])) DestroyDynamic3DTextLabel(Bussines[index][blabel]);
@@ -293,7 +286,6 @@ stock KeluarkanPemainDariBusiness(index) {
         Streamer_UpdateEx(playerid, Bussines[index][bx], Bussines[index][by], Bussines[index][bz], 0, 0);
         SetPlayerPos(playerid, Bussines[index][bx], Bussines[index][by], Bussines[index][bz]);
         playerinbussines[playerid] = false;
-        DestroyPlayerBussinesObjects(playerid);
         SendMessageInfo(playerid, "Kamu dipindahkan keluar karena business ini diubah atau dihapus.");
         total++;
     }
