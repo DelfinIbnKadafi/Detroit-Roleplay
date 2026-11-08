@@ -144,7 +144,6 @@ stock ResetDataPemain(playerid)
 {
   static const data_pemain[DATA_PEMAIN];
   static const posisi_player[POSISI_PLAYER];
-  static const data_kendaraan[DataVeh];
 
   Pemain[playerid] = data_pemain;
   PosisiPemain[playerid] = posisi_player;
@@ -153,26 +152,18 @@ stock ResetDataPemain(playerid)
   NewPlayerPendingSave[playerid] = false;
   PlayerKicking[playerid] = false;
   PlayerLoginStep[playerid] = LOGIN_LOADING;
-  VehiclesLoaded[playerid] = false;
   Admin[playerid] = 0;
   AdminDuty[playerid] = false;
   Mute[playerid] = false;
   JumlahSpam[playerid] = 0;
   ChatWindowStart[playerid] = 0;
   TimerUnMute[playerid] = 0;
-  JumVeh[playerid] = 0;
-  PilihanVeh[playerid] = 0;
-  TimerMesin[playerid] = 0;
   KillTimer(TimerDown[playerid]);
   TimerDown[playerid] = 0;
   DownGeneration[playerid]++;
   DeletePVar(playerid, "login_attempts");
   DeletePVar(playerid, "verify_attempts");
-  for(new i = 0; i < MAX_KENDARAAN; i++) {
-    PVeh[playerid][i] = data_kendaraan;
-    PlayerVehID[playerid][i] = INVALID_VEHICLE_ID;
-    VehicleIsSpawn[playerid][i] = false;
-  }
+  ResetDataKendaraanPemain(playerid);
 
   return 1;
 }

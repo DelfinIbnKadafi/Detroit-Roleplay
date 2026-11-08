@@ -78,6 +78,7 @@ public OnPlayerConnect(playerid)
     ResetBussinesEdit(playerid);
     idatmplayeruse[playerid] = -1;
     PlayerDeleteBussines[playerid] = 0;
+    PlayerBusinessCount[playerid] = 0;
     ResetDataPemain(playerid);
     for(new i = 0; i < 3; i++) {
       TextDrawShowForPlayer(playerid, LOGO_SERVER[i]);

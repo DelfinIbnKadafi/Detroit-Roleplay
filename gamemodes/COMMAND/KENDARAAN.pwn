@@ -1,18 +1,18 @@
 // kendaraan
 CMD:myveh(playerid, params[]) {
-  if(JumVeh[playerid] == 0) {
+  if(PVehInfo[playerid][viJumlah] == 0) {
     SendMessageInfo(playerid, "Kamu tidak memiliki kendaraan!");
     return 1;
   }
 
   new liststr[256], line[64];
-  for(new i = 0; i < JumVeh[playerid]; i++) {
+  for(new i = 0; i < PVehInfo[playerid][viJumlah]; i++) {
     new vnama[32];
     GetVehicleModelName(PVeh[playerid][i][vModel], vnama, sizeof(vnama));
     format(line, sizeof(line), "%d\t%s\n", PVeh[playerid][i][vId], vnama);
     strcat(liststr, line, sizeof(liststr));
   }
-  Dialog_Show(playerid, DL_VEHLIST, DIALOG_STYLE_TABLIST, "Id\tModel", liststr, "Pilih", "Batal");
+  Dialog_Show(playerid, DL_VEHLIST, DIALOG_STYLE_TABLIST, "ID\tModel", liststr, "Pilih", "Batal");
   return 1;
 }
 
@@ -21,63 +21,22 @@ CMD:en(playerid, params[]) {
 }
 
 CMD:lockveh(playerid, params[]) {
-  
+  // Pemain sedang berada di dalam kendaraan: kunci kendaraan yang sedang dinaiki
   if(IsPlayerInAnyVehicle(playerid)) {
     new vehicleid = GetPlayerVehicleID(playerid);
-    if(!IsPlayerOwnedVehicle(vehicleid)) {
-      SendMessageError(playerid, "Ini bukan kendaraan milikmu!");
-      return 1;
-    }
+    if(!IsPlayerOwnedVehicle(vehicleid)) return SendMessageError(playerid, "Ini bukan kendaraan milikmu!");
     if(!IsVehicleInPlayerWorld(playerid, vehicleid)) return SendMessageError(playerid, "Kamu terlalu jauh dari kendaraan ini.");
-    new Float:vx, Float:vy, Float:vz;
-    GetVehiclePos(vehicleid, vx, vy, vz);
-    if(IsPlayerInRangeOfPoint(playerid, 4.0, vx, vy, vz)) {
-      if(VehOwner[vehicleid] != playerid) {
-        SendMessageError(playerid, "Ini bukan kendaraan milikmu!");
-        return 1;
-      }
-      else {
-        if(PVeh[playerid][VehSlot[vehicleid]][vKunci] == 0) {
-          PVeh[playerid][VehSlot[vehicleid]][vKunci] = 1;
-          SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], true);
-          SendMessageInfo(playerid, "Kendaraan berhasil dikunci.");
-        }
-        else {
-          PVeh[playerid][VehSlot[vehicleid]][vKunci] = 0;
-          SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], false);
-          SendMessageInfo(playerid, "Kunci kendaraan berhasil dibuka.");
-        }
-      }
-    }
-    return 1;
+    if(!IsPlayerDekatKendaraan(playerid, vehicleid)) return 1;
+    if(VehServer[vehicleid][vsPemilik] != playerid) return SendMessageError(playerid, "Ini bukan kendaraan milikmu!");
+    return ToggleKunciKendaraan(playerid, VehServer[vehicleid][vsSlot]);
   }
-  
-  for(new i = 0; i < JumVeh[playerid]; i++) {
-    new Float:vx, Float:vy, Float:vz;
-    new vehicleid = GetOwnedVehicleInSlot(playerid, i);
-    
-    if(!IsVehicleInPlayerWorld(playerid, vehicleid)) {
-      continue;
-    }
-    
-    GetVehiclePos(vehicleid, vx, vy, vz);
-    if(!IsPlayerInRangeOfPoint(playerid, 4.0, vx, vy, vz)) {
-      continue;
-    }
-    else {
-      if(PVeh[playerid][i][vKunci] == 0) {
-        PVeh[playerid][i][vKunci] = 1;
-        SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], true);
-        SendMessageInfo(playerid, "Kendaraan berhasil dikunci.");
-        return 1;
-      }
-      else {
-        PVeh[playerid][i][vKunci] = 0;
-        SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], false);
-        SendMessageInfo(playerid, "Kunci kendaraan berhasil dibuka.");
-        return 1;
-      }
-    }
+
+  // Pemain berada di luar: cari kendaraan miliknya yang paling dulu ditemukan di sekitar
+  for(new slot = 0; slot < PVehInfo[playerid][viJumlah]; slot++) {
+    new vehicleid = GetOwnedVehicleInSlot(playerid, slot);
+    // Lewati kendaraan yang belum di-spawn, beda dunia, atau terlalu jauh
+    if(!IsVehicleInPlayerWorld(playerid, vehicleid) || !IsPlayerDekatKendaraan(playerid, vehicleid)) continue;
+    return ToggleKunciKendaraan(playerid, slot);
   }
   return 1;
 }

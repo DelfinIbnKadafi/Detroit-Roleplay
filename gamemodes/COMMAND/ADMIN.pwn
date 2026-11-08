@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit\n/closebusinesslist", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit\n/closebusinesslist\n/repairveh", "keluar", " ");
   
   return 1;
 }
@@ -269,26 +269,15 @@ CMD:spawnaveh(playerid, params[]) {
     SendMessageError(playerid, "Model kendaraan atau warna tidak valid!");
     return 1;
   }
-  if(jumaveh >= sizeof(aveh)) {
-    SendMessageError(playerid, "Batas kendaraan admin telah tercapai!");
-    return 1;
-  }
 
   new vehicleid = CreateVehicle(vehhhid, x + 3.00, y, z, a, color, color, -1, false);
   if(vehicleid == INVALID_VEHICLE_ID) {
     SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
     return 1;
   }
-  RemoveAdminVehicle(vehicleid);
-  VehicleGeneration[vehicleid]++;
+  DaftarkanKendaraanAdmin(playerid, vehicleid);
   SetVehicleVirtualWorld(vehicleid, GetPlayerVirtualWorld(playerid));
   LinkVehicleToInterior(vehicleid, GetPlayerInterior(playerid));
-  aveh[jumaveh] = vehicleid;
-  avehOwner[jumaveh] = playerid;
-  jumaveh++;
-  VehOwner[vehicleid] = -1;
-  VehSlot[vehicleid] = -1;
-  MesinVeh[vehicleid] = true;
   SetVehicleParamsEx(vehicleid, true, false, false, false, false, false, false);
   SendMessageInfo(playerid, "Berhasil spawn veh");
   return 1;
@@ -388,6 +377,19 @@ CMD:setskin(playerid, params[]) {
 
   SetPlayerSkin(targetid, skinid);
   SimpanDataPemain(targetid);
+
+  return 1;
+}
+
+CMD:repairveh(playerid, params[]) {
+
+  if(Admin[playerid] < 1) return SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+
+  new targetveh;
+  if(sscanf(params, "i", targetveh)) return SendClientMessage(playerid, -1, "Gunakan: /repairveh <idveh>");
+
+  // will continue later
+  SendMessageInfo(playerid, "fungsinya belum selesai dek ya");
 
   return 1;
 }

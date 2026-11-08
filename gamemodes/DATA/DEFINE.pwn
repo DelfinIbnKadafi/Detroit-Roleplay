@@ -1,6 +1,6 @@
 // Server Description
 #define SERVER_NAME 			"Detroit Project Roleplay"
-#define SERVER_VERSION 			"0.1.1"
+#define SERVER_VERSION 			"0.1.3"
 
 //------[ Makro ]------//
 #define Fungsi:%0(%1) 			forward %0(%1); public %0(%1)
@@ -22,6 +22,7 @@
 #define VEHICLE_CRITICAL_HEALTH 300.0
 #define VEHICLE_HEALTH_CHECK_INTERVAL 100
 #define DEAD_VEHICLE_HEALTH 999999.0
+#define VEH_KOSONG (-1) // nilai awal pemilik/slot/admin pada VehServer (artinya: tidak ada)
 
 // bussines
 #define MAX_BUSSINES 1000

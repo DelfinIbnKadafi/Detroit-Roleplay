@@ -19,12 +19,13 @@ stock SpawnPemainEx(playerid, bool:new_player = false)
     );
 
     MuatDataKendaraan(playerid);
+    MuatBusinessPlayer(playerid);
     
   }
   else 
   {
     NewPlayerPendingSave[playerid] = true;
-    VehiclesLoaded[playerid] = true;
+    PVehInfo[playerid][viDimuat] = true;
     Pemain[playerid][pLevel] = 1;
     Pemain[playerid][pSkin] = Pemain[playerid][pGender] == 2 ? DEFAULT_FEMALE_SKIN : DEFAULT_MALE_SKIN;
     Pemain[playerid][pDarah] = 100.0;

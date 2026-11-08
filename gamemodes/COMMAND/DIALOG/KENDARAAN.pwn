@@ -1,6 +1,6 @@
 Dialog:DL_VEHLIST(playerid, response, listitem, inputtext[]) {
   if(!response || !IsPlayerAccountReady(playerid)) return 1;
-  if(listitem < 0 || listitem >= JumVeh[playerid]) return 1;
+  if(!IsSlotKendaraanValid(playerid, listitem)) return 1;
 
   new judul[64], pilihan[128];
   new vnama[32];
@@ -8,7 +8,7 @@ Dialog:DL_VEHLIST(playerid, response, listitem, inputtext[]) {
   format(judul, sizeof(judul), "Kendaraan: %s", vnama);
   format(pilihan, sizeof(pilihan), "Spawn Kendaraan\nLihat Info\nKunci\nTrack");
 
-  PilihanVeh[playerid] = listitem;
+  PVehInfo[playerid][viPilihan] = listitem;
   Dialog_Show(playerid, DL_AKSIVEH, DIALOG_STYLE_LIST, judul, pilihan, "Pilih", "Batal");
   return 1;
 }
@@ -16,88 +16,54 @@ Dialog:DL_VEHLIST(playerid, response, listitem, inputtext[]) {
 Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
   if(!response || !IsPlayerAccountReady(playerid)) return 1;
 
-  new idp = PilihanVeh[playerid];
-  if(idp < 0 || idp >= JumVeh[playerid]) return 1;
+  new slot = PVehInfo[playerid][viPilihan];
+  if(!IsSlotKendaraanValid(playerid, slot)) return 1;
 
   switch(listitem) {
     case 0: {
       // spawn veh
-      if(GetOwnedVehicleInSlot(playerid, idp) != INVALID_VEHICLE_ID) {
-        SendMessageError(playerid, "Kendaraan tersebut telah di spawn");
-        return 1;
-      }
-      
-      if(SpawnKendaraanPlayer(playerid, idp) == INVALID_VEHICLE_ID) {
-        SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
-        return 1;
+      if(GetOwnedVehicleInSlot(playerid, slot) != INVALID_VEHICLE_ID) return SendMessageError(playerid, "Kendaraan tersebut telah di spawn");
+
+      if(SpawnKendaraanPlayer(playerid, slot) == INVALID_VEHICLE_ID) {
+        return SendMessageError(playerid, "Kendaraan gagal di-spawn. Batas kendaraan server mungkin tercapai.");
       }
 
       SendMessageInfo(playerid, "Kendaraan telah di-spawn.");
       return 1;
     }
     case 1: {
+      // info
       new vnama[32], str[128];
-      if(PVeh[playerid][idp][vDeath] != 0) PVeh[playerid][idp][vHealth] = 0.0;
-      GetVehicleModelName(PVeh[playerid][idp][vModel], vnama, sizeof(vnama));
-      format(str, sizeof(str), "Model Kendaraan: %s\n\nId Kendaraan: %d\n\nKondisi: %.1f",vnama, PVeh[playerid][idp][vId], PVeh[playerid][idp][vHealth]);
+      if(IsSlotKendaraanMati(playerid, slot)) PVeh[playerid][slot][vHealth] = 0.0;
+      GetVehicleModelName(PVeh[playerid][slot][vModel], vnama, sizeof(vnama));
+      format(str, sizeof(str), "Model Kendaraan: %s\n\nId Kendaraan: %d\n\nKondisi: %.1f", vnama, PVeh[playerid][slot][vId], PVeh[playerid][slot][vHealth]);
       Dialog_Show(playerid, DL_INFOVEH, DIALOG_STYLE_MSGBOX, "Info Kendaraan", str, "Kembali", " ");
       return 1;
     }
     case 2: {
-      new vehicleid = GetOwnedVehicleInSlot(playerid, idp);
-      
-      if(!IsValidVehicle(vehicleid)) {
-        SendMessageError(playerid, "Kendaraan belum di-spawn.");
-        return 1;
+      // kunci
+      new vehicleid = GetOwnedVehicleInSlot(playerid, slot);
+      if(!IsValidVehicle(vehicleid)) return SendMessageError(playerid, "Kendaraan belum di-spawn.");
+
+      // Perbarui posisi tersimpan, lalu pastikan pemain berada di dekat kendaraan
+      SalinPosisiKendaraan(playerid, slot, vehicleid);
+      if(!IsVehicleInPlayerWorld(playerid, vehicleid) || !IsPlayerDekatKendaraan(playerid, vehicleid)) {
+        return SendMessageError(playerid, "Kamu terlalu jauh dari kendaraan ini.");
       }
-      
-      GetVehiclePos(vehicleid,
-       PVeh[playerid][idp][vX],
-       PVeh[playerid][idp][vY],
-       PVeh[playerid][idp][vZ]
-      );
-      
-      if(!IsVehicleInPlayerWorld(playerid, vehicleid) || !IsPlayerInRangeOfPoint(playerid, 4.0, PVeh[playerid][idp][vX], PVeh[playerid][idp][vY], PVeh[playerid][idp][vZ])) {
-        SendMessageError(playerid, "Kamu terlalu jauh dari kendaraan ini.");
-        return 1;
-      }
-      
-      if(PVeh[playerid][idp][vKunci] == 0) {
-        PVeh[playerid][idp][vKunci] = 1;
-        
-        SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], true);
-        
-        SendMessageInfo(playerid, "Kendaraan berhasil dikunci.");
-      }
-      else {
-        PVeh[playerid][idp][vKunci] = 0;
-        SetVehicleEngineAndLock(vehicleid, MesinVeh[vehicleid], false);
-        
-        SendMessageInfo(playerid, "Kunci kendaraan berhasil dibuka.");
-      }
-      return 1;
+
+      return ToggleKunciKendaraan(playerid, slot);
     }
     case 3: {
       // track
-      new vehicleid = GetOwnedVehicleInSlot(playerid, idp);
-      
-      if(IsValidVehicle(vehicleid)) {
-        PVeh[playerid][idp][vWorld] = GetVehicleVirtualWorld(vehicleid);
-        PVeh[playerid][idp][vInterior] = GetVehicleInterior(vehicleid);
-        GetVehiclePos(vehicleid,
-         PVeh[playerid][idp][vX],
-         PVeh[playerid][idp][vY],
-         PVeh[playerid][idp][vZ]
-        );
-      }
-      if(PVeh[playerid][idp][vWorld] != GetPlayerVirtualWorld(playerid) || PVeh[playerid][idp][vInterior] != GetPlayerInterior(playerid)) return SendMessageError(playerid, "Kendaraan berada di world atau interior yang berbeda.");
+      new vehicleid = GetOwnedVehicleInSlot(playerid, slot);
 
-      SetPlayerCheckpoint(playerid,
-       PVeh[playerid][idp][vX],
-       PVeh[playerid][idp][vY],
-       PVeh[playerid][idp][vZ],
-       2.0
-      );
+      // Jika kendaraan sedang di-spawn, ambil posisi terbarunya
+      if(IsValidVehicle(vehicleid)) SalinPosisiKendaraan(playerid, slot, vehicleid);
+      if(PVeh[playerid][slot][vWorld] != GetPlayerVirtualWorld(playerid) || PVeh[playerid][slot][vInterior] != GetPlayerInterior(playerid)) {
+        return SendMessageError(playerid, "Kendaraan berada di world atau interior yang berbeda.");
+      }
+
+      SetPlayerCheckpoint(playerid, PVeh[playerid][slot][vX], PVeh[playerid][slot][vY], PVeh[playerid][slot][vZ], 2.0);
       SendMessageInfo(playerid, "Checkpoint menuju kendaraan telah dibuat!");
       return 1;
     }

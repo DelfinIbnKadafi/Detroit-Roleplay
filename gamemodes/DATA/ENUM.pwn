@@ -53,9 +53,9 @@ enum POSISI_PLAYER
 new Pemain[MAX_PLAYERS][DATA_PEMAIN];
 new PosisiPemain[MAX_PLAYERS][POSISI_PLAYER];
 
-// veh 
+// kendaraan
 enum DataVeh {
-  vId,
+  vId,                              // kolom vid, ID unik di database
   vModel,
   vColor1,
   vColor2,
@@ -64,17 +64,34 @@ enum DataVeh {
   Float:vX,
   Float:vY,
   Float:vZ,
-  Float:vAngel,
+  Float:vAngel,                     // kolom angel (sudut hadap)
   vFuel,
-  vKunci,
-  vDeath,
-  // Damage dan dimensi disimpan selama kendaraan masih dimuat oleh player
+  vKunci,                           // 0 = terbuka, 1 = terkunci
+  vDeath,                           // 0 = hidup, 1 = mati total
   VEHICLE_PANEL_STATUS:vPanels,
   VEHICLE_DOOR_STATUS:vDoors,
   VEHICLE_LIGHT_STATUS:vLights,
   VEHICLE_TYRE_STATUS:vTyres,
   vWorld,
-  vInterior
+  vInterior,
+  vIdServer                         // ID kendaraan di server (INVALID_VEHICLE_ID jika belum di-spawn)
+};
+
+enum DataVehInfo {
+  viJumlah,                         // jumlah kendaraan yang dimiliki
+  viPilihan,                        // slot yang dipilih di dialog /myveh
+  bool:viDimuat,                    // true jika data kendaraan sudah selesai dimuat dari database
+  viTimerMesin                      // timer menghidupkan / mematikan mesin
+};
+
+enum DataVehServer {
+  vsPemilik,                        // playerid pemilik, VEH_KOSONG jika bukan kendaraan pemain
+  vsSlot,                           // slot milik pemilik, VEH_KOSONG jika bukan kendaraan pemain
+  bool:vsMesin,                     // true jika mesin sedang menyala
+  vsGenerasi,                       // bertambah setiap kendaraan dibuat, untuk membatalkan callback timer lama
+  vsAdmin                           // playerid admin yang membuat kendaraan, VEH_KOSONG jika bukan kendaraan admin
 };
 
 new PVeh[MAX_PLAYERS][MAX_KENDARAAN][DataVeh];
+new PVehInfo[MAX_PLAYERS][DataVehInfo];
+new VehServer[MAX_VEHICLES_SERVER][DataVehServer] = {{VEH_KOSONG, VEH_KOSONG, false, 0, VEH_KOSONG}, ...};

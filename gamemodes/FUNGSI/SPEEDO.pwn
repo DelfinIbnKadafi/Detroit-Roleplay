@@ -7,7 +7,7 @@ Fungsi:UpdateSpeedoMeter(playerid) {
   new str[16];
   format(str, sizeof(str), "%d", GetVehicleSpeed(vehicleid));
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][2], str);
-  format(str, sizeof(str), "%d", PVeh[VehOwner[vehicleid]][VehSlot[vehicleid]][vFuel]);
+  format(str, sizeof(str), "%d", GetFuelKendaraan(vehicleid));
   PlayerTextDrawSetString(playerid, VEHSPEED[playerid][1], str);
 
   new hpveh = 0;
@@ -35,7 +35,7 @@ stock ShowHideSpeedo(playerid, bool:showorhide) {
   if(showorhide) {
     new vehicleid = GetPlayerVehicleID(playerid);
     if(!IsPlayerInAnyVehicle(playerid) || !IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid)) return 0;
-    // Fill the values before showing the textdraw, including health 0 for dead vehicles.
+    // Isi nilainya sebelum textdraw ditampilkan, termasuk kesehatan 0 untuk kendaraan mati.
     UpdateSpeedoMeter(playerid);
     for(new i = 0; i < 4; i++) TextDrawShowForPlayer(playerid, BACKGROUND_SPEDO[i]);
     for(new i = 0; i < 3; i++) PlayerTextDrawShow(playerid, VEHSPEED[playerid][i]);
