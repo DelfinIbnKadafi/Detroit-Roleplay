@@ -140,6 +140,8 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
     format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} Kamu membeli %s seharga {55FF62}$%s{FFFFFF}.", item, moneysss);
     SendClientMessage(playerid, 0xFFFFFFFF, msg);
 
+    UpdateTextdrawHbe(playerid, PlayerSession[playerid]);
+
     return 1;
 }
 
