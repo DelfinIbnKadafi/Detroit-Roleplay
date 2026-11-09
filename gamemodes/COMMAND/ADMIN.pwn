@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit\n/closebusinesslist\n/repairveh", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit\n/closebusinesslist\n/repairplayerveh", "keluar", " ");
   
   return 1;
 }
@@ -381,15 +381,33 @@ CMD:setskin(playerid, params[]) {
   return 1;
 }
 
-CMD:repairveh(playerid, params[]) {
+CMD:repairplayerveh(playerid, params[]) {
 
   if(Admin[playerid] < 1) return SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
 
   new targetveh;
   if(sscanf(params, "i", targetveh)) return SendClientMessage(playerid, -1, "Gunakan: /repairveh <idveh>");
 
-  // will continue later
-  SendMessageInfo(playerid, "fungsinya belum selesai dek ya");
+  // cek who have this vehicle
+  foreach(new i : Player) {
+    for(new j = 0; j < PVehInfo[i][viJumlah]; j++) {
+      if(PVeh[i][j][vId] == targetveh) {
+        // check if the vehicle is spawned or n
+        if(!IsValidVehicle(PVeh[i][j][vIdServer])) return SendMessageError(playerid, "Kendaraan tersebut tidak di spawn!");
+
+        // then check if the vehicle is really dead
+        if(PVeh[i][j][vDeath] == 0) return SendMessageError(playerid, "Kendaraan tersebut tidaklah mati total!");
+
+        if(RepairKendaraanPlayer(PVeh[i][j][vIdServer]) == false) return SendMessageError(playerid, "Gagal memperbaiki kendaraan player");
+
+        SendMessageInfo(playerid, "Berhasil memperbaiki kendaraan");
+
+        return 1;
+      }
+    }
+  }
+
+  SendMessageError(playerid, "Tidak dapat menemukan kendaraan atau id kendaraan tidak valid, gunakan id yang ada di /myveh");
 
   return 1;
 }
