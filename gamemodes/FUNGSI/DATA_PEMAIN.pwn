@@ -119,6 +119,9 @@ Fungsi: SimpanDataPemain(playerid)
     printf("[PEMAIN] Data akun ID %d gagal disimpan. (#%d)", Pemain[playerid][pId], error);
     return 0;
   }
+
+  MuatBusinessPlayer(playerid);
+
   return 1;
 }
 

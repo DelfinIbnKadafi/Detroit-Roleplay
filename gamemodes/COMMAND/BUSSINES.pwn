@@ -120,6 +120,7 @@ CMD:closebusinesslist(playerid, params[]) {
 }
 
 CMD:buybusiness(playerid, params[]) {
+    if(PlayerBusinessCount[playerid] == 3) return SendMessageError(playerid, "Kamu hanya bisa memiliki 3 business!");
     BuyBusiness(playerid);
     return 1;
 }

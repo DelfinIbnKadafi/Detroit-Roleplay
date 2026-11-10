@@ -154,12 +154,18 @@ Dialog:DIALOG_MYBUSS(playerid, response, listitem, const inputtext[]) {
 
 stock ShowMyBusiness(playerid) {
 
+    // reset firts
+    MuatBusinessPlayer(playerid);
+
     if(PlayerBusinessCount[playerid] == 0) return SendMessageInfo(playerid, "Kamu tidak memiliki business.");
 
     new msg[256];
     msg[0] = '\0';
 
     for(new i = 0; i < PlayerBusinessCount[playerid]; i++) {
+
+        if(Bussines[IdBusinessPlayer[playerid][i]][bactive] == false) continue;
+
         if(i > 0) strcat(msg, "\n", sizeof msg);
         strcat(msg, Bussines[IdBusinessPlayer[playerid][i]][bnames], sizeof msg);
     }
