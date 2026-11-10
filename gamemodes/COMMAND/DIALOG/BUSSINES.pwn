@@ -157,6 +157,12 @@ Dialog:AKSI_BUSINESS(playerid, response, listitem, const inputtext[]) {
     FormatUang(Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bprice], mny);
     format(msg, sizeof msg, "Nama : %s\nStock : %d\nHarga Business : %s", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bsisa], mny);
     if(listitem == 0) Dialog_Show(playerid, tmp_dialog, DIALOG_STYLE_MSGBOX, judul, msg, "Keluar", "");
+    
+    // track
+    else if(listitem == 1) SetPlayerCheckpoint(playerid, Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bx], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][by], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bz], 2.0);
+
+    // change name
+    else if(listitem == 2) ShowChangeNamaBusiness(playerid, IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]);
 
     return 1;
 }

@@ -174,3 +174,9 @@ public OnQueryError(errorid, const error[], const callback[], const query[], MyS
   printf("[MySQL] %s (Public-Function: %s) (#%d)", error, callback, errorid);
   return 1;
 }
+
+public OnPlayerEnterCheckpoint(playerid) {
+  DisablePlayerCheckpoint(playerid);
+  SendMessageInfo(playerid, "Kamu telah mencapai tujuan.");
+  return 1;
+}

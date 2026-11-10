@@ -70,9 +70,3 @@ Dialog:DL_AKSIVEH(playerid, response, listitem, inputtext[]) {
   }
   return 1;
 }
-
-public OnPlayerEnterCheckpoint(playerid) {
-  DisablePlayerCheckpoint(playerid);
-  SendMessageInfo(playerid, "Kamu telah mencapai lokasi kendaraan.");
-  return 1;
-}
