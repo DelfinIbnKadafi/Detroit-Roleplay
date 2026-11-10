@@ -36,3 +36,7 @@ new PlayerDeleteBusiness[MAX_PLAYERS];
 // pages
 new PlayerBusinessListPage[MAX_PLAYERS];
 new PlayerBusinessListPages[MAX_PLAYERS];
+
+
+// variabel yang berisi index business yang akan diubah namanya
+new SheylaCantikImutBanget[MAX_PLAYERS];

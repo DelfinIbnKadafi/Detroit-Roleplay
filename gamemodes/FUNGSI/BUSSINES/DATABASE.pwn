@@ -193,10 +193,6 @@ stock bool:SimpanPembelianBusiness(playerid, bussindex) {
     return saved;
 }
 
-
-// temp var, the name i make random and bad, so its never can use in another file when next developer edit this, if they not see this
-new SheylaCantikImutBanget[MAX_PLAYERS];
-
 stock BuyBusiness(playerid) {
     if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return 0;
     if(!BusinessReady) return SendMessageError(playerid, "Data business belum selesai dimuat. Silakan coba lagi.");

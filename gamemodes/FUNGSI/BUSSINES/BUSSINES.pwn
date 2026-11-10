@@ -352,6 +352,7 @@ stock DestroyAllBusiness() {
 
 // menampilkan dialog untuk mengganti nama business
 stock ShowChangeNamaBusiness(playerid, busindex) {
+    SheylaCantikImutBanget[playerid] = busindex;
     new msg[256];
     format(msg, sizeof msg, "Nama Lama :\n%s\n\nMasukkan Nama Baru", Business[busindex][bnames]);
     Dialog_Show(playerid, DIALOG_GANTI_NAMA_BUSI, DIALOG_STYLE_INPUT, "Business - Ganti Nama", msg, "Kirim", "Batal");
