@@ -52,7 +52,7 @@ public OnGameModeInit()
     // untuk meminimalisir gagal load object, berikan jeda waktu sekitar 5 detik saat server dijalankan baru load atm
     TimerLoadAtm = SetTimerEx("StartToLoadAtm", 5000, false, "");
 
-    mysql_tquery(g_SQL, "SELECT b.*, COALESCE(p.nama, CASE WHEN b.ownerid = 0 THEN 'None' ELSE 'Unknown' END) AS ownername FROM bussines b LEFT JOIN Pemain p ON p.id = b.ownerid ORDER BY b.id", "LoadBussines");
+    mysql_tquery(g_SQL, "SELECT b.*, COALESCE(p.nama, CASE WHEN b.ownerid = 0 THEN 'None' ELSE 'Unknown' END) AS ownername FROM bussines b LEFT JOIN Pemain p ON p.id = b.ownerid ORDER BY b.id", "LoadBusiness");
 
     DisableInteriorEnterExits();
     ManualVehicleEngineAndLights();
@@ -75,10 +75,11 @@ public OnPlayerConnect(playerid)
     PlayerSession[playerid]++;
     if(PlayerSession[playerid] <= 0) PlayerSession[playerid] = 1;
     ResetAtmEdit(playerid);
-    ResetBussinesEdit(playerid);
+    ResetBusinessEdit(playerid);
     idatmplayeruse[playerid] = -1;
-    PlayerDeleteBussines[playerid] = 0;
-    for(new i = 0; i < MAX_BUSSINES_PLAYER; i++) IdBusinessPlayer[playerid][i] = -1;
+    PlayerDeleteBusiness[playerid] = 0;
+    for(new i = 0; i < MAX_Business_PLAYER; i++) IdBusinessPlayer[playerid][i] = -1;
+    SlotPlayerPickBus[playerid] = -1;
     PlayerBusinessCount[playerid] = 0;
     ResetDataPemain(playerid);
     for(new i = 0; i < 3; i++) {
@@ -88,7 +89,7 @@ public OnPlayerConnect(playerid)
     StatusLogin[playerid] = false;
 
     PlayerDeath[playerid] = false;
-    playerinbussines[playerid] = false;
+    playerinBusiness[playerid] = false;
 
     norek_atm_masukkan[playerid] = -1;
     
@@ -114,7 +115,7 @@ public OnGameModeExit()
 {
   KillTimer(TimerDeadVehicle);
   KillTimer(TimerLoadAtm);
-  DestroyAllBussines();
+  DestroyAllBusiness();
   DestroyAllAtm();
   foreach(new playerid : Player) {
     if(!StatusLogin[playerid]) continue;
@@ -124,8 +125,8 @@ public OnGameModeExit()
   if(g_SQL != MYSQL_INVALID_HANDLE) mysql_close(g_SQL);
 
   // simpan semua data business
-  for(new i = 0; i < MAX_BUSSINES; i++) {
-    if(Bussines[i][bactive] == true) SaveDataBussines(i, Bussines[i]);
+  for(new i = 0; i < MAX_Business; i++) {
+    if(Business[i][bactive] == true) SaveDataBusiness(i, Business[i]);
   }
 
   return 1;
@@ -137,12 +138,12 @@ public OnPlayerDisconnect(playerid, reason)
   StatusLogin[playerid] = false;
   PlayerSession[playerid]++;
   TdPintuShown[playerid] = false;
-  ResetBussinesEdit(playerid);
+  ResetBusinessEdit(playerid);
   ResetAtmEdit(playerid);
   BatalkanStatusDown(playerid);
   idatmplayeruse[playerid] = -1;
   norek_atm_masukkan[playerid] = -1;
-  PlayerDeleteBussines[playerid] = 0;
+  PlayerDeleteBusiness[playerid] = 0;
 
   KillTimer(TimerLapar[playerid]);
   KillTimer(TimerHaus[playerid]);

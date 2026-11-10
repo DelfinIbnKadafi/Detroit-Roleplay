@@ -1,14 +1,14 @@
-// bussines data
-#define MAX_BUSSINES_NAME 128
-#define BUSSINES_PER_PAGE 10
-#define BUSSINES_PICKUP_MODEL 19132
-#define BUSSINES_DEFAULT_PRICE 15000000
-#define BUSSINES_DEFAULT_INTERIOR 17
+// Business data
+#define MAX_Business_NAME 128
+#define Business_PER_PAGE 10
+#define Business_PICKUP_MODEL 19132
+#define Business_DEFAULT_PRICE 15000000
+#define Business_DEFAULT_INTERIOR 17
 
-enum BussinesData {
+enum BusinessData {
     bool:bactive,
     bid,
-    bnames[MAX_BUSSINES_NAME + 1],
+    bnames[MAX_Business_NAME + 1],
     STREAMER_TAG_PICKUP:bpickup,
     STREAMER_TAG_3D_TEXT_LABEL:blabel,
     bownerid,
@@ -22,17 +22,17 @@ enum BussinesData {
     binterior
 }
 
-new Bussines[MAX_BUSSINES][BussinesData];
-new BussinesCount;
-// Batas atas slot yang terpakai (index tertinggi + 1), supaya loop tidak selalu memeriksa seluruh MAX_BUSSINES slot
-new BussinesSlotLimit;
-new bool:BussinesReady;
-new BussinesEditor[MAX_BUSSINES] = {INVALID_PLAYER_ID, ...};
-new PlayerEditBussines[MAX_PLAYERS] = {-1, ...};
-new STREAMER_TAG_OBJECT:PlayerBussinesObject[MAX_PLAYERS];
+new Business[MAX_Business][BusinessData];
+new BusinessCount;
+// Batas atas slot yang terpakai (index tertinggi + 1), supaya loop tidak selalu memeriksa seluruh MAX_Business slot
+new BusinessSlotLimit;
+new bool:BusinessReady;
+new BusinessEditor[MAX_Business] = {INVALID_PLAYER_ID, ...};
+new PlayerEditBusiness[MAX_PLAYERS] = {-1, ...};
+new STREAMER_TAG_OBJECT:PlayerBusinessObject[MAX_PLAYERS];
 
-new PlayerDeleteBussines[MAX_PLAYERS];
+new PlayerDeleteBusiness[MAX_PLAYERS];
 
 // pages
-new PlayerBussinesListPage[MAX_PLAYERS];
-new PlayerBussinesListPages[MAX_PLAYERS];
+new PlayerBusinessListPage[MAX_PLAYERS];
+new PlayerBusinessListPages[MAX_PLAYERS];

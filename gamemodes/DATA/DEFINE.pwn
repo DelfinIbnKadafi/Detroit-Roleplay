@@ -24,6 +24,6 @@
 #define DEAD_VEHICLE_HEALTH 999999.0
 #define VEH_KOSONG (-1) // nilai awal pemilik/slot/admin pada VehServer (artinya: tidak ada)
 
-// bussines
-#define MAX_BUSSINES 1000
-#define MAX_BUSSINES_PLAYER 3
+// Business
+#define MAX_Business 1000
+#define MAX_Business_PLAYER 3

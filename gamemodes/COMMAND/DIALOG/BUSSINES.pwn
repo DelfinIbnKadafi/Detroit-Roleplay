@@ -1,10 +1,10 @@
-Dialog:DL_DELETEBUSSINES(playerid, response, listitem, const inputtext[]) {
-    new bussid = PlayerDeleteBussines[playerid];
-    PlayerDeleteBussines[playerid] = 0;
-    if(!response || !CanManageBussines(playerid)) return 1;
-    new index = GetBussinesIndex(bussid);
+Dialog:DL_DELETEBusiness(playerid, response, listitem, const inputtext[]) {
+    new bussid = PlayerDeleteBusiness[playerid];
+    PlayerDeleteBusiness[playerid] = 0;
+    if(!response || !CanManageBusiness(playerid)) return 1;
+    new index = GetBusinessIndex(bussid);
     if(index == -1) return SendMessageError(playerid, "Business tersebut sudah tidak tersedia.");
-    if(!DeleteBussines(index)) return SendMessageError(playerid, "Business gagal dihapus. Periksa database atau pastikan pintu tidak sedang diedit.");
+    if(!DeleteBusiness(index)) return SendMessageError(playerid, "Business gagal dihapus. Periksa database atau pastikan pintu tidak sedang diedit.");
     SendMessageInfo(playerid, "Berhasil menghapus business dari server dan database.");
     return 1;
 }
@@ -13,58 +13,58 @@ Dialog:DL_DELETEBUSSINES(playerid, response, listitem, const inputtext[]) {
 Dialog:DIALOG_GANTI_NAMA_BUSI(playerid, response, listitem, const inputtext[]) {
     if(response == 0) {
         new msg[256];
-        format(msg, sizeof msg, "Nama Lama :\n%s\n\nMasukkan Nama Baru", Bussines[SheylaCantikImutBanget[playerid]][bnames]);
+        format(msg, sizeof msg, "Nama Lama :\n%s\n\nMasukkan Nama Baru", Business[SheylaCantikImutBanget[playerid]][bnames]);
         return Dialog_Show(playerid, DIALOG_GANTI_NAMA_BUSI, DIALOG_STYLE_INPUT, "Business - Ganti Nama", msg, "Kirim", "Batal");
     }
 
-    strcopy(Bussines[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_BUSSINES_NAME + 1);
+    strcopy(Business[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_Business_NAME + 1);
 
-    UpdateBussinesObject(SheylaCantikImutBanget[playerid]);
+    UpdateBusinessObject(SheylaCantikImutBanget[playerid]);
 
-    SaveDataBussines(SheylaCantikImutBanget[playerid], Bussines[SheylaCantikImutBanget[playerid]]);
+    SaveDataBusiness(SheylaCantikImutBanget[playerid], Business[SheylaCantikImutBanget[playerid]]);
 
     return 1;
 }
 
 
-Dialog:DL_BUSSINES_LIST(playerid, response, listitem, const inputtext[]) {
-    if(!CanManageBussines(playerid)) return 1;
+Dialog:DL_Business_LIST(playerid, response, listitem, const inputtext[]) {
+    if(!CanManageBusiness(playerid)) return 1;
     if(response) { // left button or butnf
-        if(PlayerBussinesListPage[playerid] == 1) return HidePlayerDialog(playerid);
-        if(PlayerBussinesListPage[playerid] > 1) return ShowBussinesList(playerid, PlayerBussinesListPage[playerid] - 1);
+        if(PlayerBusinessListPage[playerid] == 1) return HidePlayerDialog(playerid);
+        if(PlayerBusinessListPage[playerid] > 1) return ShowBusinessList(playerid, PlayerBusinessListPage[playerid] - 1);
     }
     // right button or butns
-    if(PlayerBussinesListPage[playerid] == PlayerBussinesListPages[playerid]) return HidePlayerDialog(playerid);
-    return ShowBussinesList(playerid, PlayerBussinesListPage[playerid] + 1);
+    if(PlayerBusinessListPage[playerid] == PlayerBusinessListPages[playerid]) return HidePlayerDialog(playerid);
+    return ShowBusinessList(playerid, PlayerBusinessListPage[playerid] + 1);
 }
 
-stock ShowBussinesList(playerid, page) {
+stock ShowBusinessList(playerid, page) {
     new ownedCount;
-    for(new i = 0; i < BussinesSlotLimit; i++) {
-        if(ValidBussinesIndex(i) && Bussines[i][bownerid] != 0) ownedCount++;
+    for(new i = 0; i < BusinessSlotLimit; i++) {
+        if(ValidBusinessIndex(i) && Business[i][bownerid] != 0) ownedCount++;
     }
     if(ownedCount == 0) {
-        PlayerBussinesListPage[playerid] = 1;
+        PlayerBusinessListPage[playerid] = 1;
         return SendMessageInfo(playerid, "Belum ada business yang memiliki owner.");
     }
 
-    new pages = (ownedCount + BUSSINES_PER_PAGE - 1) / BUSSINES_PER_PAGE;
-    PlayerBussinesListPages[playerid] = pages;
+    new pages = (ownedCount + Business_PER_PAGE - 1) / Business_PER_PAGE;
+    PlayerBusinessListPages[playerid] = pages;
     
     if(page < 1) page = 1;
     if(page > pages) page = pages;
-    PlayerBussinesListPage[playerid] = page;
+    PlayerBusinessListPage[playerid] = page;
 
     new list[2048], line[224], title[64], types[32], count;
     strcat(list, "ID\tNama\tType\tOwner\n");
-    for(new i = 0; i < BussinesSlotLimit; i++) {
-        if(!ValidBussinesIndex(i) || Bussines[i][bownerid] == 0) continue;
-        if(count >= (page - 1) * BUSSINES_PER_PAGE && count < page * BUSSINES_PER_PAGE) {
-            GetBussinesTypeName(Bussines[i][btype], types, sizeof types);
-            format(line, sizeof line, "%d\t%s\t%s\t%s\n", Bussines[i][bid], Bussines[i][bnames], types, Bussines[i][bownername]);
+    for(new i = 0; i < BusinessSlotLimit; i++) {
+        if(!ValidBusinessIndex(i) || Business[i][bownerid] == 0) continue;
+        if(count >= (page - 1) * Business_PER_PAGE && count < page * Business_PER_PAGE) {
+            GetBusinessTypeName(Business[i][btype], types, sizeof types);
+            format(line, sizeof line, "%d\t%s\t%s\t%s\n", Business[i][bid], Business[i][bnames], types, Business[i][bownername]);
             strcat(list, line, sizeof list);
         }
-        if(++count >= page * BUSSINES_PER_PAGE) break;
+        if(++count >= page * Business_PER_PAGE) break;
     }
     format(title, sizeof title, "Business - Halaman %d/%d", page, pages);
 
@@ -73,7 +73,7 @@ stock ShowBussinesList(playerid, page) {
     if(page == 1) { format(butnf, sizeof butnf, "Close"); } else { format(butnf, sizeof butnf, "Sebelumnya"); }
     if(page == pages && pages > 1) { format(butns, sizeof butns, "Close"); } else if(page < pages) { format(butns, sizeof butns, "Selanjutnya"); }
 
-    Dialog_Show(playerid, DL_BUSSINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, list, butnf, butns);
+    Dialog_Show(playerid, DL_Business_LIST, DIALOG_STYLE_TABLIST_HEADERS, title, list, butnf, butns);
     return 1;
 }
 
@@ -90,8 +90,8 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
 
     // dialog bisa tetap terbuka setelah player berpindah tempat, jadi pastikan player masih di titik beli business Fast Food
     new businessid = GetPlayerBusinessIndex(playerid);
-    if(businessid == -1 || Bussines[businessid][binterior] != 9 || !IsPlayerInBuyPoint(playerid, businessid)) return SendMessageError(playerid, "Kamu harus berada di titik beli business Fast Food!");
-    if(Bussines[businessid][bsisa] < 1) return SendMessageError(playerid, "Business ini sudah kehabisan stock!");
+    if(businessid == -1 || Business[businessid][binterior] != 9 || !IsPlayerInBuyPoint(playerid, businessid)) return SendMessageError(playerid, "Kamu harus berada di titik beli business Fast Food!");
+    if(Business[businessid][bsisa] < 1) return SendMessageError(playerid, "Business ini sudah kehabisan stock!");
 
     new price, hunger, thirst, item[16];
 
@@ -117,10 +117,10 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
     if(GetPlayerMoney(playerid) < price) return SendMessageError(playerid, "Uangmu tidak cukup");
 
     // stock berkurang dan tersimpan ke database lebih dulu, jika gagal pembelian dibatalkan dan uang tidak berkurang
-    new data[BussinesData];
-    data = Bussines[businessid];
+    new data[BusinessData];
+    data = Business[businessid];
     data[bsisa]--;
-    if(!SaveDataBussines(businessid, data)) return SendMessageError(playerid, "Pembelian gagal diproses. Uangmu tidak berkurang, silakan coba lagi.");
+    if(!SaveDataBusiness(businessid, data)) return SendMessageError(playerid, "Pembelian gagal diproses. Uangmu tidak berkurang, silakan coba lagi.");
 
     GivePlayerMoney(playerid, -price);
     Pemain[playerid][pUang] = GetPlayerMoney(playerid);
@@ -145,9 +145,28 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
     return 1;
 }
 
+Dialog:AKSI_BUSINESS(playerid, response, listitem, const inputtext[]) {
+    if(!response) return 1;
+
+    new judul[128];
+    new msg[512];
+    new mny[64];
+
+    // informasi
+    format(judul, sizeof judul, "%S - Informasi", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames]);
+    FormatUang(Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bprice], mny);
+    format(msg, sizeof msg, "Nama : %s\nStock : %d\nHarga Business : %s", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bsisa], mny);
+    if(response == 0) Dialog_Show(playerid, tmp_dialog, DIALOG_STYLE_MSGBOX, judul, msg, "Keluar", "");
+
+    return 1;
+}
+
 Dialog:DIALOG_MYBUSS(playerid, response, listitem, const inputtext[]) {
     if(!response) return 1;
 
+    SlotPlayerPickBus[playerid] = listitem;
+
+    Dialog_Show(playerid, AKSI_BUSINESS, DIALOG_STYLE_LIST, Business[IdBusinessPlayer[playerid][listitem]][bnames], "Informasi\nTrack\nGanti Nama", "Pilih", "Batal");
 
     return 1;
 }
@@ -157,17 +176,20 @@ stock ShowMyBusiness(playerid) {
     // reset firts
     MuatBusinessPlayer(playerid);
 
+    SlotPlayerPickBus[playerid] = -1;
+
     if(PlayerBusinessCount[playerid] == 0) return SendMessageInfo(playerid, "Kamu tidak memiliki business.");
 
     new msg[256];
     msg[0] = '\0';
 
+    // start from 0 to player business count - 1
     for(new i = 0; i < PlayerBusinessCount[playerid]; i++) {
 
-        if(Bussines[IdBusinessPlayer[playerid][i]][bactive] == false) continue;
+        if(Business[IdBusinessPlayer[playerid][i]][bactive] == false) continue;
 
         if(i > 0) strcat(msg, "\n", sizeof msg);
-        strcat(msg, Bussines[IdBusinessPlayer[playerid][i]][bnames], sizeof msg);
+        strcat(msg, Business[IdBusinessPlayer[playerid][i]][bnames], sizeof msg);
     }
 
     Dialog_Show(playerid, DIALOG_MYBUSS, DIALOG_STYLE_TABLIST, "My Business", msg, "Pilih", "Batal");

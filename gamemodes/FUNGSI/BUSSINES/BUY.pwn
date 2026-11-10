@@ -22,11 +22,11 @@ stock GetBusinessBuyPosition(interiorid, &Float:buyx, &Float:buyy, &Float:buyz) 
 
 // fungsi mengecek apakah player berada dalam radius 1 dari titik poin pembelian business
 stock IsPlayerInBuyPoint(playerid, busindex) {
-    if(!ValidBussinesIndex(busindex) || GetPlayerBusinessIndex(playerid) != busindex) return 0;
+    if(!ValidBusinessIndex(busindex) || GetPlayerBusinessIndex(playerid) != busindex) return 0;
 
     new Float:buyx, Float:buyy, Float:buyz;
 
-    if(!GetBusinessBuyPosition(Bussines[busindex][binterior], buyx, buyy, buyz)) return 0;
+    if(!GetBusinessBuyPosition(Business[busindex][binterior], buyx, buyy, buyz)) return 0;
 
     return IsPlayerInRangeOfPoint(playerid, 1.0, buyx, buyy, buyz);
 }
@@ -45,7 +45,7 @@ stock ShowBuyDialog(playerid) {
     // cek apa player ada di dekat poin beli
     if(!IsPlayerInBuyPoint(playerid, status)) return SendMessageError(playerid, "Kamu tidak berada di titik beli manapun");
 
-    switch(Bussines[status][binterior]) {
+    switch(Business[status][binterior]) {
         case 17: {
             return Dialog_Show(playerid, BUY_MARKET, DIALOG_STYLE_LIST, "Market - Buy", "Belum ada apa apa bang", "Beli", "Batal");
         }

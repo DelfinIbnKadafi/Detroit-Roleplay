@@ -43,6 +43,7 @@ new bool:TdPintuExitShown[MAX_PLAYERS];
 new bool:dekatPintu[MAX_PLAYERS] = false;
 
 // busines player
-new bool:playerinbussines[MAX_PLAYERS] = false;
+new bool:playerinBusiness[MAX_PLAYERS] = false;
 new PlayerBusinessCount[MAX_PLAYERS] = 0;
-new IdBusinessPlayer[MAX_PLAYERS][MAX_BUSSINES_PLAYER];
+new IdBusinessPlayer[MAX_PLAYERS][MAX_Business_PLAYER];
+new SlotPlayerPickBus[MAX_PLAYERS] = 0;

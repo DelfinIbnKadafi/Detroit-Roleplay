@@ -166,7 +166,7 @@ Fungsi:ResetAtmEdit(playerid) {
 
 Fungsi: EditAtm(playerid, ATMid) {
     if(!IsPlayerAccountReady(playerid) || Admin[playerid] < 1 || !IsPlayerExterior(playerid)) return 0;
-    if(PlayerEditBussines[playerid] != -1 || playereditatm[playerid][active]) return 0;
+    if(PlayerEditBusiness[playerid] != -1 || playereditatm[playerid][active]) return 0;
     new index = GetAtmIndex(ATMid);
     if(index == -1 || AtmEditor[index] != INVALID_PLAYER_ID || !IsPlayerInRangeOfPoint(playerid, 20.0, atm[index][posx], atm[index][posy], atm[index][posz])) return 0;
     playereditatm[playerid][objid] = atm[index][object];
@@ -208,7 +208,7 @@ Fungsi: SaveEditAtm(ATMid, Float:x, Float:y, Float:z, Float:facingAngle) {
 }
 
 public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
-    if(HandleBussinesEdit(playerid, objectid, response, x, y, z)) return 1;
+    if(HandleBusinessEdit(playerid, objectid, response, x, y, z)) return 1;
     if(!playereditatm[playerid][active] || playereditatm[playerid][objid] != objectid) return 1;
     if(!IsPlayerAccountReady(playerid) || Admin[playerid] < 1 || !IsPlayerExterior(playerid)) return ResetAtmEdit(playerid);
     if(response == _:EDIT_RESPONSE_FINAL) {

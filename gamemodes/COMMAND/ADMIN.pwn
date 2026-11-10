@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/businesslist\n/cancelbusinessedit\n/closebusinesslist\n/repairplayerveh", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/BUSSINESlist\n/cancelbusinessedit\n/closebusinesslist\n/repairplayerveh", "keluar", " ");
   
   return 1;
 }
@@ -299,7 +299,7 @@ CMD:createatm(playerid, params[]) {
     return 1;
   }
   if(!AtmReady) return SendMessageError(playerid, "Data ATM belum selesai dimuat.");
-  if(!IsBussinesExterior(playerid)) return SendMessageError(playerid, "ATM hanya bisa dibuat di luar bangunan pada virtual world 0.");
+  if(!IsBusinessExterior(playerid)) return SendMessageError(playerid, "ATM hanya bisa dibuat di luar bangunan pada virtual world 0.");
 
   new Float:x, Float:y, Float:z, Float:a;
   GetPlayerPos(playerid, x, y, z);
