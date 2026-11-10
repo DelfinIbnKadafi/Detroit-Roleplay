@@ -156,7 +156,7 @@ Dialog:AKSI_BUSINESS(playerid, response, listitem, const inputtext[]) {
     format(judul, sizeof judul, "%S - Informasi", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames]);
     FormatUang(Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bprice], mny);
     format(msg, sizeof msg, "Nama : %s\nStock : %d\nHarga Business : %s", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bsisa], mny);
-    if(response == 0) Dialog_Show(playerid, tmp_dialog, DIALOG_STYLE_MSGBOX, judul, msg, "Keluar", "");
+    if(listitem == 0) Dialog_Show(playerid, tmp_dialog, DIALOG_STYLE_MSGBOX, judul, msg, "Keluar", "");
 
     return 1;
 }
