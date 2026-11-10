@@ -128,3 +128,8 @@ CMD:buy(playerid, params[]) {
     ShowBuyDialog(playerid);
     return 1;
 }
+
+CMD:mybus(playerid, params[]) {
+    ShowMyBusiness(playerid);
+    return 1;
+}

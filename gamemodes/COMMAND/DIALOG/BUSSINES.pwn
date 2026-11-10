@@ -144,3 +144,27 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
 
     return 1;
 }
+
+Dialog:DIALOG_MYBUSS(playerid, response, listitem, const inputtext[]) {
+    if(!response) return 1;
+
+
+    return 1;
+}
+
+stock ShowMyBusiness(playerid) {
+
+    if(PlayerBusinessCount[playerid] == 0) return SendMessageInfo(playerid, "Kamu tidak memiliki business.");
+
+    new msg[256];
+    msg[0] = '\0';
+
+    for(new i = 0; i < PlayerBusinessCount[playerid]; i++) {
+        if(i > 0) strcat(msg, "\n", sizeof msg);
+        strcat(msg, Bussines[IdBusinessPlayer[playerid][i]][bnames], sizeof msg);
+    }
+
+    Dialog_Show(playerid, DIALOG_MYBUSS, DIALOG_STYLE_TABLIST, "My Business", msg, "Pilih", "Batal");
+
+    return 1;
+}

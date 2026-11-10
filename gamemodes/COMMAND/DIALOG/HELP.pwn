@@ -25,7 +25,7 @@ Dialog:DL_HELP_MAIN(playerid, response, listitem, const inputtext[]) {
       Dialog_Show(playerid, DL_HELP, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Vehicle Command", "/myveh\n/en\n/lockveh", "Kembali", " ");
     }
     case 3: {
-      Dialog_Show(playerid, DL_HELP, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Business Command", "/buybusiness", "Kembali", " ");
+      Dialog_Show(playerid, DL_HELP, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Business Command", "/buybusiness\n/mybus", "Kembali", " ");
     }
   }
   return 1;
