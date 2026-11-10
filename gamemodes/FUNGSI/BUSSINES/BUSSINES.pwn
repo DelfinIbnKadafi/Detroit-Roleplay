@@ -357,3 +357,22 @@ stock ShowChangeNamaBusiness(playerid, busindex) {
     Dialog_Show(playerid, DIALOG_GANTI_NAMA_BUSI, DIALOG_STYLE_INPUT, "Business - Ganti Nama", msg, "Kirim", "Batal");
     return 1;
 }
+
+// muat data business player
+stock MuatBusinessPlayer(playerid) {
+    printf("Start to load business player %s", Pemain[playerid][pNama]);
+
+    for(new i = 0; i < 3; i++) IdBusinessPlayer[playerid][i] = -1;
+    PlayerBusinessCount[playerid] = 0;
+
+    for(new i = 0; i < BussinesSlotLimit && PlayerBusinessCount[playerid] < 3; i++) {
+        if(Bussines[i][bownerid] != Pemain[playerid][pId]) continue;
+
+        IdBusinessPlayer[playerid][PlayerBusinessCount[playerid]] = i;
+        PlayerBusinessCount[playerid]++;
+    }
+
+    printf("Berhasil meload %d business dari player %s", PlayerBusinessCount[playerid], Pemain[playerid][pNama]);
+
+    return 1;
+}

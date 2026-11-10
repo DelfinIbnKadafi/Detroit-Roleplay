@@ -144,9 +144,3 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
 
     return 1;
 }
-
-stock MuatBusinessPlayer(playerid) {
-    printf("Start to load business player %s", Pemain[playerid][pNama]);
-
-    return 1;
-}

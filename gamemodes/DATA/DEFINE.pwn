@@ -26,3 +26,4 @@
 
 // bussines
 #define MAX_BUSSINES 1000
+#define MAX_BUSSINES_PLAYER 3

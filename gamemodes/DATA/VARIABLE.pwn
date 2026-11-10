@@ -45,3 +45,4 @@ new bool:dekatPintu[MAX_PLAYERS] = false;
 // busines player
 new bool:playerinbussines[MAX_PLAYERS] = false;
 new PlayerBusinessCount[MAX_PLAYERS] = 0;
+new IdBusinessPlayer[MAX_PLAYERS][MAX_BUSSINES_PLAYER];
