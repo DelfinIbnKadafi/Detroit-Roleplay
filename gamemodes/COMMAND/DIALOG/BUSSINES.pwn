@@ -151,11 +151,13 @@ Dialog:AKSI_BUSINESS(playerid, response, listitem, const inputtext[]) {
     new judul[128];
     new msg[512];
     new mny[64];
+    new typ[64];
 
     // informasi
     format(judul, sizeof judul, "%S - Informasi", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames]);
     FormatUang(Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bprice], mny);
-    format(msg, sizeof msg, "Nama : %s\nStock : %d\nHarga Business : %s", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bsisa], mny);
+    GetBusinessTypeName(Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][btype], typ, sizeof typ);
+    format(msg, sizeof msg, "Nama : %s\nType : %s\nStock : %d\nHarga Business : %s", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames], typ, Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bsisa], mny);
     if(listitem == 0) Dialog_Show(playerid, tmp_dialog, DIALOG_STYLE_MSGBOX, judul, msg, "Keluar", "");
     
     // track
