@@ -19,7 +19,8 @@ enum BusinessData {
     btype,
     bsisa,
     bprice,
-    binterior
+    binterior,
+    bpendapatan
 }
 
 new Business[MAX_Business][BusinessData];
@@ -40,3 +41,7 @@ new PlayerBusinessListPages[MAX_PLAYERS];
 
 // variabel yang berisi index business yang akan diubah namanya
 new SheylaCantikImutBanget[MAX_PLAYERS];
+
+
+// ubah nama dari sistem atau sendiri
+new GantiSendiriNamaBuss[MAX_PLAYERS];

@@ -65,3 +65,24 @@ stock ApplyAnimationEx(playerid, const library[], const anim[], Float:fDelta, bo
     ret = ApplyAnimation(playerid, library, anim, fDelta, loop, lockx, locky, freeze, time, SYNC_NONE);
     return ret;
 }
+
+stock StringIsInteger(const str[]) {
+    new len = strlen(str);
+
+    for(new i = 0; i < len; i++) {
+        if(
+            str[i] == '0' ||
+            str[i] == '1' ||
+            str[i] == '2' ||
+            str[i] == '3' ||
+            str[i] == '4' ||
+            str[i] == '5' ||
+            str[i] == '6' ||
+            str[i] == '7' ||
+            str[i] == '8' ||
+            str[i] == '9'
+        ) continue;
+        else return 0;
+    }
+    return 1;
+}

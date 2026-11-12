@@ -88,6 +88,8 @@ public OnPlayerConnect(playerid)
     
     StatusLogin[playerid] = false;
 
+    GantiSendiriNamaBuss[playerid] = false;
+
     PlayerDeath[playerid] = false;
     playerinBusiness[playerid] = false;
 

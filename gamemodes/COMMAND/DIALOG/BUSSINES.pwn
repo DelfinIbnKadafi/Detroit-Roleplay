@@ -9,15 +9,14 @@ Dialog:DL_DELETEBusiness(playerid, response, listitem, const inputtext[]) {
     return 1;
 }
 
-
 Dialog:DIALOG_GANTI_NAMA_BUSI(playerid, response, listitem, const inputtext[]) {
-    if(response == 0) {
+    if(response == 0 && !GantiSendiriNamaBuss[playerid]) {
         new msg[256];
         format(msg, sizeof msg, "Nama Lama :\n%s\n\nMasukkan Nama Baru", Business[SheylaCantikImutBanget[playerid]][bnames]);
         return Dialog_Show(playerid, DIALOG_GANTI_NAMA_BUSI, DIALOG_STYLE_INPUT, "Business - Ganti Nama", msg, "Kirim", "Batal");
     }
 
-    strcopy(Business[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_Business_NAME + 1);
+    if(!GantiSendiriNamaBuss[playerid]) strcopy(Business[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_Business_NAME + 1);
 
     UpdateBusinessObject(SheylaCantikImutBanget[playerid]);
 
@@ -120,6 +119,7 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
     new data[BusinessData];
     data = Business[businessid];
     data[bsisa]--;
+    data[bpendapatan] += price;
     if(!SaveDataBusiness(businessid, data)) return SendMessageError(playerid, "Pembelian gagal diproses. Uangmu tidak berkurang, silakan coba lagi.");
 
     GivePlayerMoney(playerid, -price);
@@ -145,36 +145,82 @@ Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {
     return 1;
 }
 
+Dialog:AMBIL_UANG_BUS(playerid, response, listitem, const inputtext[]){
+    if(!response) return 1;
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid]) return 1;
+
+    new slot = SlotPlayerPickBus[playerid];
+    if(slot < 0 || slot >= PlayerBusinessCount[playerid] || slot >= MAX_Business_PLAYER) return SendMessageError(playerid, "Business yang dipilih tidak valid.");
+    new businessid = IdBusinessPlayer[playerid][slot];
+    if(!ValidBusinessIndex(businessid) || Business[businessid][bownerid] != Pemain[playerid][pId]) return SendMessageError(playerid, "Business tersebut sudah tidak kamu miliki.");
+
+    if(!ValidUnsignedInteger(inputtext)) return SendMessageError(playerid, "Input harus berupa angka positif!");
+
+    new jumlah = strval(inputtext);
+    if(jumlah <= 0) return SendMessageError(playerid, "Jumlah uang yang ditarik harus lebih dari 0!");
+    if(jumlah > Business[businessid][bpendapatan]) return SendMessageError(playerid, "Jumlah uang yang ingin ditarik melebihi uang yang tersimpan!");
+    if(GetPlayerMoney(playerid) > cellmax - jumlah) return SendMessageError(playerid, "Nominal melebihi batas saldo!");
+    if(!SimpanPenarikanBusiness(playerid, businessid, jumlah)) return SendMessageError(playerid, "Penarikan gagal disimpan. Uangmu tidak berubah, silakan coba lagi.");
+
+    GivePlayerMoney(playerid, jumlah);
+    Pemain[playerid][pUang] = GetPlayerMoney(playerid);
+
+    new money[32], msg[96];
+    FormatUang(jumlah, money);
+    format(msg, sizeof msg, "Berhasil menarik $%s dari pendapatan business.", money);
+    SendClientMessage(playerid, 0xFFFFFF, msg);
+
+    return 1;
+}
+
 Dialog:AKSI_BUSINESS(playerid, response, listitem, const inputtext[]) {
     if(!response) return 1;
+    if(!IsPlayerAccountReady(playerid)) return 1;
+
+    new slot = SlotPlayerPickBus[playerid];
+    if(slot < 0 || slot >= PlayerBusinessCount[playerid] || slot >= MAX_Business_PLAYER) return SendMessageError(playerid, "Business yang dipilih tidak valid.");
+    new businessid = IdBusinessPlayer[playerid][slot];
+    if(!ValidBusinessIndex(businessid) || Business[businessid][bownerid] != Pemain[playerid][pId]) return SendMessageError(playerid, "Business tersebut sudah tidak kamu miliki.");
 
     new judul[128];
     new msg[512];
     new mny[64];
     new typ[64];
+    new pndpt[64];
 
     // informasi
-    format(judul, sizeof judul, "%S - Informasi", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames]);
-    FormatUang(Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bprice], mny);
-    GetBusinessTypeName(Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][btype], typ, sizeof typ);
-    format(msg, sizeof msg, "Nama : %s\nType : %s\nStock : %d\nHarga Business : %s", Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bnames], typ, Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bsisa], mny);
+    format(judul, sizeof judul, "%S - Informasi", Business[businessid][bnames]);
+    FormatUang(Business[businessid][bprice], mny);
+    FormatUang(Business[businessid][bpendapatan], pndpt);
+    GetBusinessTypeName(Business[businessid][btype], typ, sizeof typ);
+    format(msg, sizeof msg, "Nama : %s\nType : %s\nStock : %d\nPendapatan : %s\nHarga Business : %s", Business[businessid][bnames], typ, Business[businessid][bsisa], pndpt, mny);
     if(listitem == 0) Dialog_Show(playerid, tmp_dialog, DIALOG_STYLE_MSGBOX, judul, msg, "Keluar", "");
     
     // track
-    else if(listitem == 1) SetPlayerCheckpoint(playerid, Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bx], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][by], Business[IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]][bz], 2.0);
+    else if(listitem == 1) SetPlayerCheckpoint(playerid, Business[businessid][bx], Business[businessid][by], Business[businessid][bz], 2.0);
 
     // change name
-    else if(listitem == 2) ShowChangeNamaBusiness(playerid, IdBusinessPlayer[playerid][SlotPlayerPickBus[playerid]]);
+    else if(listitem == 2) { ShowChangeNamaBusiness(playerid, businessid); GantiSendiriNamaBuss[playerid] = true; }
+
+    // ambil pendapatan
+    else if(listitem == 3) {
+        format(msg, sizeof msg, "Jumlah pendapatan : %s\n\nMasukkan jumlah uang yang ingin ditarik", pndpt);
+        Dialog_Show(playerid, AMBIL_UANG_BUS, DIALOG_STYLE_INPUT, "Tarik Uang Business", msg, "Kirim", "Batal");
+    }
 
     return 1;
 }
 
 Dialog:DIALOG_MYBUSS(playerid, response, listitem, const inputtext[]) {
     if(!response) return 1;
+    if(!IsPlayerAccountReady(playerid)) return 1;
+    if(listitem < 0 || listitem >= PlayerBusinessCount[playerid] || listitem >= MAX_Business_PLAYER) return SendMessageError(playerid, "Business yang dipilih tidak valid.");
 
     SlotPlayerPickBus[playerid] = listitem;
 
-    Dialog_Show(playerid, AKSI_BUSINESS, DIALOG_STYLE_LIST, Business[IdBusinessPlayer[playerid][listitem]][bnames], "Informasi\nTrack\nGanti Nama", "Pilih", "Batal");
+    new businessid = IdBusinessPlayer[playerid][listitem];
+    if(!ValidBusinessIndex(businessid) || Business[businessid][bownerid] != Pemain[playerid][pId]) return SendMessageError(playerid, "Business tersebut sudah tidak kamu miliki.");
+    Dialog_Show(playerid, AKSI_BUSINESS, DIALOG_STYLE_LIST, Business[businessid][bnames], "Informasi\nTrack\nGanti Nama\nTarik Uang", "Pilih", "Batal");
 
     return 1;
 }

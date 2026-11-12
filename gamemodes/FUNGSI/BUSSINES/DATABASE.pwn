@@ -22,6 +22,7 @@ Fungsi: LoadBusiness() {
         cache_get_value_name(i, "ownername", Business[index][bownername], MAX_PLAYER_NAME + 1);
         cache_get_value_name_int(i, "price", Business[index][bprice]);
         cache_get_value_name_int(i, "interior", Business[index][binterior]);
+        cache_get_value_name_int(i, "pendapatan", Business[index][bpendapatan]);
 
         if(!ValidBusinessName(Business[index][bnames]) || !ValidBusinessPosition(Business[index][bx], Business[index][by], Business[index][bz]) || Business[index][bownerid] < 0 || Business[index][btype] < 0 || Business[index][btype] > 127 || Business[index][bsisa] < 0) {
             printf("[Business] Data business ID %d tidak valid, data tidak dimuat.", bussid);
@@ -132,7 +133,7 @@ stock bool:SaveDataBusiness(index, const data[BusinessData]) {
     if(!GetBusinessInteriorPosition(data[binterior], interiorx, interiory, interiorz)) return false;
 
     new query[1024], affected, insertid;
-    mysql_format(g_SQL, query, sizeof query, "UPDATE bussines SET name = '%e', ownerid = %d, posx = %.6f, posy = %.6f, posz = %.6f, type = %d, stock = %d, price = %d, interior = %d WHERE id = %d", data[bnames], data[bownerid], data[bx], data[by], data[bz], data[btype], data[bsisa], data[bprice], data[binterior], data[bid]);
+    mysql_format(g_SQL, query, sizeof query, "UPDATE bussines SET name = '%e', ownerid = %d, posx = %.6f, posy = %.6f, posz = %.6f, type = %d, stock = %d, price = %d, interior = %d, pendapatan= %d WHERE id = %d", data[bnames], data[bownerid], data[bx], data[by], data[bz], data[btype], data[bsisa], data[bprice], data[binterior], data[bpendapatan], data[bid]);
     if(!ExecuteBusinessWrite(query, affected, insertid)) return false;
     if(affected == 0 && !BusinessExists(data[bid])) return false;
 
@@ -142,6 +143,26 @@ stock bool:SaveDataBusiness(index, const data[BusinessData]) {
     // Data lama tetap dipakai jika query gagal
     Business[index] = data;
     if(!UpdateBusinessObject(index)) printf("[Business] Data ID %d tersimpan, tetapi pintu atau text label gagal diperbarui.", data[bid]);
+    return true;
+}
+
+stock bool:SimpanPenarikanBusiness(playerid, bussindex, jumlah) {
+    if(!IsPlayerAccountReady(playerid) || PlayerDeath[playerid] || !ValidBusinessIndex(bussindex) || Pemain[playerid][pId] <= 0 || jumlah <= 0) return false;
+    if(Business[bussindex][bownerid] != Pemain[playerid][pId]) return false;
+
+    new uang = GetPlayerMoney(playerid), pendapatan = Business[bussindex][bpendapatan];
+    if(pendapatan < jumlah || uang > cellmax - jumlah) return false;
+    if(!SimpanDataPemain(playerid)) return false;
+
+    new query[512];
+    mysql_format(g_SQL, query, sizeof query, "UPDATE Pemain AS p JOIN bussines AS b ON b.id = %d SET p.uang = %d, b.pendapatan = %d WHERE p.id = %d AND p.uang = %d AND b.ownerid = p.id AND b.pendapatan = %d", Business[bussindex][bid], uang + jumlah, pendapatan - jumlah, Pemain[playerid][pId], uang, pendapatan);
+    new Cache:result = mysql_query(g_SQL, query);
+    new bool:saved = mysql_errno(g_SQL) == 0 && cache_is_valid(result) && cache_affected_rows() == 2;
+    if(cache_is_valid(result)) cache_delete(result);
+    if(!saved) return false;
+
+    Business[bussindex][bpendapatan] = pendapatan - jumlah;
+    if(!UpdateBusinessObject(bussindex)) printf("[Business] Pendapatan ID %d tersimpan, tetapi label gagal diperbarui.", Business[bussindex][bid]);
     return true;
 }
 
@@ -217,7 +238,7 @@ stock BuyBusiness(playerid) {
     FormatUang(harga, moneysss);
     format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} Kamu berhasil membeli business ID %d seharga {55FF62}$%s{FFFFFF}.", Business[index][bid], moneysss);
     SendClientMessage(playerid, 0xFFFFFFFF, msg);
-
+    GantiSendiriNamaBuss[playerid] = false;
     ShowChangeNamaBusiness(playerid, index);
     SheylaCantikImutBanget[playerid] = index;
 
