@@ -168,7 +168,7 @@ Dialog:AMBIL_UANG_BUS(playerid, response, listitem, const inputtext[]){
     new money[32], msg[96];
     FormatUang(jumlah, money);
     format(msg, sizeof msg, "Berhasil menarik $%s dari pendapatan business.", money);
-    SendClientMessage(playerid, 0xFFFFFF, msg);
+    SendMessageInfo(playerid, msg);
 
     return 1;
 }

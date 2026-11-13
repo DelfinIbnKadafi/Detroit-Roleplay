@@ -1,8 +1,27 @@
 //===[PESAN SERVER]===//
-#define SendMessageError(%1,%2)  SendClientMessage(%1, 0xFFFFFF, "{FF0000}[ERROR]{FFFFFF} "%2)
-#define SendMessageWarning(%1,%2)  SendClientMessage(%1, 0xFFFFFF, "{FF0000}[WARNING]{FFFFFF} "%2)
-#define SendMessageInfo(%1,%2)   SendClientMessage(%1, 0xFFFFFF, "{00EBFF}[INFO]{FFFFFF} "%2)
-#define SendMessageServer(%1,%2) SendClientMessage(%1, 0xFFFFFF, "{00EBFF}[SERVER]{FFFFFF} "%2)
+stock SendMessageError(playerid, const message[]) {
+  new formattedMessage[144];
+  format(formattedMessage, sizeof(formattedMessage), "{FF0000}[ERROR]{FFFFFF} %s", message);
+  return SendClientMessage(playerid, 0xFFFFFF, formattedMessage);
+}
+
+stock SendMessageWarning(playerid, const message[]) {
+  new formattedMessage[144];
+  format(formattedMessage, sizeof(formattedMessage), "{FF0000}[WARNING]{FFFFFF} %s", message);
+  return SendClientMessage(playerid, 0xFFFFFF, formattedMessage);
+}
+
+stock SendMessageInfo(playerid, const message[]) {
+  new formattedMessage[144];
+  format(formattedMessage, sizeof(formattedMessage), "{00EBFF}[INFO]{FFFFFF} %s", message);
+  return SendClientMessage(playerid, 0xFFFFFF, formattedMessage);
+}
+
+stock SendMessageServer(playerid, const message[]) {
+  new formattedMessage[144];
+  format(formattedMessage, sizeof(formattedMessage), "{00EBFF}[SERVER]{FFFFFF} %s", message);
+  return SendClientMessage(playerid, 0xFFFFFF, formattedMessage);
+}
 
 stock ClearPlayerChat(playerid, lines = 75) {
 	for(new i ; i < lines; i ++) {
