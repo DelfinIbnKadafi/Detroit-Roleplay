@@ -2,7 +2,7 @@
 #define MAX_Business_NAME 128
 #define Business_PER_PAGE 10
 #define Business_PICKUP_MODEL 19132
-#define Business_DEFAULT_PRICE 15000000
+#define Business_DEFAULT_PRICE 45000000
 #define Business_DEFAULT_INTERIOR 17
 
 enum BusinessData {
