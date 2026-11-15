@@ -90,6 +90,10 @@ Dialog:BUY_MARKET(playerid, response, listitem, const inputtext[]) {
             price = 300000;
             format(itemname, sizeof itemname, "Ponsel Pintar");
         }
+        case 1: {
+            price = 20000;
+            format(itemname, sizeof itemname, "Kuota Internet 5gb");
+        }
     }
 
     if(businessid == -1 || Business[businessid][binterior] != 17 || !IsPlayerInBuyPoint(playerid, businessid)) return SendMessageError(playerid, "Kamu harus berada di titik beli business Market!");
@@ -112,6 +116,9 @@ Dialog:BUY_MARKET(playerid, response, listitem, const inputtext[]) {
         new nostr[16];
         format(nostr, sizeof nostr, "%d", noint);
         strcopy(Pemain[playerid][pNohp], nostr);
+    }
+    else if(listitem == 1) {
+        Pemain[playerid][pKuota] += 5.0;
     }
 
     new msg[144], moneysss[32];

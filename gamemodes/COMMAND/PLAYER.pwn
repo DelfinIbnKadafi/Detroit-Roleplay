@@ -152,6 +152,14 @@ CMD:togphone(playerid, params[]) {
 CMD:call(playerid, params[]) {
 
   if(Pemain[playerid][pPhone] == 0) return SendMessageError(playerid, "Kamu tidak memiliki ponsel");
+  if(Pemain[playerid][pKuota] == 0) return SendMessageError(playerid, "Kamu tidak memiliki kuota intenet.")
+
+  return 1;
+}
+
+CMD:phone(playerid, params[]) {
+
+  if(Pemain[playerid][pPhone] == 0) return SendMessageError(playerid, "Kamu tidak memiliki ponsel");
 
   return 1;
 }

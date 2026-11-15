@@ -76,7 +76,7 @@ Fungsi: SimpanDataPemain(playerid)
   
   new query[1024];
   mysql_format(g_SQL, query, sizeof(query),
-    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%e', ktp='%d', tanggallahir='%e', job='%d', haus='%d', lapar='%d', admin='%d', death='%d' WHERE id='%d'",
+    "UPDATE Pemain SET posx='%f', posy='%f', posz='%f', angle='%f', interior='%d', virtualworld=%d, level='%d', skin='%d', darah='%f', armor='%f', uang='%d', bank='%d', norek='%d', phone='%d', phonestatus='%d', nohp='%e', ktp='%d', tanggallahir='%e', job='%d', haus='%d', lapar='%d', admin='%d', death='%d', kuota='%f' WHERE id='%d'",
     PosisiPemain[playerid][pX],
     PosisiPemain[playerid][pY],
     PosisiPemain[playerid][pZ],
@@ -108,6 +108,8 @@ Fungsi: SimpanDataPemain(playerid)
     Admin[playerid],
 
     PlayerDeath[playerid],
+
+    Pemain[playerid][pKuota],
     
     Pemain[playerid][pId]
   );
