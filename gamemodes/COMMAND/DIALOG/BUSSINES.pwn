@@ -80,7 +80,46 @@ stock ShowBusinessList(playerid, page) {
 // buy business
 Dialog:BUY_MARKET(playerid, response, listitem, const inputtext[]) {
     if(!response) return 1;
-    return SendMessageInfo(playerid, "Market ini belum menjual item apa pun.");
+
+    new price;
+    new itemname[64];
+    new businessid = GetPlayerBusinessIndex(playerid);
+    
+    switch(listitem) {
+        case 0: {
+            price = 300000;
+            format(itemname, sizeof itemname, "Ponsel Pintar");
+        }
+    }
+
+    if(businessid == -1 || Business[businessid][binterior] != 17 || !IsPlayerInBuyPoint(playerid, businessid)) return SendMessageError(playerid, "Kamu harus berada di titik beli business Market!");
+    if(GetPlayerMoney(playerid) < price) return SendMessageError(playerid, "Uangmu tidak cukup!");
+    if(Business[businessid][bsisa] < 1) return SendMessageError(playerid, "Business ini sudah kehabisan stock!");
+
+    // stock berkurang dan tersimpan ke database lebih dulu, jika gagal pembelian dibatalkan dan uang tidak berkurang
+    new data[BusinessData];
+    data = Business[businessid];
+    data[bsisa]--;
+    data[bpendapatan] += price;
+    if(!SaveDataBusiness(businessid, data)) return SendMessageError(playerid, "Pembelian gagal diproses. Uangmu tidak berkurang, silakan coba lagi.");
+
+    GivePlayerMoney(playerid, -price);
+    Pemain[playerid][pUang] = GetPlayerMoney(playerid);
+
+    if(listitem == 0) {
+        Pemain[playerid][pPhone] = 1;
+        new noint = random(900000) + 100000;
+        new nostr[16];
+        format(nostr, sizeof nostr, "%d", noint);
+        strcopy(Pemain[playerid][pNohp], nostr);
+    }
+
+    new msg[144], moneysss[32];
+    FormatUang(price, moneysss);
+    format(msg, sizeof msg, "{00EBFF}[INFO]{FFFFFF} Kamu membeli %s seharga {55FF62}$%s{FFFFFF}.", itemname, moneysss);
+    SendClientMessage(playerid, 0xFFFFFFFF, msg);
+
+    return 1;
 }
 
 Dialog:BUY_FASTFOOD(playerid, response, listitem, const inputtext[]) {

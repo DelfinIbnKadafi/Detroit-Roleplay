@@ -47,7 +47,7 @@ stock ShowBuyDialog(playerid) {
 
     switch(Business[status][binterior]) {
         case 17: {
-            return Dialog_Show(playerid, BUY_MARKET, DIALOG_STYLE_LIST, "Market - Buy", "Belum ada apa apa bang", "Beli", "Batal");
+            return Dialog_Show(playerid, BUY_MARKET, DIALOG_STYLE_LIST, "Market - Buy", "Ponsel Pintar $300.000", "Beli", "Batal");
         }
         case 9: {
             return Dialog_Show(playerid, BUY_FASTFOOD, DIALOG_STYLE_LIST, "Fast Food - Buy", "Burger $30.000\nPizza $40.000\nCola $15.000", "Beli", "Batal");
