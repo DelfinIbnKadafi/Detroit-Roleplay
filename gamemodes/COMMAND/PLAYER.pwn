@@ -134,3 +134,17 @@ CMD:death(playerid, params[]) {
   }
   return 1;
 }
+
+// phone commands
+CMD:togphone(playerid, params[]) {
+
+  if(Pemain[playerid][pPhone] == 0) return SendMessageError(playerid, "Kamu tidak memiliki ponsel");
+
+  if(Pemain[playerid][pPhoneStatus] == 0) {
+    Pemain[playerid][pPhoneStatus] = 1;
+    return SendMessageInfo(playerid, "Berhasil menghidupkan ponsel");
+  }
+  
+  Pemain[playerid][pPhoneStatus] = 0;
+  return SendMessageInfo(playerid, "Berhasil mengnonaktifkan ponsel");
+}
