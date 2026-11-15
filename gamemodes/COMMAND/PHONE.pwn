@@ -90,6 +90,11 @@ CMD:answer(playerid, params[]) {
     return SendMessageError(playerid, "Panggilan sudah tidak tersedia");
   }
 
+  if(!PlayerCall[targetid][inCall] || PlayerCall[targetid][userTujuan] != playerid || PlayerCall[targetid][answered]) {
+    ClosePlayerCall(playerid);
+    return SendMessageError(playerid, "Panggilan sudah tidak tersedia");
+  }
+
   PlayerCall[playerid][inCall] = true;
   PlayerCall[playerid][userTujuan] = targetid;
   strcopy(PlayerCall[playerid][nomorTujuan], Pemain[targetid][pNohp]);
@@ -100,8 +105,34 @@ CMD:answer(playerid, params[]) {
   strcopy(PlayerCall[targetid][nomorTujuan], Pemain[playerid][pNohp]);
   PlayerCall[targetid][answered] = true;
   
-  SendClientMessage(playerid, -1, "{ffff00}[CALL]{ffffff} Berhasil menjawab telepon, silahkan mulai bicara");
-  SendClientMessage(targetid, -1, "{ffff00}[CALL]{ffffff} Panggilan telah dijawab");
+  SendClientMessage(playerid, -1, "{ffff00}[CALL]{ffffff} Berhasil menjawab telepon, silahkan mulai bicara\nGunakan /stopcall untuk menghentikan telepon");
+  SendClientMessage(targetid, -1, "{ffff00}[CALL]{ffffff} Panggilan telah dijawab, silahkan mulai bicara\nGunakan /stopcall untuk menghentikan telepon");
+
+  return 1;
+}
+
+CMD:reject(playerid, params[]) {
+  if(Pemain[playerid][pPhoneStatus] == 0) return SendMessageError(playerid, "Ponsel kamu sedang tidak aktif");
+  if(!PlayerCall[playerid][inCall]) return SendMessageError(playerid, "Kamu tidak menerima telepon apapun");
+  if(PlayerCall[playerid][answered]) return SendMessageError(playerid, "Kamu sudah menjawab telepon");
+
+  SendClientMessage(playerid, -1, "{ffff00}[CALL]{ffffff} Berhasil menolak panggilan");
+  SendClientMessage(PlayerCall[playerid][userTujuan], -1, "{ffff00}[CALL]{ffffff} Panggilan ditolak");
+
+  ClosePlayerCall(playerid);
+
+  return 1;
+}
+
+CMD:stopcall(playerid, params[]) {
+
+  if(Pemain[playerid][pPhoneStatus] == 0) return SendMessageError(playerid, "Ponsel kamu sedang tidak aktif");
+  if(!PlayerCall[playerid][inCall]) return SendMessageError(playerid, "Kamu tidak menerima telepon apapun");
+
+  SendClientMessage(playerid, -1, "{ffff00}[CALL]{ffffff} Panggilan dihentikan");
+  SendClientMessage(PlayerCall[playerid][userTujuan], -1, "{ffff00}[CALL]{ffffff} Panggilan dihentikan");
+  
+  ClosePlayerCall(playerid);
 
   return 1;
 }
