@@ -91,6 +91,9 @@ stock GetRoleplayName(playerid, name[], size)
 
 public OnPlayerText(playerid, text[])
 {
+
+  if(!StatusLogin[playerid]) {SendMessageError(playerid, "Kamu harus login terlebih dahulu!"); return 0;}
+
   if(isnull(text) || strlen(text) < 1) {
     return 0;
   }
