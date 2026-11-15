@@ -1,4 +1,5 @@
-// phone commands ///////////////////////////////
+// phone commands //////////////////////////////
+
 CMD:togphone(playerid, params[]) {
 
   if(Pemain[playerid][pPhone] == 0) return SendMessageError(playerid, "Kamu tidak memiliki ponsel");
@@ -9,36 +10,8 @@ CMD:togphone(playerid, params[]) {
   }
   
   Pemain[playerid][pPhoneStatus] = 0;
+  ClosePlayerCall(playerid);
   return SendMessageInfo(playerid, "Berhasil mengnonaktifkan ponsel");
-}
-
-Fungsi: MatikanMemanggilTelepon(playerid) {
-  if(PlayerCall[playerid][answered]) return 1;
-
-  new i = PlayerCall[playerid][userTujuan];
-
-  if(i < 0 || i >= MAX_PLAYERS || !IsPlayerConnected(i)) return 1;
-
-  if(IsPlayerConnected(i) && strcmp(Pemain[i][pNohp], PlayerCall[playerid][nomorTujuan]) == 0) {
-    PlayerCall[i][inCall] = false;
-    PlayerCall[i][answered] = false;
-    PlayerCall[i][userTujuan] = -1;
-
-    new msg[128];
-    format(msg, sizeof msg, "Panggilan tidak terjawab oleh %s", PlayerCall[i][nomorTujuan]);
-    strcopy(PlayerCall[i][nomorTujuan], "");
-    SendMessageInfo(i, msg);
-  }
-
-  if(IsPlayerConnected(playerid) && strcmp(Pemain[playerid][pNohp], PlayerCall[i][nomorTujuan]) == 0) {
-    PlayerCall[playerid][inCall] = false;
-    PlayerCall[playerid][answered] = false;
-    PlayerCall[playerid][userTujuan] = -1;
-    strcopy(PlayerCall[playerid][nomorTujuan], "");
-    SendMessageInfo(playerid, "Panggilan tidak diangkat selama 30 detik, menghentikan panggilan secara otomatis");
-  }
-
-  return 1;
 }
 
 CMD:call(playerid, params[]) {
@@ -61,6 +34,8 @@ CMD:call(playerid, params[]) {
 
     if(Pemain[i][pPhoneStatus] == 0) return SendMessageError(playerid, "Ponsel nomor tujuan sedang tidak aktif");
 
+    if(Pemain[i][pKuota] == 0) return SendMessageError(playerid, "Tidak dapat menghubungkan ke telepon, pastikan ponsel target memiliki kuota");
+
     if(PlayerCall[i][inCall]) return SendMessageInfo(playerid, "Nomor tersebut sedang berada dalam panggilan lain");
 
     PlayerCall[playerid][inCall] = true;
@@ -76,10 +51,10 @@ CMD:call(playerid, params[]) {
     PlayerCall[i][userTujuan] = playerid;
 
     new msg[256];
-    format(msg, sizeof msg, "Menelpon nomor %d...", notargetint);
-    SendClientMessage(playerid, 0xffff00ff, msg);
-    format(msg, sizeof msg, "Telepon masuk dari %d, gunakan /answer untuk menjawab telepon", notargetint);
-    SendClientMessage(i, 0xffff00ff, msg);
+    format(msg, sizeof msg, "{ffff00}[CALL]{ffffff} Menelpon nomor %d...", notargetint);
+    SendClientMessage(playerid, -1, msg);
+    format(msg, sizeof msg, "{ffff00}[CALL]{ffffff} Telepon masuk dari %d, gunakan /answer untuk menjawab telepon atau /reject untuk menolak", notargetint);
+    SendClientMessage(i, -1, msg);
 
     SetTimerEx("MatikanMemanggilTelepon", 30000, false, "i", playerid);
 
@@ -104,6 +79,29 @@ CMD:phone(playerid, params[]) {
 }
 
 CMD:answer(playerid, params[]) {
-  // coming soon
+  if(Pemain[playerid][pPhoneStatus] == 0) return SendMessageError(playerid, "Ponsel kamu sedang tidak aktif");
+  if(!PlayerCall[playerid][inCall]) return SendMessageError(playerid, "Kamu tidak menerima telepon apapun");
+  if(PlayerCall[playerid][answered]) return SendMessageError(playerid, "Kamu sudah menjawab telepon");
+
+  new targetid = PlayerCall[playerid][userTujuan];
+
+  if(targetid < 0 || targetid >= MAX_PLAYERS || !IsPlayerConnected(targetid)) {
+    ClosePlayerCall(playerid);
+    return SendMessageError(playerid, "Panggilan sudah tidak tersedia");
+  }
+
+  PlayerCall[playerid][inCall] = true;
+  PlayerCall[playerid][userTujuan] = targetid;
+  strcopy(PlayerCall[playerid][nomorTujuan], Pemain[targetid][pNohp]);
+  PlayerCall[playerid][answered] = true;
+
+  PlayerCall[targetid][inCall] = true;
+  PlayerCall[targetid][userTujuan] = playerid;
+  strcopy(PlayerCall[targetid][nomorTujuan], Pemain[playerid][pNohp]);
+  PlayerCall[targetid][answered] = true;
+  
+  SendClientMessage(playerid, -1, "{ffff00}[CALL]{ffffff} Berhasil menjawab telepon, silahkan mulai bicara");
+  SendClientMessage(targetid, -1, "{ffff00}[CALL]{ffffff} Panggilan telah dijawab");
+
   return 1;
 }

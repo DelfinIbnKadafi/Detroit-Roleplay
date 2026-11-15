@@ -1,3 +1,4 @@
+#include "FUNGSI/PHONE.pwn"
 #include "FUNGSI/PESAN.pwn"
 #include "FUNGSI/ANTI_SPAM.pwn"
 #include "FUNGSI/WRAPPER.pwn"

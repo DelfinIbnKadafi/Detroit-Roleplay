@@ -153,6 +153,8 @@ public OnPlayerDisconnect(playerid, reason)
   norek_atm_masukkan[playerid] = -1;
   PlayerDeleteBusiness[playerid] = 0;
 
+  if(PlayerCall[playerid][inCall]) ClosePlayerCall(playerid);
+
   KillTimer(TimerLapar[playerid]);
   KillTimer(TimerHaus[playerid]);
   KillTimer(TimerHBE[playerid]);

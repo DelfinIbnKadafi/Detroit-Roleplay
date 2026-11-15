@@ -101,6 +101,10 @@ public OnPlayerText(playerid, text[])
     SendMessageError(playerid, "Pesan terlalu panjang (maksimal 100 karakter).");
     return 0;
   }
+
+  // call chat, the call shouldn't need mute
+  if(PlayerCall[playerid][inCall] && PlayerCall[playerid][answered]) {ChatInCall(playerid, text); return 0;}
+
   if(!CanSendChat(playerid)) return 0;
 
   new Float:px, Float:py, Float:pz;
