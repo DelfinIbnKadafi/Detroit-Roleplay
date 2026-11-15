@@ -104,7 +104,8 @@ new VehServer[MAX_VEHICLES_SERVER][DataVehServer] = {{VEH_KOSONG, VEH_KOSONG, fa
 enum CallData {
   bool:inCall,
   nomorTujuan[17],
-  userTujuan
+  userTujuan,
+  bool:answered
 }
 
 new PlayerCall[MAX_PLAYERS][CallData];

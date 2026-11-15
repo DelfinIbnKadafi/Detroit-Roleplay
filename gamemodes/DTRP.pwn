@@ -98,8 +98,9 @@ public OnPlayerConnect(playerid)
     // reset data telpon
     PlayerCall[playerid][inCall] = false;
     PlayerCall[playerid][userTujuan] = -1;
-    strcopy(PlayerCall[playerid][nomorTujuan], "0");
-    
+    strcopy(PlayerCall[playerid][nomorTujuan], "");
+    PlayerCall[playerid][answered] = false;
+
     SetPlayerColor(playerid, 0xFFFFFFFF);
     LoadPlayerTextdraw(playerid);
     GetPlayerName(playerid, Pemain[playerid][pNama], MAX_PLAYER_NAME + 1);
