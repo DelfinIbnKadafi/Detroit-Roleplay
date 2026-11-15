@@ -148,3 +148,10 @@ CMD:togphone(playerid, params[]) {
   Pemain[playerid][pPhoneStatus] = 0;
   return SendMessageInfo(playerid, "Berhasil mengnonaktifkan ponsel");
 }
+
+CMD:call(playerid, params[]) {
+
+  if(Pemain[playerid][pPhone] == 0) return SendMessageError(playerid, "Kamu tidak memiliki ponsel");
+
+  return 1;
+}

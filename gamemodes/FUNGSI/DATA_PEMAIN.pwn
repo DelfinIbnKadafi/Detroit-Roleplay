@@ -40,6 +40,7 @@ Fungsi: MuatDataPemain(playerid, sessionid, const expectedName[])
   cache_get_value_int(0, "phone", Pemain[playerid][pPhone]);
   cache_get_value_int(0, "phonestatus", Pemain[playerid][pPhoneStatus]);
   cache_get_value_name(0, "nohp", Pemain[playerid][pNohp]);
+  cache_get_value_name_float(0, "kuota", Pemain[playerid][pKuota]);
   cache_get_value_int(0, "ktp", Pemain[playerid][pKtp]);
   cache_get_value_name(0, "tanggallahir", Pemain[playerid][pDateBirth]);
   cache_get_value_int(0, "job", Pemain[playerid][pJob]);

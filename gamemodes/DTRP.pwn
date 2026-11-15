@@ -94,6 +94,11 @@ public OnPlayerConnect(playerid)
     playerinBusiness[playerid] = false;
 
     norek_atm_masukkan[playerid] = -1;
+
+    // reset data telpon
+    PlayerCall[playerid][inCall] = false;
+    PlayerCall[playerid][userTujuan] = -1;
+    strcopy(PlayerCall[playerid][nomorTujuan], "0");
     
     SetPlayerColor(playerid, 0xFFFFFFFF);
     LoadPlayerTextdraw(playerid);

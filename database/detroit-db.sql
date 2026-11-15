@@ -28,6 +28,7 @@ CREATE TABLE `Pemain` (
   `phone` int NOT NULL DEFAULT '0',
   `phonestatus` int NOT NULL DEFAULT '0',
   `nohp` varchar(16) NOT NULL DEFAULT '',
+  `kuota` float NOT NULL DEFAULT '0.0',
   `ktp` int NOT NULL DEFAULT '0',
   `job` int NOT NULL DEFAULT '0',
   `lapar` int NOT NULL DEFAULT '100',

@@ -33,6 +33,7 @@ enum DATA_PEMAIN
   pPhone,
   pPhoneStatus,
   pNohp[17],
+  Float:pKuota,
   pKtp,
   pDateBirth[65],
   pJob,
@@ -98,3 +99,12 @@ enum DataVehServer {
 new PVeh[MAX_PLAYERS][MAX_KENDARAAN][DataVeh];
 new PVehInfo[MAX_PLAYERS][DataVehInfo];
 new VehServer[MAX_VEHICLES_SERVER][DataVehServer] = {{VEH_KOSONG, VEH_KOSONG, false, 0, VEH_KOSONG}, ...};
+
+// telepon
+enum CallData {
+  bool:inCall,
+  nomorTujuan[17],
+  userTujuan
+}
+
+new PlayerCall[MAX_PLAYERS][CallData];
