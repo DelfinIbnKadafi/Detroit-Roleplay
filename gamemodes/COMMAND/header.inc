@@ -5,3 +5,4 @@
 #include "COMMAND/KENDARAAN.pwn"
 #include "COMMAND/ADMIN.pwn"
 #include "COMMAND/BUSSINES.pwn"
+#include "COMMAND/PHONE.pwn"
