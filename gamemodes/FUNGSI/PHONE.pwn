@@ -47,5 +47,19 @@ stock ChatInCall(playerid, const text[]) {
   SendClientMessage(playerid, -1, msg);
   SendClientMessage(pembicaraLain, -1, msg);
 
+
+
+  new Float:px, Float:py, Float:pz;
+  GetPlayerPos(playerid, px, py, pz);
+
+  format(msg, sizeof msg, "{00ffff}[In Call] {ffffff}%s", text);
+
+  foreach(new i : Player) {
+    new Float:ds = GetPlayerDistanceFromPoint(i, px, py, pz);
+    if(ds <= 10.0 && i != playerid && i != pembicaraLain) {
+      SendClientMessage(i, -1, msg);
+    }
+  }
+
   return 1;
 }
