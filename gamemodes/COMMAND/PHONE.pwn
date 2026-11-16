@@ -73,7 +73,7 @@ CMD:phone(playerid, params[]) {
   if(Pemain[playerid][pPhone] == 0) return SendMessageError(playerid, "Kamu tidak memiliki ponsel");
   if(Pemain[playerid][pPhoneStatus] == 0) return SendMessageError(playerid, "Ponsel kamu sedang tidak menyala, gunakan /togphone untuk menyalakanya");
 
-  // coming soon
+  Dialog_Show(playerid, DIALOG_PHONE, DIALOG_STYLE_LIST, "My Phone", "Informasi\nTelpon\nMatikan Ponsel", "Pilih", "Keluar");
 
   return 1;
 }
