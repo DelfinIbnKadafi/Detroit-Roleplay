@@ -13,6 +13,11 @@ Dialog:DIALOG_PHONE(playerid, response, listitem, const inputtext[]) {
         case 1: {
             Dialog_Show(playerid, DIALOG_PHONE_CALL, DIALOG_STYLE_INPUT, "Telpon - Nomor", "Masukkan nomor telepon", "Kirim", "Batal");
         }
+        // matikan ponsel
+        case 2: {
+            Pemain[playerid][pPhoneStatus] = 0;
+            return SendMessageInfo(playerid, "Berhasil mematikan ponsel");
+        }
     }
 
     return 1;
