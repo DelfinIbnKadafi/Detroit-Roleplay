@@ -26,4 +26,6 @@ stock MapText(objectid, const text[], materialindex, materialsize, const fontfac
 
 #include "ASET/MAPPING/Dekor.pwn"
 
+#include "ASET/MAPPING/Pizza.pwn"
+
 #include "ASET/MAPPING/Main.pwn"

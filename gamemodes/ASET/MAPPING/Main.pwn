@@ -9,4 +9,7 @@ LoadMapping() {
     // Dekorasi
     LoadDekorasi();
 
+    // Job
+    LoadPizzaMap();
+
 }
