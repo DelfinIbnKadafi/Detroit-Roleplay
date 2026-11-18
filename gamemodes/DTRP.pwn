@@ -70,7 +70,6 @@ public OnPlayerConnect(playerid)
     // mapping
     RemoveBuildCityHall(playerid);
     RemoveBuildHospital(playerid);
-    RemoveBuildPizza(playerid);
     ///////////////////////////
 
     PlayerSession[playerid]++;
