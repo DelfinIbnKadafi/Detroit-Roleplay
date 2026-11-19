@@ -17,3 +17,24 @@ stock GetJobName(idjob, dest[], size = sizeof(dest)) {
   
   return 1;
 }
+
+CMD:getjob(playerid, params[]) {
+
+  if(Pemain[playerid][pJob] != 0) return SendMessageError(playerid, "Kamu sudah memiliki pekerjaan, gunakan /resignjob untuk keluar");
+
+  if(IsPlayerInRangeOfPoint(playerid, 1.5, 2097.5, -1801.50, 13.4)) {
+    Pemain[playerid][pJob] = 1;
+    return SendMessageInfo(playerid, "Berhasil mendaftar sebagai pengantar pizza!");
+  }
+
+  return 1;
+}
+
+CMD:resignjob(playerid, params[]) {
+
+  if(Pemain[playerid][pJob] == 0) return SendMessageError(playerid, "Kamu tidak memiliki pekerjaan apapun!");
+
+  Pemain[playerid][pJob] = 0;
+
+  return SendMessageInfo(playerid, "Berhasil keluar dari pekerjaan!");
+}

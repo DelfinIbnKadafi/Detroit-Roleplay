@@ -1,5 +1,5 @@
 stock ShowHelpDialog(playerid) {
-  Dialog_Show(playerid, DL_HELP_MAIN, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Help", "Roleplay Command\nBasic Command\nVehicle Command\nBusiness Command\nPhone Command", "Pilih", "Batal");
+  Dialog_Show(playerid, DL_HELP_MAIN, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Help", "Roleplay Command\nBasic Command\nVehicle Command\nBusiness Command\nPhone Command\nJob Commands", "Pilih", "Batal");
   
   return 1;
 }
@@ -29,6 +29,9 @@ Dialog:DL_HELP_MAIN(playerid, response, listitem, const inputtext[]) {
     }
     case 4: {
       Dialog_Show(playerid, DL_HELP, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Phone Command", "/togphone\n/call\n/phone\n/answer\n/reject\n/stopcall", "Kembali", " ");
+    }
+    case 5: {
+      Dialog_Show(playerid, DL_HELP, DIALOG_STYLE_LIST, ""E_DETROIT"Detroit "E_WHITE"Roleplay - Job Command", "/getjob\n/resignjob", "Kembali", " ");
     }
   }
   return 1;
