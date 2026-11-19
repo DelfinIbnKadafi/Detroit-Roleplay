@@ -63,6 +63,27 @@ public OnGameModeInit()
     return 1;
 }
 
+public OnGameModeExit()
+{
+  KillTimer(TimerDeadVehicle);
+  KillTimer(TimerLoadAtm);
+  DestroyAllBusiness();
+  DestroyAllAtm();
+  foreach(new playerid : Player) {
+    if(!StatusLogin[playerid]) continue;
+    SimpanDataPemain(playerid);
+    SaveDataKendaraan(playerid);
+  }
+  if(g_SQL != MYSQL_INVALID_HANDLE) mysql_close(g_SQL);
+
+  // simpan semua data business
+  for(new i = 0; i < MAX_Business; i++) {
+    if(Business[i][bactive] == true) SaveDataBusiness(i, Business[i]);
+  }
+
+  return 1;
+}
+
 // connect/disconnect
 public OnPlayerConnect(playerid) 
 {
@@ -119,27 +140,6 @@ public OnPlayerConnect(playerid)
     return 1;
 }
 
-public OnGameModeExit()
-{
-  KillTimer(TimerDeadVehicle);
-  KillTimer(TimerLoadAtm);
-  DestroyAllBusiness();
-  DestroyAllAtm();
-  foreach(new playerid : Player) {
-    if(!StatusLogin[playerid]) continue;
-    SimpanDataPemain(playerid);
-    SaveDataKendaraan(playerid);
-  }
-  if(g_SQL != MYSQL_INVALID_HANDLE) mysql_close(g_SQL);
-
-  // simpan semua data business
-  for(new i = 0; i < MAX_Business; i++) {
-    if(Business[i][bactive] == true) SaveDataBusiness(i, Business[i]);
-  }
-
-  return 1;
-}
-
 public OnPlayerDisconnect(playerid, reason) 
 {
   new bool:wasLoggedIn = StatusLogin[playerid];
@@ -148,6 +148,7 @@ public OnPlayerDisconnect(playerid, reason)
   TdPintuShown[playerid] = false;
   ResetBusinessEdit(playerid);
   ResetAtmEdit(playerid);
+  ResetJob(playerid);
   BatalkanStatusDown(playerid);
   idatmplayeruse[playerid] = -1;
   norek_atm_masukkan[playerid] = -1;

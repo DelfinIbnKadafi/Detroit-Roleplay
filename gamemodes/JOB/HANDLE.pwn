@@ -18,6 +18,13 @@ stock GetJobName(idjob, dest[], size = sizeof(dest)) {
   return 1;
 }
 
+stock ResetJob(playerid) {
+
+  ResetPlayerPizza(playerid);
+
+  return 1;
+}
+
 CMD:getjob(playerid, params[]) {
 
   if(Pemain[playerid][pJob] != 0) return SendMessageError(playerid, "Kamu sudah memiliki pekerjaan, gunakan /resignjob untuk keluar");
