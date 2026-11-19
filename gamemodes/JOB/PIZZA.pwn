@@ -1,13 +1,15 @@
 new bool:PlayerDeliveredPizza[MAX_PLAYERS] = false;
 new bool:PlayerCanGetPizza[MAX_PLAYERS] = true;
 new TimerPizza[MAX_PLAYERS];
+new Float:DropPizzaLocation[MAX_PLAYERS][3]; // x = 0 y = 0 z = 0
 
-stock ResetPlayerPizza(playerid) {
+Fungsi: ResetPlayerPizza(playerid) {
 
     PlayerDeliveredPizza[playerid] = false;
     PlayerCanGetPizza[playerid] = true;
 
     if(IsValidTimer(TimerPizza[playerid])) KillTimer(TimerPizza[playerid]);
+    TimerPizza[playerid] = -1;
 
     return 1;
 }
@@ -23,8 +25,71 @@ CMD:getpizza(playerid, params[]) {
     SetPlayerAttachedObject(playerid, 0, 19571, 1, -0.131999, -0.152999, -0.005000, 0.500000, 87.499885, 0.000000);
 
     PlayerDeliveredPizza[playerid] = true;
+    PlayerCanGetPizza[playerid] = false;
 
-    // will continue to add drop location
+    // set drop location
+    new droprandom = random(7); // might be 0, or 1 (maximum is max-1)
+
+    switch(droprandom) {
+        case 0: {
+            DropPizzaLocation[playerid][0] = 1326.36;
+            DropPizzaLocation[playerid][1] = -1090.50;
+            DropPizzaLocation[playerid][2] = 28;
+        }
+        case 1: {
+            DropPizzaLocation[playerid][0] = 852.39;
+            DropPizzaLocation[playerid][1] = -1422.31;
+            DropPizzaLocation[playerid][2] = 13.81;
+        }
+        case 2: {
+            DropPizzaLocation[playerid][0] = 280.93;
+            DropPizzaLocation[playerid][1] = -1768.08;
+            DropPizzaLocation[playerid][2] = 4.53;
+        }
+        case 3: {
+            DropPizzaLocation[playerid][0] = 657.18;
+            DropPizzaLocation[playerid][1] = -1652.59;
+            DropPizzaLocation[playerid][2] = 15.40;
+        }
+        case 4: {
+            DropPizzaLocation[playerid][0] = 1410.97;
+            DropPizzaLocation[playerid][1] = -920.84;
+            DropPizzaLocation[playerid][2] = 38.42;
+        }
+        case 5: {
+            DropPizzaLocation[playerid][0] = 1496.96;
+            DropPizzaLocation[playerid][1] = -688.03;
+            DropPizzaLocation[playerid][2] = 95.56;
+        }
+        case 6: {
+            DropPizzaLocation[playerid][0] = 1016.90;
+            DropPizzaLocation[playerid][1] = -762.86;
+            DropPizzaLocation[playerid][2] = 112.56;
+        }
+    }
+
+    SetPlayerCheckpoint(playerid, DropPizzaLocation[playerid][0], DropPizzaLocation[playerid][1], DropPizzaLocation[playerid][2], 1.5);
 
     return SendMessageInfo(playerid, "Berhasil mengambil pizza, silahkan antarkan pizza ke tempat tujuan, lalu gunakan /droppizza untuk meletakkan pizza ke tujuan.");
+}
+
+CMD:droppizza(playerid, params[]) {
+
+    if(Pemain[playerid][pJob] != 1) return SendMessageError(playerid, "Kamu tidak bekerja sebagai pengantar pizza!");
+
+    if(!PlayerDeliveredPizza[playerid]) return SendMessageError(playerid, "Kamu tidak membawa pizza apapun, ambillah terlebih dahulu!");
+
+    if(!IsPlayerInRangeOfPoint(playerid, 1.5, DropPizzaLocation[playerid][0], DropPizzaLocation[playerid][1], DropPizzaLocation[playerid][2])) return SendMessageError(playerid, "Kamu belum sampai di lokasi tujuan!");
+
+    ApplyAnimationEx(playerid, "BOMBER", "BOM_Plant", 2.70, false, false, false, false, SYNC_ALL);
+
+    PlayerDeliveredPizza[playerid] = false;
+
+    GivePlayerMoney(playerid, 70000);
+
+    RemovePlayerAttachedObject(playerid, 0);
+
+    TimerPizza[playerid] = SetTimerEx("ResetPlayerPizza", 120000, false, "i", playerid);
+
+    return 1;
 }
