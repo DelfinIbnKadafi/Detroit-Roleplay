@@ -29,7 +29,7 @@ Fungsi: ResetKendaraanPizza() {
         PizzaVehData[i][fuelpizza] = 100;
         PizzaVehData[i][mesin] = false;
         y -= 1.5;
-        PizzaVehData[i][vhid] = CreateVehicle(448, 2097.5, y, 13.4, 88.7, 1, 1, -1);
+        PizzaVehData[i][vhid] = CreateVehicle(448, 2097.5, y, 13.4, 88.7, 3, 5, -1);
         ResetDataVehServer(PizzaVehData[i][vhid]);
     }
     return 1;
@@ -105,7 +105,7 @@ CMD:getpizza(playerid, params[]) {
 
     SetPlayerCheckpoint(playerid, DropPizzaLocation[playerid][0], DropPizzaLocation[playerid][1], DropPizzaLocation[playerid][2], 1.5);
 
-    return SendMessageInfo(playerid, "Berhasil mengambil pizza, silahkan antarkan pizza ke tempat tujuan, lalu gunakan /droppizza untuk meletakkan pizza ke tujuan.");
+    return SendMessageInfo(playerid, "Berhasil mengambil pizza, silahkan antarkan pizza ke tempat tujuan, lalu gunakan /droppizza untuk meletakkan pizza.");
 }
 
 CMD:droppizza(playerid, params[]) {
@@ -116,7 +116,9 @@ CMD:droppizza(playerid, params[]) {
 
     if(!IsPlayerInRangeOfPoint(playerid, 1.5, DropPizzaLocation[playerid][0], DropPizzaLocation[playerid][1], DropPizzaLocation[playerid][2])) return SendMessageError(playerid, "Kamu belum sampai di lokasi tujuan!");
 
-    ApplyAnimationEx(playerid, "BOMBER", "BOM_Plant", 2.70, false, false, false, false, SYNC_ALL);
+    if(IsPlayerInAnyVehicle(playerid)) return SendMessageError(playerid, "Kamu harus keluar kendaraan untuk menaruh pizza!");
+
+    ApplyAnimationEx(playerid, "BOMBER", "BOM_Plant", 4.1, false, false, false, false, SYNC_ALL);
 
     PlayerDeliveredPizza[playerid] = false;
 
