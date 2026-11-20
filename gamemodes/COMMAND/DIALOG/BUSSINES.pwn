@@ -16,7 +16,7 @@ Dialog:DIALOG_GANTI_NAMA_BUSI(playerid, response, listitem, const inputtext[]) {
         return Dialog_Show(playerid, DIALOG_GANTI_NAMA_BUSI, DIALOG_STYLE_INPUT, "Business - Ganti Nama", msg, "Kirim", "Batal");
     }
 
-    if(!GantiSendiriNamaBuss[playerid]) strcopy(Business[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_Business_NAME + 1);
+    if(GantiSendiriNamaBuss[playerid]) strcopy(Business[SheylaCantikImutBanget[playerid]][bnames], inputtext, MAX_Business_NAME + 1);
 
     UpdateBusinessObject(SheylaCantikImutBanget[playerid]);
 
