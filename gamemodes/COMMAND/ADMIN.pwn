@@ -4,7 +4,7 @@ CMD:ahelp(playerid, params[]) {
     return 1;
   }
   
-  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/BUSSINESlist\n/cancelbusinessedit\n/closebusinesslist\n/repairplayerveh", "keluar", " ");
+  Dialog_Show(playerid, DL_AHELP, DIALOG_STYLE_LIST, "Admin Command Help", "/aduty\n/tp\n/sethp\n/setarmour\n/setskin\n/gotoplayer\n/getplayer\n/givemoney\n/getmoney\n/getplayermoney\n/spawnaveh\n/destroyaveh\n/jetpack\n/giveveh\n/createatm\n/editatm\n/revive\n/createbusiness\n/editbusiness\n/deletebusiness\n/gotobusiness\n/BUSSINESlist\n/cancelbusinessedit\n/closebusinesslist\n/repairplayerveh\n/respawnjobveh", "keluar", " ");
   
   return 1;
 }
@@ -409,5 +409,11 @@ CMD:repairplayerveh(playerid, params[]) {
 
   SendMessageError(playerid, "Tidak dapat menemukan kendaraan atau id kendaraan tidak valid, gunakan id yang ada di /myveh");
 
+  return 1;
+}
+
+CMD:respawnjobveh(playerid, params[]) {
+  if(Admin[playerid] < 1) return SendMessageError(playerid, "Kamu tidak memiliki akses untuk menggunakan command ini!");
+  ResetJobVeh();
   return 1;
 }

@@ -43,8 +43,9 @@ public OnGameModeInit()
     SetGameModeText(srvrver);
     
     LoadMapping();
-    ResetKendaraanPizza();
     LoadTextdraw();
+
+    ResetJobVeh();
 
     // pikirkan secara logika
     // bagaimana caranya membuat sebuah sistem, jadi bakal ambil semua data dalam tabel tertentu di sebuah tabel

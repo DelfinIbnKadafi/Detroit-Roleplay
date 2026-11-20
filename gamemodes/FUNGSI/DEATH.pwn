@@ -7,7 +7,6 @@ stock BatalkanStatusDown(playerid) {
 
 stock JadwalkanStatusDown(playerid) {
   BatalkanStatusDown(playerid);
-  TogglePlayerControllable(playerid, false);
   TimerDown[playerid] = SetTimerEx("TerapkanStatusDown", 1000, false, "iii", playerid, PlayerSession[playerid], DownGeneration[playerid]);
   return 1;
 }

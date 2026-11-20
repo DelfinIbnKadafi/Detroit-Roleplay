@@ -25,6 +25,7 @@ new PizzaVehData[5][PizzaVeh];
 Fungsi: ResetKendaraanPizza() {
     new Float:y = -1792.4;
     for(new i = 0; i < 5; i++) {
+        if(IsValidVehicle(PizzaVehData[i][vhid]) && GetVehicleDriver(PizzaVehData[i][vhid]) != INVALID_PLAYER_ID) continue;
         if(IsValidVehicle(PizzaVehData[i][vhid])) DestroyVehicle(PizzaVehData[i][vhid]);
         PizzaVehData[i][fuelpizza] = 100;
         PizzaVehData[i][mesin] = false;
