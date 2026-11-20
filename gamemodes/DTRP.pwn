@@ -43,6 +43,7 @@ public OnGameModeInit()
     SetGameModeText(srvrver);
     
     LoadMapping();
+    ResetKendaraanPizza();
     LoadTextdraw();
 
     // pikirkan secara logika

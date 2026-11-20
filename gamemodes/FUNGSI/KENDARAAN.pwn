@@ -37,8 +37,9 @@ stock bool:IsHealthKritis(Float:health) {
 
 // Ambil sisa bensin kendaraan milik pemain (0 jika bukan kendaraan pemain).
 stock GetFuelKendaraan(vehicleid) {
-  if(!IsPlayerOwnedVehicle(vehicleid)) return 0;
-  return PVeh[VehServer[vehicleid][vsPemilik]][VehServer[vehicleid][vsSlot]][vFuel];
+  if(IsPlayerOwnedVehicle(vehicleid)) return PVeh[VehServer[vehicleid][vsPemilik]][VehServer[vehicleid][vsSlot]][vFuel];
+  if(IsPizzaVehicle(vehicleid)) return GetPizzaVehicleFuel(vehicleid);
+  return 0;
 }
 
 // Periksa apakah kendaraan milik pemain sedang terkunci.
@@ -282,6 +283,42 @@ stock RemoveAdminVehicle(vehicleid) {
   return 1;
 }
 
+// Tentukan tipe kendaraan (VEHTIPE_xxx). Urutan if menentukan prioritas.
+stock GetTipeKendaraan(vehicleid) {
+  if(!IsValidVehicle(vehicleid)) return VEHTIPE_LAIN;
+  if(IsPlayerOwnedVehicle(vehicleid)) return VEHTIPE_PLAYER;
+  if(IsAdminVehicle(vehicleid)) return VEHTIPE_ADMIN;
+  if(IsPizzaVehicle(vehicleid)) return VEHTIPE_JOB_PIZZA;
+  return VEHTIPE_LAIN;
+}
+
+// Kebijakan: apakah kendaraan memakai sistem bahan bakar (jika tidak, speedo menampilkan "-").
+stock bool:IsVehicleFuelEnabled(vehicleid) {
+  new tipe = GetTipeKendaraan(vehicleid);
+  if(tipe == VEHTIPE_PLAYER) return true;
+  if(tipe == VEHTIPE_JOB_PIZZA) return true;
+  return false;
+}
+
+// Kebijakan: apakah mesin kendaraan dinyalakan/dimatikan manual oleh pengemudi (/en atau tombol N).
+stock bool:IsMesinManualKendaraan(vehicleid) {
+  new tipe = GetTipeKendaraan(vehicleid);
+  if(tipe == VEHTIPE_PLAYER) return true;
+  if(tipe == VEHTIPE_JOB_PIZZA) return true;
+  return false;
+}
+
+// Persentase kesehatan kendaraan (0-100) untuk speedo. Kendaraan pemain yang sudah mati selalu 0.
+stock GetHealthPersenKendaraan(vehicleid) {
+  if(IsDeadPlayerVehicle(vehicleid)) return 0;
+  new Float:health;
+  if(!GetVehicleHealth(vehicleid, health)) return 0;
+  // Ditulis dengan tanda ! agar nilai yang bukan angka (NaN) juga dianggap 0.
+  if(!(health > VEHICLE_CRITICAL_HEALTH)) return 0;
+  if(health > 1000.0) health = 1000.0;
+  return floatround((health - VEHICLE_CRITICAL_HEALTH) / (1000.0 - VEHICLE_CRITICAL_HEALTH) * 100.0, floatround_floor);
+}
+
 // Hancurkan seluruh kendaraan admin milik pemain.
 stock DestroyAdminVehicles(playerid) {
   for(new vehicleid = 1; vehicleid < MAX_VEHICLES_SERVER; vehicleid++) {
@@ -346,22 +383,26 @@ stock ToggleMesinKendaraan(playerid) {
   // Minta pemain masuk ke kendaraan terlebih dahulu.
   if(!IsPlayerInAnyVehicle(playerid)) return SendMessageError(playerid, "Kamu tidak berada di kendaraan manapun.");
   new vehicleid = GetPlayerVehicleID(playerid);
-  // Fitur ini hanya berlaku untuk kendaraan milik pemain.
-  if(!IsPlayerOwnedVehicle(vehicleid)) return SendMessageError(playerid, "Mesin manual hanya tersedia untuk kendaraan milik pemain.");
+  // Mesin manual ditentukan per tipe kendaraan (lihat IsMesinManualKendaraan).
+  if(!IsMesinManualKendaraan(vehicleid)) return SendMessageError(playerid, "Mesin kendaraan ini tidak bisa dihidupkan atau dimatikan manual.");
   // Hanya pengemudi yang dapat mengubah status mesin.
   if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return 1;
-  // Hentikan jika kondisi kendaraan perlu ditangani.
-  if(CekKondisiKendaraan(vehicleid)) return 1;
-  // Kendaraan mati tidak dapat dinyalakan kembali.
-  if(IsDeadPlayerVehicle(vehicleid)) {
-    BatalkanTimerMesin(playerid);
-    TerapkanKendaraanMati(vehicleid);
-    return SendMessageError(playerid, "Kendaraan ini sudah mati dan tidak bisa dihidupkan kembali!");
+  // Aturan khusus kendaraan milik pemain.
+  new tipe = GetTipeKendaraan(vehicleid);
+  if(tipe == VEHTIPE_PLAYER) {
+    // Hentikan jika kondisi kendaraan perlu ditangani.
+    if(CekKondisiKendaraan(vehicleid)) return 1;
+    // Kendaraan mati tidak dapat dinyalakan kembali.
+    if(IsDeadPlayerVehicle(vehicleid)) {
+      BatalkanTimerMesin(playerid);
+      TerapkanKendaraanMati(vehicleid);
+      return SendMessageError(playerid, "Kendaraan ini sudah mati dan tidak bisa dihidupkan kembali!");
+    }
   }
   // Cegah timer perubahan mesin berjalan berulang.
   if(PVehInfo[playerid][viTimerMesin] != 0) return 1;
-  // Mesin tidak dapat dinyalakan tanpa bahan bakar.
-  if(!VehServer[vehicleid][vsMesin] && GetFuelKendaraan(vehicleid) <= 0) return SendMessageError(playerid, "Bahan bakar kendaraan ini sudah habis!");
+  // Mesin tidak dapat dinyalakan tanpa bahan bakar (hanya untuk kendaraan yang memakai bahan bakar).
+  if(!VehServer[vehicleid][vsMesin] && IsVehicleFuelEnabled(vehicleid) && GetFuelKendaraan(vehicleid) <= 0) return SendMessageError(playerid, "Bahan bakar kendaraan ini sudah habis!");
   new bool:hidup = !VehServer[vehicleid][vsMesin];
   PVehInfo[playerid][viTimerMesin] = SetTimerEx("HidupMatiMesinVeh", 2000, false, "iiiii", playerid, vehicleid, hidup, PlayerSession[playerid], VehServer[vehicleid][vsGenerasi]);
   // Tampilkan indikator saat mesin akan dinyalakan.
@@ -384,19 +425,23 @@ Fungsi:HidupMatiMesinVeh(playerid, vehicleid, bool:hidupormati, sessionid, gener
   // Abaikan callback jika kendaraan sudah diganti.
   if(vehicleid <= 0 || vehicleid >= MAX_VEHICLES_SERVER || VehServer[vehicleid][vsGenerasi] != generation) return 1;
   BatalkanTimerMesin(playerid);
-  // Pastikan kendaraan masih valid dan bukan kendaraan admin.
-  if(!IsValidVehicle(vehicleid) || !IsPlayerOwnedVehicle(vehicleid) || IsAdminVehicle(vehicleid)) return 1;
-  // Hentikan proses jika kondisi kendaraan berubah.
-  if(CekKondisiKendaraan(vehicleid)) return 1;
-  // Jangan aktifkan mesin kendaraan mati.
-  if(IsDeadPlayerVehicle(vehicleid)) {
-    TerapkanKendaraanMati(vehicleid);
-    return 1;
+  // Pastikan kendaraan masih valid dan tipenya memang memakai mesin manual.
+  if(!IsValidVehicle(vehicleid) || !IsMesinManualKendaraan(vehicleid)) return 1;
+  // Aturan khusus kendaraan milik pemain.
+  new tipe = GetTipeKendaraan(vehicleid);
+  if(tipe == VEHTIPE_PLAYER) {
+    // Hentikan proses jika kondisi kendaraan berubah.
+    if(CekKondisiKendaraan(vehicleid)) return 1;
+    // Jangan aktifkan mesin kendaraan mati.
+    if(IsDeadPlayerVehicle(vehicleid)) {
+      TerapkanKendaraanMati(vehicleid);
+      return 1;
+    }
   }
   // Pastikan pemain masih mengemudikan kendaraan yang sama.
   if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || GetPlayerVehicleID(playerid) != vehicleid) return 1;
-  // Batalkan penyalaan jika bahan bakar habis.
-  if(hidupormati && GetFuelKendaraan(vehicleid) <= 0) return 1;
+  // Batalkan penyalaan jika bahan bakar habis (hanya untuk kendaraan yang memakai bahan bakar).
+  if(hidupormati && IsVehicleFuelEnabled(vehicleid) && GetFuelKendaraan(vehicleid) <= 0) return 1;
   SetVehicleEngineAndLock(vehicleid, hidupormati, IsKendaraanTerkunci(vehicleid));
   return 1;
 }
@@ -601,8 +646,9 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
     if(IsKendaraanTerkunci(vehicleid)) {
       SendMessageError(playerid, "Kendaraan ini terkunci!");
     }
-    SendMessageInfo(playerid, "Gunakan /en atau tombol N untuk menghidupkan mesin kendaraan.");
   }
+  // Petunjuk mesin hanya untuk kendaraan yang mesinnya diatur manual.
+  if(IsMesinManualKendaraan(vehicleid)) SendMessageInfo(playerid, "Gunakan /en atau tombol N untuk menghidupkan mesin kendaraan.");
   return 1;
 }
 
@@ -619,7 +665,8 @@ public OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstat
     CekKondisiKendaraan(vehicleid);
     // Terapkan kondisi mati saat kendaraan dimasuki.
     if(IsDeadPlayerVehicle(vehicleid)) TerapkanKendaraanMati(vehicleid);
-    ShowHideSpeedo(playerid, IsPlayerOwnedVehicle(vehicleid));
+    // Speedo tampil untuk semua kendaraan, isinya menyesuaikan tipe (lihat UpdateSpeedoMeter).
+    ShowHideSpeedo(playerid, true);
   }
   return 1;
 }

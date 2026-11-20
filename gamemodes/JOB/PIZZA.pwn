@@ -14,6 +14,41 @@ Fungsi: ResetPlayerPizza(playerid) {
     return 1;
 }
 
+enum PizzaVeh {
+    bool:mesin,
+    Float:fuelpizza,
+    vhid
+}
+
+new PizzaVehData[5][PizzaVeh];
+
+Fungsi: ResetKendaraanPizza() {
+    new Float:y = -1792.4;
+    for(new i = 0; i < 5; i++) {
+        if(IsValidVehicle(PizzaVehData[i][vhid])) DestroyVehicle(PizzaVehData[i][vhid]);
+        PizzaVehData[i][fuelpizza] = 100;
+        PizzaVehData[i][mesin] = false;
+        y -= 1.5;
+        PizzaVehData[i][vhid] = CreateVehicle(448, 2097.5, y, 13.4, 88.7, 1, 1, -1);
+        ResetDataVehServer(PizzaVehData[i][vhid]);
+    }
+    return 1;
+}
+
+stock IsPizzaVehicle(vehicleid) {
+    for(new i = 0; i < 5; i++) {
+        if(PizzaVehData[i][vhid] == vehicleid) return 1;
+    }
+    return 0;
+}
+
+stock GetPizzaVehicleFuel(vehicleid) {
+    for(new i = 0; i < 5; i++) {
+        if(PizzaVehData[i][vhid] == vehicleid) return floatround(PizzaVehData[i][fuelpizza]);
+    }
+    return 0;
+}
+
 CMD:getpizza(playerid, params[]) {
 
     if(Pemain[playerid][pJob] != 1) return SendMessageError(playerid, "Kamu tidak bekerja sebagai pengantar pizza!");
